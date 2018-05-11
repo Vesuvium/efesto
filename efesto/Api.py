@@ -28,8 +28,9 @@ class Api:
         self.object_route(endpoint, model)
 
     def dynamic_endpoints(self, types):
+        models = DynamicModel()
         for dynamic_type in types:
-            model = DynamicModel.generate(dynamic_type)
+            model = models.generate(dynamic_type)
             self.add_endpoint('/{}'.format(dynamic_type.name), model)
 
     def cherries(self):

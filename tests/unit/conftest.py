@@ -36,3 +36,10 @@ def patch(mocker, patch_init, patch_many):
     mocker.patch.init = patch_init
     mocker.patch.many = patch_many
     return mocker.patch
+
+
+@fixture
+def type_instance(magic):
+    type_instance = magic()
+    type_instance.name = 'custom'
+    return type_instance
