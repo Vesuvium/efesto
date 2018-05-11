@@ -66,9 +66,11 @@ def test_dynamic_model_generate(patch, magic):
     patch.object(Fields, 'select')
     type_instance = magic()
     type_instance.name = 'custom'
-    model = DynamicModel.generate(type_instance)
+    dynamicmodel = DynamicModel()
+    result = dynamicmodel.generate(type_instance)
     Fields.select().where.assert_called_with(False)
     DynamicModel.attributes.assert_called_with(Fields.select().where())
-    assert isinstance(model.owner, ForeignKeyField)
-    assert issubclass(model, Base)
-    assert model.__name__ == 'custom'
+    assert isinstance(result.owner, ForeignKeyField)
+    assert issubclass(result, Base)
+    assert result.__name__ == 'custom'
+    assert dynamicmodel.models['custom'] == result
