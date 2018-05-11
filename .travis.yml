@@ -1,0 +1,13 @@
+language: python
+sudo: false
+install:
+    - python setup.py install
+    - pip install tox
+
+matrix:
+    include:
+        - python: 3.6
+          env: TOXENV=py36
+        - python: 3.6
+          env: TOXENV=pep8
+script: tox
