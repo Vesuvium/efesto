@@ -24,6 +24,8 @@ class DynamicModel:
         custom_field = CharField
         if field.field_type in self.mappings:
             custom_field = self.mappings[field.field_type]
+        elif field.field_type in self.models:
+            return ForeignKeyField(self.models[field.field_type])
         return custom_field(null=field.nullable, unique=field.unique)
 
     @classmethod

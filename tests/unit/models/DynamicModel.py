@@ -47,6 +47,15 @@ def test_dynamic_model_make_field(magic, dynamicmodel, field_type, expected):
     assert isinstance(field, expected)
 
 
+def test_dynamic_model_make_field_custom(patch, magic, dynamicmodel):
+    patch.init(ForeignKeyField)
+    dynamicmodel.models = {'custom': magic()}
+    retrieved_field = magic(field_type='custom')
+    field = dynamicmodel.make_field(retrieved_field)
+    ForeignKeyField.__init__.assert_called_with(dynamicmodel.models['custom'])
+    assert isinstance(field, ForeignKeyField)
+
+
 def test_dynamic_model_make_field_not_found(magic, dynamicmodel):
     assert isinstance(dynamicmodel.make_field(magic()), CharField)
 
