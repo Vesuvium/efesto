@@ -4,7 +4,21 @@ from efesto.models import Base, DynamicModel, Fields
 from peewee import (BooleanField, CharField, DateTimeField, FloatField,
                     ForeignKeyField, IntegerField)
 
-from pytest import mark
+from pytest import fixture, mark
+
+
+@fixture
+def dynamicmodel(magic):
+    dynamicmodel = DynamicModel()
+    dynamicmodel.models = magic()
+    return dynamicmodel
+
+
+@fixture
+def type_instance(magic):
+    type_instance = magic()
+    type_instance.name = 'custom'
+    return type_instance
 
 
 def test_mappings():
@@ -58,11 +72,9 @@ def test_dynamic_model_attributes(patch, magic):
     assert result['one'] == DynamicModel.make_field()
 
 
-def test_dynamic_model_new_model(patch, magic):
+def test_dynamic_model_new_model(patch, type_instance):
     patch.object(DynamicModel, 'attributes', return_value={})
     patch.object(Fields, 'select')
-    type_instance = magic()
-    type_instance.name = 'custom'
     dynamicmodel = DynamicModel()
     dynamicmodel.generate(type_instance)
     Fields.select().where.assert_called_with(False)
@@ -73,19 +85,11 @@ def test_dynamic_model_new_model(patch, magic):
     assert model.__name__ == 'custom'
 
 
-def test_dynamic_model_generate(patch, magic):
+def test_dynamic_model_generate(patch, dynamicmodel, type_instance):
     """
     Ensures that a model can be generated from a Type
     """
-    patch.object(DynamicModel, 'attributes', return_value={})
-    patch.object(Fields, 'select')
-    type_instance = magic()
-    type_instance.name = 'custom'
-    dynamicmodel = DynamicModel()
+    patch.object(DynamicModel, 'new_model')
     result = dynamicmodel.generate(type_instance)
-    Fields.select().where.assert_called_with(False)
-    DynamicModel.attributes.assert_called_with(Fields.select().where())
-    assert isinstance(result.owner, ForeignKeyField)
-    assert issubclass(result, Base)
-    assert result.__name__ == 'custom'
-    assert dynamicmodel.models['custom'] == result
+    DynamicModel.new_model.assert_called_with(type_instance)
+    assert result == dynamicmodel.models[type_instance.name]

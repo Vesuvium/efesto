@@ -45,9 +45,5 @@ class DynamicModel:
         """
         Generate a model using a type
         """
-        fields = Fields.select().where(Fields.type_id == type_instance.id)
-        attributes = self.attributes(fields)
-        attributes['owner'] = ForeignKeyField(Users)
-        model = type(type_instance.name, (Base, ), attributes)
-        self.models[type_instance.name] = model
-        return model
+        self.new_model(type_instance)
+        return self.models[type_instance.name]
