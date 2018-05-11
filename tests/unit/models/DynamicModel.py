@@ -65,11 +65,11 @@ def test_dynamic_model_make_field_unique(magic, dynamicmodel):
     assert field.unique is True
 
 
-def test_dynamic_model_attributes(patch, magic):
+def test_dynamic_model_attributes(patch, magic, dynamicmodel):
     patch.object(DynamicModel, 'make_field')
     field = magic()
     field.name = 'one'
-    result = DynamicModel.attributes([field])
+    result = dynamicmodel.attributes([field])
     DynamicModel.make_field.assert_called_with(field)
     assert result['one'] == DynamicModel.make_field()
 

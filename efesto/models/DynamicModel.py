@@ -28,11 +28,10 @@ class DynamicModel:
             return ForeignKeyField(self.models[field.field_type])
         return custom_field(null=field.nullable, unique=field.unique)
 
-    @classmethod
-    def attributes(cls, fields):
+    def attributes(self, fields):
         attributes = {}
         for field in fields:
-            attributes[field.name] = cls.make_field(field)
+            attributes[field.name] = self.make_field(field)
         return attributes
 
     def new_model(self, type_instance):
