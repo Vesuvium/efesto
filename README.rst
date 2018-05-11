@@ -74,8 +74,7 @@ Notes from the author
   yourself, I can be hired.
 
 
-.. |Build Status| image:: https://img.shields.io/travis/getefesto/efesto.svg?maxAge=3600&style=for-the-badge
+.. |Build Status| image:: https://img.shields.io/travis/getefesto/efesto.svg?maxAge=600&style=for-the-badge
    :target: https://travis-ci.org/getefesto/efesto
-.. |Pypi| image:: https://img.shields.io/pypi/v/efesto.svg?maxAge=3600&style=for-the-badge
+.. |Pypi| image:: https://img.shields.io/pypi/v/efesto.svg?maxAge=600&style=for-the-badge
    :target: https://pypi.python.org/pypi/efesto
-.. |Docs| documentation :target: http://efesto.readthedocs.io
