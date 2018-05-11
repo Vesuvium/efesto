@@ -41,25 +41,25 @@ def test_dynamic_model_init():
     ('bool', BooleanField),
     ('date', DateTimeField)
 ])
-def test_dynamic_model_make_field(magic, field_type, expected):
+def test_dynamic_model_make_field(magic, dynamicmodel, field_type, expected):
     retrieved_field = magic(field_type=field_type)
-    field = DynamicModel.make_field(retrieved_field)
+    field = dynamicmodel.make_field(retrieved_field)
     assert isinstance(field, expected)
 
 
-def test_dynamic_model_make_field_not_found(magic):
-    assert isinstance(DynamicModel.make_field(magic()), CharField)
+def test_dynamic_model_make_field_not_found(magic, dynamicmodel):
+    assert isinstance(dynamicmodel.make_field(magic()), CharField)
 
 
-def test_dynamic_model_make_field_nullable(magic):
+def test_dynamic_model_make_field_nullable(magic, dynamicmodel):
     retrieved_field = magic(nullable=True)
-    field = DynamicModel.make_field(retrieved_field)
+    field = dynamicmodel.make_field(retrieved_field)
     assert field.null is True
 
 
-def test_dynamic_model_make_field_unique(magic):
+def test_dynamic_model_make_field_unique(magic, dynamicmodel):
     retrieved_field = magic(unique=True)
-    field = DynamicModel.make_field(retrieved_field)
+    field = dynamicmodel.make_field(retrieved_field)
     assert field.unique is True
 
 

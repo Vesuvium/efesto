@@ -20,11 +20,10 @@ class DynamicModel:
     def __init__(self):
         self.models = {}
 
-    @classmethod
-    def make_field(cls, field):
+    def make_field(self, field):
         custom_field = CharField
-        if field.field_type in cls.mappings:
-            custom_field = cls.mappings[field.field_type]
+        if field.field_type in self.mappings:
+            custom_field = self.mappings[field.field_type]
         return custom_field(null=field.nullable, unique=field.unique)
 
     @classmethod
