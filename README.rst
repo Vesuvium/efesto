@@ -1,6 +1,6 @@
 Efesto
 ======
-|Pypi| |Build Status|
+|Pypi| |Build Status| |Codacy|
 
 A micro REST API meant to be used almost out of the box with other
 microservices.
@@ -78,3 +78,5 @@ Notes from the author
    :target: https://travis-ci.org/getefesto/efesto
 .. |Pypi| image:: https://img.shields.io/pypi/v/efesto.svg?maxAge=600&style=for-the-badge
    :target: https://pypi.python.org/pypi/efesto
+.. |Codacy| image:: https://img.shields.io/codacy/grade/f7e53f5fa09043a48a52eee5a706c684.svg?style=for-the-badge
+   :target: https://app.codacy.com/app/getefesto/efesto/dashboard
