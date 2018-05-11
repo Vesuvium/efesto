@@ -17,6 +17,9 @@ class DynamicModel:
         'date': DateTimeField
     }
 
+    def __init__(self):
+        self.models = {}
+
     @classmethod
     def make_field(cls, field):
         custom_field = CharField

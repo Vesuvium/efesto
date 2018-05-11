@@ -15,6 +15,11 @@ def test_mappings():
     assert DynamicModel.mappings['date'] == DateTimeField
 
 
+def test_dynamic_model_init():
+    model = DynamicModel()
+    assert model.models == {}
+
+
 @mark.parametrize('field_type, expected', [
     ('string', CharField),
     ('int', IntegerField),
