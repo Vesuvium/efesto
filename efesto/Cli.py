@@ -78,8 +78,9 @@ class Cli:
         Base.init_db(config.db_url)
         types = Types.select().execute()
         models = []
+        dynamicmodel = DynamicModel()
         for dynamic_type in types:
-            models.append(DynamicModel.generate(dynamic_type))
+            models.append(dynamicmodel.generate(dynamic_type))
         db.create_tables(models, safe=True)
 
     @main.command()
