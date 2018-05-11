@@ -58,6 +58,21 @@ def test_dynamic_model_attributes(patch, magic):
     assert result['one'] == DynamicModel.make_field()
 
 
+def test_dynamic_model_new_model(patch, magic):
+    patch.object(DynamicModel, 'attributes', return_value={})
+    patch.object(Fields, 'select')
+    type_instance = magic()
+    type_instance.name = 'custom'
+    dynamicmodel = DynamicModel()
+    dynamicmodel.generate(type_instance)
+    Fields.select().where.assert_called_with(False)
+    DynamicModel.attributes.assert_called_with(Fields.select().where())
+    model = dynamicmodel.models['custom']
+    assert isinstance(model.owner, ForeignKeyField)
+    assert issubclass(model, Base)
+    assert model.__name__ == 'custom'
+
+
 def test_dynamic_model_generate(patch, magic):
     """
     Ensures that a model can be generated from a Type

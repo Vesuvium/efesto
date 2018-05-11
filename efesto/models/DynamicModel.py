@@ -34,6 +34,13 @@ class DynamicModel:
             attributes[field.name] = cls.make_field(field)
         return attributes
 
+    def new_model(self, type_instance):
+        fields = Fields.select().where(Fields.type_id == type_instance.id)
+        attributes = self.attributes(fields)
+        attributes['owner'] = ForeignKeyField(Users)
+        model = type(type_instance.name, (Base, ), attributes)
+        self.models[type_instance.name] = model
+
     def generate(self, type_instance):
         """
         Generate a model using a type
