@@ -35,7 +35,7 @@ setup(
     install_requires=[
         'falcon>=1.1.0',
         'falcon-cors>=1.0.1',
-        'psycopg2>=2.6.1',
+        'psycopg2-binary>=2.7.4',
         'peewee>=3.2.0',
         'click>=6.7',
         'colorama>=0.3.3',
