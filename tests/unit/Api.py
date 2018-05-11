@@ -66,14 +66,14 @@ def test_api_add_endpoint(patch, magic, api):
     api.object_route.assert_called_with('/endpoint', model)
 
 
-def test_api_dynamic_endpoints(patch, magic, api):
+def test_api_dynamic_endpoints(patch, api, type_instance):
+    patch.init(DynamicModel)
     patch.object(DynamicModel, 'generate')
     patch.object(Api, 'add_endpoint')
-    type_instance = magic()
-    type_instance.name = 'dynamic'
     api.dynamic_endpoints([type_instance])
+    assert DynamicModel.__init__.call_count == 1
     DynamicModel.generate.assert_called_with(type_instance)
-    api.add_endpoint.assert_called_with('/dynamic', DynamicModel.generate())
+    api.add_endpoint.assert_called_with('/custom', DynamicModel.generate())
 
 
 def test_api_cherries(api):

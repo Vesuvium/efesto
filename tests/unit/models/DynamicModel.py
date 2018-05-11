@@ -14,13 +14,6 @@ def dynamicmodel(magic):
     return dynamicmodel
 
 
-@fixture
-def type_instance(magic):
-    type_instance = magic()
-    type_instance.name = 'custom'
-    return type_instance
-
-
 def test_mappings():
     assert DynamicModel.mappings['string'] == CharField
     assert DynamicModel.mappings['int'] == IntegerField
