@@ -40,7 +40,7 @@ class Siren:
             ]
         }
 
-    def make_entities(self):
+    def entities(self):
         entities = []
         for item in self.data:
             entities.append(self.entity(self.path, item))
@@ -60,5 +60,5 @@ class Siren:
 
     def encode(self, *args):
         if type(self.data) == list:
-            return ujson.dumps(self.make_entities())
+            return ujson.dumps(self.entities())
         return ujson.dumps(self.entity(self.path, self.data))

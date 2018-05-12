@@ -48,7 +48,7 @@ def test_siren_make_entities(patch, magic, siren):
     patch.many(Siren, ['entity', 'paginate'])
     item = magic()
     siren.data = [item]
-    entities = siren.make_entities()
+    entities = siren.entities()
     Siren.entity.assert_called_with(siren.path, item)
     assert entities['entities'] == [Siren.entity()]
     assert type(entities['actions']) == list
@@ -56,10 +56,10 @@ def test_siren_make_entities(patch, magic, siren):
 
 
 def test_siren_encode(patch):
-    patch.object(Siren, 'make_entities')
+    patch.object(Siren, 'entities')
     patch.object(ujson, 'dumps')
     Siren().encode('utf-8')
-    ujson.dumps.assert_called_with(Siren.make_entities())
+    ujson.dumps.assert_called_with(Siren.entities())
 
 
 def test_siren_encode_one(patch, siren):
