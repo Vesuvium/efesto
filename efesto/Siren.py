@@ -45,10 +45,10 @@ class Siren:
             ]
         }
 
-    def entities(self):
+    def entities(self, includes=[]):
         entities = []
         for item in self.data:
-            entities.append(self.entity(self.path, item))
+            entities.append(self.entity(self.path, item, includes=includes))
 
         fields = []
         name = 'add-item'
@@ -63,7 +63,7 @@ class Siren:
         links = self.paginate(self.path, self.data, self.page, self.total)
         return {'entities': entities, 'actions': actions, 'links': links}
 
-    def encode(self, *args):
+    def encode(self, *args, includes=[]):
         if type(self.data) == list:
-            return ujson.dumps(self.entities())
+            return ujson.dumps(self.entities(includes=includes))
         return ujson.dumps(self.entity(self.path, self.data))
