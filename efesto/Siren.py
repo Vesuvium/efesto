@@ -61,4 +61,4 @@ class Siren:
     def encode(self, *args):
         if type(self.data) == list:
             return ujson.dumps(self.make_entities())
-        return ujson.dumps(self.make_entity(self.data))
+        return ujson.dumps(self.make_entity(self.path, self.data))

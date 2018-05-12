@@ -54,15 +54,17 @@ def test_make_entities(patch, magic):
     assert entities['links'] == Siren.paginate()
 
 
-def test_encode(patch):
+def test_siren_encode(patch):
     patch.object(Siren, 'make_entities')
     patch.object(ujson, 'dumps')
     Siren().encode('utf-8')
     ujson.dumps.assert_called_with(Siren.make_entities())
 
 
-def test_encode_one(patch):
+def test_siren_encode_one(patch, siren):
     patch.object(Siren, 'make_entity')
     patch.object(ujson, 'dumps')
-    Siren(data={}).encode('utf-8')
+    siren.data = {}
+    siren.encode('utf-8')
+    Siren.make_entity.assert_called_with(siren.path, siren.data)
     ujson.dumps.assert_called_with(Siren.make_entity())
