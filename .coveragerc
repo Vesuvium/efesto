@@ -1,0 +1,10 @@
+[run]
+source = efesto
+branch = True
+
+[report]
+ignore_errors = True
+omit =
+    setup.py
+    .tox/*
+    .venv/*
