@@ -25,7 +25,8 @@ class Siren:
             links.append({'rel': ['previous'], 'href': href})
         return links
 
-    def entity(self, path, item):
+    @staticmethod
+    def entity(path, item):
         """
         Creates an entity from a model instance
         """
