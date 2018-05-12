@@ -25,7 +25,7 @@ class Siren:
             links.append({'rel': ['previous'], 'href': href})
         return links
 
-    def make_entity(self, path, item):
+    def entity(self, path, item):
         """
         Creates an entity from a model instance
         """
@@ -43,7 +43,7 @@ class Siren:
     def make_entities(self):
         entities = []
         for item in self.data:
-            entities.append(self.make_entity(self.path, item))
+            entities.append(self.entity(self.path, item))
 
         fields = []
         name = 'add-item'
@@ -61,4 +61,4 @@ class Siren:
     def encode(self, *args):
         if type(self.data) == list:
             return ujson.dumps(self.make_entities())
-        return ujson.dumps(self.make_entity(self.path, self.data))
+        return ujson.dumps(self.entity(self.path, self.data))

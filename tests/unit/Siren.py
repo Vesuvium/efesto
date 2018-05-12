@@ -30,27 +30,27 @@ def test_siren_paginate_last():
     assert links[1] == {'rel': ['previous'], 'href': 'path?page=2'}
 
 
-def test_siren_make_entity(magic, siren):
+def test_siren_entity(magic, siren):
     item = magic(__data__='data')
-    entity = siren.make_entity('', item)
+    entity = siren.entity('', item)
     assert entity['properties'] == item.__data__
     assert entity['class'] == [item.__class__.__name__]
     assert entity['links'] == [{'href': '/{}'.format(item.id), 'rel': 'self'}]
 
 
-def test_siren_make_entity_path(magic, siren):
+def test_siren_entity_path(magic, siren):
     item = magic(id=1, __data__='data')
-    entity = siren.make_entity('/endpoint/1', item)
+    entity = siren.entity('/endpoint/1', item)
     assert entity['links'] == [{'href': '/endpoint/1', 'rel': 'self'}]
 
 
 def test_siren_make_entities(patch, magic, siren):
-    patch.many(Siren, ['make_entity', 'paginate'])
+    patch.many(Siren, ['entity', 'paginate'])
     item = magic()
     siren.data = [item]
     entities = siren.make_entities()
-    Siren.make_entity.assert_called_with(siren.path, item)
-    assert entities['entities'] == [Siren.make_entity()]
+    Siren.entity.assert_called_with(siren.path, item)
+    assert entities['entities'] == [Siren.entity()]
     assert type(entities['actions']) == list
     assert entities['links'] == Siren.paginate()
 
@@ -63,9 +63,9 @@ def test_siren_encode(patch):
 
 
 def test_siren_encode_one(patch, siren):
-    patch.object(Siren, 'make_entity')
+    patch.object(Siren, 'entity')
     patch.object(ujson, 'dumps')
     siren.data = {}
     siren.encode('utf-8')
-    Siren.make_entity.assert_called_with(siren.path, siren.data)
-    ujson.dumps.assert_called_with(Siren.make_entity())
+    Siren.entity.assert_called_with(siren.path, siren.data)
+    ujson.dumps.assert_called_with(Siren.entity())
