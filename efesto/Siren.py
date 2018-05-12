@@ -25,13 +25,20 @@ class Siren:
             links.append({'rel': ['previous'], 'href': href})
         return links
 
-    def make_entity(self, item):
+    @classmethod
+    def entity(cls, path, item, includes=[]):
         """
         Creates an entity from a model instance
         """
-        href = '{}/{}'.format(self.path, item.id)
-        if self.path.endswith('/{}'.format(item.id)):
-            href = self.path
+        href = '{}/{}'.format(path, item.id)
+        if path.endswith('/{}'.format(item.id)):
+            href = path
+
+        for i in includes:
+            nested = getattr(item, i)
+            nested_path = '/{}'.format(nested.__class__.__name__)
+            item.__data__[i] = cls.entity(nested_path, nested)
+
         return {
             'properties': item.__data__,
             'class': [item.__class__.__name__],
@@ -40,10 +47,10 @@ class Siren:
             ]
         }
 
-    def make_entities(self):
+    def entities(self, includes=[]):
         entities = []
         for item in self.data:
-            entities.append(self.make_entity(item))
+            entities.append(self.entity(self.path, item, includes=includes))
 
         fields = []
         name = 'add-item'
@@ -58,7 +65,7 @@ class Siren:
         links = self.paginate(self.path, self.data, self.page, self.total)
         return {'entities': entities, 'actions': actions, 'links': links}
 
-    def encode(self, *args):
+    def encode(self, *args, includes=[]):
         if type(self.data) == list:
-            return ujson.dumps(self.make_entities())
-        return ujson.dumps(self.make_entity(self.data))
+            return ujson.dumps(self.entities(includes=includes))
+        return ujson.dumps(self.entity(self.path, self.data))
