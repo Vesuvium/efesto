@@ -43,7 +43,7 @@ class Siren:
     def make_entities(self):
         entities = []
         for item in self.data:
-            entities.append(self.make_entity(item))
+            entities.append(self.make_entity(self.path, item))
 
         fields = []
         name = 'add-item'

@@ -17,14 +17,14 @@ def test_siren_paginate():
     assert links[1] == {'href': 'path?page=2', 'rel': ['next']}
 
 
-def test_paginate_middle():
+def test_siren_paginate_middle():
     links = Siren().paginate('path', [], 2, 1)
     assert links[0] == {'href': 'path', 'rel': ['self']}
     assert links[1] == {'href': 'path?page=3', 'rel': ['next']}
     assert links[2] == {'href': 'path?page=1', 'rel': ['previous']}
 
 
-def test_paginate_last():
+def test_siren_paginate_last():
     links = Siren().paginate('path', [], 3, 0)
     assert links[0] == {'rel': ['self'], 'href': 'path'}
     assert links[1] == {'rel': ['previous'], 'href': 'path?page=2'}
@@ -44,11 +44,12 @@ def test_siren_make_entity_path(magic, siren):
     assert entity['links'] == [{'href': '/endpoint/1', 'rel': 'self'}]
 
 
-def test_make_entities(patch, magic):
-    patch.object(Siren, 'make_entity')
-    patch.object(Siren, 'paginate')
+def test_siren_make_entities(patch, magic, siren):
+    patch.many(Siren, ['make_entity', 'paginate'])
     item = magic()
-    entities = Siren(data=[item]).make_entities()
+    siren.data = [item]
+    entities = siren.make_entities()
+    Siren.make_entity.assert_called_with(siren.path, item)
     assert entities['entities'] == [Siren.make_entity()]
     assert type(entities['actions']) == list
     assert entities['links'] == Siren.paginate()
