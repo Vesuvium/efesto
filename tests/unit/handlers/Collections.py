@@ -52,11 +52,12 @@ def test_collection_on_get(patch, magic, collection):
     user = magic()
     patch.init(Siren)
     patch.object(Siren, 'encode')
-    patch.many(Collections, ['query', 'page', 'items'])
+    patch.many(Collections, ['query', 'page', 'items', 'embeds'])
     collection.on_get(request, response, user=user)
     Collections.page.assert_called_with(request.params)
     Collections.items.assert_called_with(request.params)
     Collections.query.assert_called_with(request.params)
+    Collections.embeds.assert_called_with(request.params)
     user.do.assert_called_with('read', collection.query(),
                                collection.model)
     user.do().paginate.assert_called_with(Collections.page(),
@@ -66,6 +67,7 @@ def test_collection_on_get(patch, magic, collection):
                                       list(user.do().execute()),
                                       request.path, page=Collections.page(),
                                       total=user.do().count())
+    Siren.encode.assert_called_with(includes=Collections.embeds())
     assert response.body == Siren().encode()
 
 

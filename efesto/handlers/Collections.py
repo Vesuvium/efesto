@@ -30,11 +30,12 @@ class Collections:
         page = self.page(request.params)
         items = self.items(request.params)
         query = self.query(request.params)
+        embeds = self.embeds(request.params)
         result = user.do('read', query, self.model)
         paginated_query = result.paginate(page, items).execute()
         body = Siren(self.model, list(paginated_query), request.path,
                      page=page, total=result.count())
-        response.body = body.encode()
+        response.body = body.encode(includes=embeds)
 
     def on_post(self, request, response, **params):
         json = ujson.load(request.bounded_stream)
