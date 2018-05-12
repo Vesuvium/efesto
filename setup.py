@@ -20,6 +20,7 @@ setup(
     name='efesto',
     description='RESTful (micro)server that can build an API in minutes.',
     long_description=readme,
+    long_description_content_type='text/markdown',
     url='https://github.com/getefesto/efesto',
     author='Jacopo Cascioli',
     author_email='hi@jacopocascioli.com',
