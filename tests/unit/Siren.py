@@ -38,6 +38,15 @@ def test_siren_entity(magic, siren):
     assert entity['links'] == [{'href': '/{}'.format(item.id), 'rel': 'self'}]
 
 
+def test_siren_entity_nested(magic, siren):
+    nested = magic(__data__='extra', id=1)
+    item = magic(__data__={'nested': 1}, nested=nested)
+    entity = siren.entity('', item, includes=['nested'])
+    assert entity['properties']['nested']['properties'] == 'extra'
+    assert entity['properties']['nested']['class'] == ['MagicMock']
+    assert entity['properties']['nested']['links'][0]['href'] == '/nested/1'
+
+
 def test_siren_entity_path(magic, siren):
     item = magic(id=1, __data__='data')
     entity = siren.entity('/endpoint/1', item)
