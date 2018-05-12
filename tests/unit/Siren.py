@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 from efesto.Siren import Siren
 
+from pytest import fixture
+
 import ujson
 
 
-def test_paginate():
+@fixture
+def siren():
+    return Siren()
+
+
+def test_siren_paginate():
     links = Siren().paginate('path', [], 1, 1)
     assert links[0] == {'rel': ['self'], 'href': 'path'}
     assert links[1] == {'href': 'path?page=2', 'rel': ['next']}
@@ -23,17 +30,17 @@ def test_paginate_last():
     assert links[1] == {'rel': ['previous'], 'href': 'path?page=2'}
 
 
-def test_make_entity(magic):
+def test_siren_make_entity(magic, siren):
     item = magic(__data__='data')
-    entity = Siren().make_entity(item)
+    entity = siren.make_entity('', item)
     assert entity['properties'] == item.__data__
     assert entity['class'] == [item.__class__.__name__]
     assert entity['links'] == [{'href': '/{}'.format(item.id), 'rel': 'self'}]
 
 
-def test_make_entity_path_ready(magic):
+def test_siren_make_entity_path(magic, siren):
     item = magic(id=1, __data__='data')
-    entity = Siren(path='/endpoint/1').make_entity(item)
+    entity = siren.make_entity('/endpoint/1', item)
     assert entity['links'] == [{'href': '/endpoint/1', 'rel': 'self'}]
 
 

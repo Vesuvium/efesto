@@ -25,13 +25,13 @@ class Siren:
             links.append({'rel': ['previous'], 'href': href})
         return links
 
-    def make_entity(self, item):
+    def make_entity(self, path, item):
         """
         Creates an entity from a model instance
         """
-        href = '{}/{}'.format(self.path, item.id)
-        if self.path.endswith('/{}'.format(item.id)):
-            href = self.path
+        href = '{}/{}'.format(path, item.id)
+        if path.endswith('/{}'.format(item.id)):
+            href = path
         return {
             'properties': item.__data__,
             'class': [item.__class__.__name__],
