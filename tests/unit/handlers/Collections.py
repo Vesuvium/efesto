@@ -46,6 +46,18 @@ def test_collection_items_none(collection):
     assert collection.items({}) == 20
 
 
+def test_collections_embeds(collection):
+    result = collection.embeds({'_embeds': 'one'})
+    model = collection.model
+    collection.model.q.join.assert_called_with(model.one.rel_model, on=False)
+    assert result == ['one']
+
+
+def test_collections_embeds_none(collection):
+    result = collection.embeds({'_embeds': None})
+    assert result == []
+
+
 def test_collection_on_get(patch, magic, collection):
     request = magic()
     response = magic()

@@ -16,6 +16,20 @@ class Collections:
             self.model.query(key, value)
         return self.model.q
 
+    def embeds(self, params):
+        """
+        Parses embeds and set joins on the query
+        """
+        embeds = params.pop('_embeds', None)
+        if isinstance(embeds, str):
+            embeds = [embeds]
+        if embeds:
+            for embed in embeds:
+                model = getattr(self.model, embed).rel_model
+                self.model.q.join(model, on=(self.model.second == model.id))
+            return embeds
+        return []
+
     def page(self, params):
         return int(params.pop('page', 1))
 
