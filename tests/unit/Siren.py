@@ -44,7 +44,7 @@ def test_siren_entity_nested(magic, siren):
     entity = siren.entity('', item, includes=['nested'])
     assert entity['properties']['nested']['properties'] == 'extra'
     assert entity['properties']['nested']['class'] == ['MagicMock']
-    assert entity['properties']['nested']['links'][0]['href'] == '/nested/1'
+    assert entity['properties']['nested']['links'][0]['href'] == '/MagicMock/1'
 
 
 def test_siren_entity_path(magic, siren):

@@ -35,7 +35,9 @@ class Siren:
             href = path
 
         for i in includes:
-            item.__data__[i] = cls.entity('/{}'.format(i), getattr(item, i))
+            nested = getattr(item, i)
+            nested_path = '/{}'.format(nested.__class__.__name__)
+            item.__data__[i] = cls.entity(nested_path, nested)
 
         return {
             'properties': item.__data__,
