@@ -60,7 +60,7 @@ def test_siren_make_entities(patch, magic, siren):
     entities = siren.entities()
     Siren.entity.assert_called_with(siren.path, item, includes=[])
     assert entities['entities'] == [Siren.entity()]
-    assert instance(entities['actions'], list)
+    assert isinstance(entities['actions'], list)
     assert entities['links'] == Siren.paginate()
 
 
