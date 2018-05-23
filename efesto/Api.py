@@ -10,10 +10,12 @@ class Api:
     def __init__(self, **kwargs):
         self.api = falcon.API(**kwargs)
 
-    def collection(self, model):
+    @staticmethod
+    def collection(model):
         return Collections(model)
 
-    def item(self, model):
+    @staticmethod
+    def item(model):
         return Items(model)
 
     def list_route(self, endpoint, model):

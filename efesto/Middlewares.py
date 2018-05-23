@@ -12,7 +12,8 @@ class Authentication:
     def __init__(self, secret):
         self.secret = secret
 
-    def unauthorized(self):
+    @staticmethod
+    def unauthorized():
         """
         Raises a 401 error
         """
