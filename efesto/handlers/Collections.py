@@ -34,7 +34,8 @@ class Collections:
     def page(params):
         return int(params.pop('page', 1))
 
-    def items(self, params):
+    @staticmethod
+    def items(params):
         return int(params.pop('items', 20))
 
     def on_get(self, request, response, **params):
