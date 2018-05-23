@@ -66,6 +66,6 @@ class Siren:
         return {'entities': entities, 'actions': actions, 'links': links}
 
     def encode(self, *args, includes=[]):
-        if type(self.data) == list:
+        if isinstance(self.data, list):
             return ujson.dumps(self.entities(includes=includes))
         return ujson.dumps(self.entity(self.path, self.data))
