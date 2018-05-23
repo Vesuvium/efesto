@@ -72,7 +72,7 @@ def test_generator_attributes(patch, magic, generator):
     field.name = 'one'
     result = generator.attributes([field])
     Generator.make_field.assert_called_with(field)
-    assert result['one'] == Generator.make_field()
+    assert result['one'] == generator.make_field()
 
 
 def test_generator_new_model(patch, type_instance):
