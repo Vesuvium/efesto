@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+from efesto.Generator import Generator
 from efesto.handlers import Collections, Items
-from efesto.models import DynamicModel
 
 import falcon
 
@@ -28,9 +28,9 @@ class Api:
         self.object_route(endpoint, model)
 
     def dynamic_endpoints(self, types):
-        models = DynamicModel()
+        generator = Generator()
         for dynamic_type in types:
-            model = models.generate(dynamic_type)
+            model = generator.generate(dynamic_type)
             self.add_endpoint('/{}'.format(dynamic_type.name), model)
 
     def cherries(self):
