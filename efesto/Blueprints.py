@@ -41,7 +41,8 @@ class Blueprints:
         if self.parser.has_option(section, 'fields'):
             return self.parser.get(section, 'fields')
 
-    def load_type(self, section):
+    @staticmethod
+    def load_type(section):
         """
         Loads a type in the database
         """
