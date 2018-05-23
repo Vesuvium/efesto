@@ -11,7 +11,8 @@ class Siren:
         self.total = total
         self.page = page
 
-    def paginate(self, path, items, current_page, total_items):
+    @staticmethod
+    def paginate(path, items, current_page, total_items):
         links = [
             {'rel': ['self'], 'href': path}
         ]
