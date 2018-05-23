@@ -30,7 +30,8 @@ class Collections:
             return embeds
         return []
 
-    def page(self, params):
+    @staticmethod
+    def page(params):
         return int(params.pop('page', 1))
 
     def items(self, params):
