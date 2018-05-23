@@ -70,8 +70,7 @@ def test_cli_create_user(patch, runner, quickstart):
     result = runner.invoke(Cli.create_user, ['identifier'])
     dictionary = {'identifier': 'identifier', 'group': 1,
                   'group_permission': 1, 'owner_permission': 1,
-                  'others_permission': 1, 'owner_permission': 1,
-                  'superuser': False}
+                  'others_permission': 1, 'superuser': False}
     Users.__init__.assert_called_with(**dictionary)
     assert Users.save.call_count == 1
     assert result.exit_code == 0
