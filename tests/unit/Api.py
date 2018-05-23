@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from efesto.Api import Api
+from efesto.Generator import Generator
 from efesto.handlers import Collections, Items
-from efesto.models import DynamicModel
 
 import falcon
 
@@ -67,13 +67,13 @@ def test_api_add_endpoint(patch, magic, api):
 
 
 def test_api_dynamic_endpoints(patch, api, type_instance):
-    patch.init(DynamicModel)
-    patch.object(DynamicModel, 'generate')
+    patch.init(Generator)
+    patch.object(Generator, 'generate')
     patch.object(Api, 'add_endpoint')
     api.dynamic_endpoints([type_instance])
-    assert DynamicModel.__init__.call_count == 1
-    DynamicModel.generate.assert_called_with(type_instance)
-    api.add_endpoint.assert_called_with('/custom', DynamicModel.generate())
+    assert Generator.__init__.call_count == 1
+    Generator.generate.assert_called_with(type_instance)
+    api.add_endpoint.assert_called_with('/custom', Generator.generate())
 
 
 def test_api_cherries(api):

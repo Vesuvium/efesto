@@ -2,12 +2,13 @@
 from peewee import (BooleanField, CharField, DateTimeField, FloatField,
                     ForeignKeyField, IntegerField)
 
-from .Base import Base
-from .Fields import Fields
-from .Users import Users
+from .models import Base, Fields, Users
 
 
-class DynamicModel:
+class Generator:
+    """
+    A model generator that is used to generated dynamically defined models.
+    """
 
     mappings = {
         'string': CharField,
