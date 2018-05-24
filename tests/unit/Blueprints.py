@@ -78,10 +78,10 @@ def test_blueprints_load_type(patch, blueprints):
 def test_blueprints_read(patch, blueprints):
     patch.object(os, 'path')
     patch.object(os, 'getcwd', return_value='cwd')
-    blueprints.read('name.cfg')
+    result = blueprints.read('name.yml')
     assert os.getcwd.call_count == 1
-    os.path.join.assert_called_with(os.getcwd(), 'name.cfg')
-    blueprints.parser.read.assert_called_with(os.path.join())
+    os.path.join.assert_called_with(os.getcwd(), 'name.yml')
+    assert result == blueprints.yaml.load()
 
 
 def test_blueprints_read_no_file(patch, blueprints):

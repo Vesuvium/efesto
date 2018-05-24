@@ -56,7 +56,8 @@ class Blueprints:
         path = os.path.join(os.getcwd(), blueprint)
         if os.path.isfile(path) is False:
             raise ValueError
-        self.parser.read(path)
+        with open(path) as f:
+            return self.yaml.load(f)
 
     def parse(self):
         """
