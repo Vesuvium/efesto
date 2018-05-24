@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
-from configparser import ConfigParser
 
 from efesto.models import Fields, Types
+
+from ruamel.yaml import YAML
 
 
 class Blueprints:
 
     def __init__(self):
-        self.parser = ConfigParser()
+        self.yaml = YAML()
 
     def field_type(self, field_section, field):
         field.field_type = self.parser.get(field_section, 'type')

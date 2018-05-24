@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
 import os
-from configparser import ConfigParser
 
 from efesto.Blueprints import Blueprints
 from efesto.models import Fields, Types
 
 from pytest import fixture, raises
 
+from ruamel.yaml import YAML
+
 
 @fixture
 def blueprints(magic):
     blueprints = Blueprints()
-    blueprints.parser = magic()
+    blueprints.yaml = magic()
     return blueprints
 
 
 def test_blueprints_init():
     blueprint = Blueprints()
-    assert isinstance(blueprint.parser, ConfigParser)
+    assert isinstance(blueprint.yaml, YAML)
 
 
 def test_blueprints_field_type(magic, blueprints):
