@@ -43,11 +43,11 @@ class Blueprints:
             return self.parser.get(section, 'fields')
 
     @staticmethod
-    def load_type(section):
+    def load_type(table):
         """
         Loads a type in the database
         """
-        return Types.create(name=section, owner_id=1)
+        return Types.create(name=table, owner_id=1)
 
     def read(self, blueprint):
         """

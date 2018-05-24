@@ -70,8 +70,8 @@ def test_blueprints_section_fields(magic, blueprints):
 
 def test_blueprints_load_type(patch, blueprints):
     patch.object(Types, 'create')
-    result = blueprints.load_type('section')
-    Types.create.assert_called_with(name='section', owner_id=1)
+    result = blueprints.load_type('table')
+    Types.create.assert_called_with(name='table', owner_id=1)
     assert result == Types.create()
 
 
