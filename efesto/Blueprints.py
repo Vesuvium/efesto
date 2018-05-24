@@ -17,6 +17,14 @@ class Blueprints:
                               **options)
         field.save()
 
+    @staticmethod
+    def options(options):
+        dict = {}
+        for option in options:
+            option_name = list(option.keys())[0]
+            dict[option_name] = option[option_name]
+        return dict
+
     def field_type(self, field_section, field):
         field.field_type = self.parser.get(field_section, 'type')
 

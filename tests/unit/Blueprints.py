@@ -35,6 +35,11 @@ def test_blueprints_make_field_options(patch, blueprints):
                                      option='value')
 
 
+def test_blueprints_options(blueprints):
+    result = blueprints.options([{'option': 'value'}])
+    assert result['option'] == 'value'
+
+
 def test_blueprints_field_type(magic, blueprints):
     field = magic()
     blueprints.field_type('section.field', field)
