@@ -12,8 +12,9 @@ class Blueprints:
         self.yaml = YAML()
 
     @staticmethod
-    def make_field(field_name, type_id):
-        field = Fields.create(name=field_name, type_id=type_id, owner_id=1)
+    def make_field(field_name, type_id, **options):
+        field = Fields.create(name=field_name, type_id=type_id, owner_id=1,
+                              **options)
         field.save()
 
     def field_type(self, field_section, field):
