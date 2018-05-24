@@ -112,6 +112,6 @@ def test_blueprints_parse_ignore_dot(patch, blueprints):
 
 def test_blueprints_load(patch, blueprints):
     patch.many(Blueprints, ['read', 'parse'])
-    blueprints.load('name.cfg')
-    Blueprints.read.assert_called_with('name.cfg')
-    assert Blueprints.parse.call_count == 1
+    blueprints.load('name.yml')
+    Blueprints.read.assert_called_with('name.yml')
+    Blueprints.parse.assert_called_with(blueprints.read())

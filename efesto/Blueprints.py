@@ -74,5 +74,4 @@ class Blueprints:
         """
         Load a blueprint in the database
         """
-        self.read(filename)
-        self.parse()
+        self.parse(self.read(filename))
