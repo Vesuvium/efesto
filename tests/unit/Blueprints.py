@@ -21,6 +21,13 @@ def test_blueprints_init():
     assert isinstance(blueprint.yaml, YAML)
 
 
+def test_blueprints_make_field(patch, blueprints):
+    patch.object(Fields, 'create')
+    blueprints.make_field('field', 1)
+    Fields.create.assert_called_with(name='field', type_id=1, owner_id=1)
+    assert Fields.create().save.call_count == 1
+
+
 def test_blueprints_field_type(magic, blueprints):
     field = magic()
     blueprints.field_type('section.field', field)

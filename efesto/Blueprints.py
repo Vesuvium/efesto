@@ -11,6 +11,11 @@ class Blueprints:
     def __init__(self):
         self.yaml = YAML()
 
+    @staticmethod
+    def make_field(field_name, type_id):
+        field = Fields.create(name=field_name, type_id=type_id, owner_id=1)
+        field.save()
+
     def field_type(self, field_section, field):
         field.field_type = self.parser.get(field_section, 'type')
 
