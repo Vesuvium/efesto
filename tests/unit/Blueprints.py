@@ -93,21 +93,10 @@ def test_blueprints_read_no_file(patch, blueprints):
 
 
 def test_blueprints_parse(patch, blueprints):
-    patch.many(Blueprints, ['load_type', 'section_fields', 'load_field'])
-    Blueprints.section_fields.return_value = 'field '
-    blueprints.parser.sections.return_value = ['section']
-    blueprints.parse()
-    Blueprints.load_type.assert_called_with('section')
-    Blueprints.section_fields.assert_called_with('section')
-    Blueprints.load_field.assert_called_with('section', 'field',
-                                             Blueprints.load_type())
-
-
-def test_blueprints_parse_ignore_dot(patch, blueprints):
-    patch.object(Blueprints, 'load_type')
-    blueprints.parser.sections.return_value = ['section.field']
-    blueprints.parse()
-    assert Blueprints.load_type.call_count == 0
+    patch.many(Blueprints, ['load_type', 'load_field'])
+    blueprints.parse({'table': ['field']})
+    blueprints.load_type.assert_called_with('table')
+    blueprints.load_field.assert_called_with(blueprints.load_type(), 'field')
 
 
 def test_blueprints_load(patch, blueprints):

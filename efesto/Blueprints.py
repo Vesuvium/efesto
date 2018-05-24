@@ -59,16 +59,14 @@ class Blueprints:
         with open(path) as f:
             return self.yaml.load(f)
 
-    def parse(self):
+    def parse(self, yaml):
         """
         Parses the content of a blueprint
         """
-        for section in self.parser.sections():
-            if '.' not in section:
-                new_type = self.load_type(section)
-                fields = self.section_fields(section)
-                for field in fields.split(','):
-                    self.load_field(section, field.strip(), new_type)
+        for table in yaml:
+            new_type = self.load_type(table)
+            for field in yaml[table]:
+                self.load_field(new_type, field)
 
     def load(self, filename):
         """
