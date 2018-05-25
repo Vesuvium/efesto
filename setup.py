@@ -41,7 +41,8 @@ setup(
         'click>=6.7',
         'colorama>=0.3.3',
         'aratrum>=0.3.2',
-        'pyjwt>=1.5.2'
+        'pyjwt>=1.5.2',
+        'ruamel.yaml>=0.15.37'
     ],
     classifiers=[
         'Intended Audience :: Developers',

@@ -1,52 +1,47 @@
 # -*- coding: utf-8 -*-
 import os
-from configparser import ConfigParser
 
 from efesto.models import Fields, Types
+
+from ruamel.yaml import YAML
 
 
 class Blueprints:
 
     def __init__(self):
-        self.parser = ConfigParser()
+        self.yaml = YAML(typ='safe')
 
-    def field_type(self, field_section, field):
-        field.field_type = self.parser.get(field_section, 'type')
+    @staticmethod
+    def make_field(field_name, type_id, **options):
+        field = Fields.create(name=field_name, type_id=type_id, owner_id=1,
+                              **options)
+        field.save()
 
-    def field_unique(self, field_section, field):
-        field.unique = self.parser.getboolean(field_section, 'unique',
-                                              fallback=False)
+    @staticmethod
+    def options(options):
+        dictionary = {}
+        for option in options:
+            option_name = list(option.keys())[0]
+            dictionary[option_name] = option[option_name]
+        return dictionary
 
-    def field_nullable(self, field_section, field):
-        field.nullable = self.parser.getboolean(field_section, 'nullable',
-                                                fallback=False)
-
-    def load_field(self, section, field, new_type):
+    def load_field(self, new_type, field):
         """
         Loads a field in the database. If a field section is specified, parse
         it.
         """
-        new_field = Fields.create(name=field, type_id=new_type.id, owner_id=1)
-        field_section = '{}.{}'.format(section, field)
-        if self.parser.has_section(field_section):
-            self.field_type(field_section, new_field)
-            self.field_unique(field_section, new_field)
-            self.field_nullable(field_section, new_field)
-        new_field.save()
-
-    def section_fields(self, section):
-        """
-        Finds the fields for a section
-        """
-        if self.parser.has_option(section, 'fields'):
-            return self.parser.get(section, 'fields')
+        if isinstance(field, str):
+            return self.make_field(field, new_type.id)
+        for field_name, options in field.items():
+            options_dict = self.options(options)
+            return self.make_field(field_name, new_type.id, **options_dict)
 
     @staticmethod
-    def load_type(section):
+    def load_type(table):
         """
         Loads a type in the database
         """
-        return Types.create(name=section, owner_id=1)
+        return Types.create(name=table, owner_id=1)
 
     def read(self, blueprint):
         """
@@ -55,22 +50,20 @@ class Blueprints:
         path = os.path.join(os.getcwd(), blueprint)
         if os.path.isfile(path) is False:
             raise ValueError
-        self.parser.read(path)
+        with open(path) as f:
+            return self.yaml.load(f)
 
-    def parse(self):
+    def parse(self, yaml):
         """
         Parses the content of a blueprint
         """
-        for section in self.parser.sections():
-            if '.' not in section:
-                new_type = self.load_type(section)
-                fields = self.section_fields(section)
-                for field in fields.split(','):
-                    self.load_field(section, field.strip(), new_type)
+        for table in yaml:
+            new_type = self.load_type(table)
+            for field in yaml[table]:
+                self.load_field(new_type, field)
 
     def load(self, filename):
         """
         Load a blueprint in the database
         """
-        self.read(filename)
-        self.parse()
+        self.parse(self.read(filename))
