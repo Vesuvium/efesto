@@ -9,7 +9,7 @@ from ruamel.yaml import YAML
 class Blueprints:
 
     def __init__(self):
-        self.yaml = YAML()
+        self.yaml = YAML(typ='safe')
 
     @staticmethod
     def make_field(field_name, type_id, **options):
