@@ -19,11 +19,11 @@ class Blueprints:
 
     @staticmethod
     def options(options):
-        dict = {}
+        dictionary = {}
         for option in options:
             option_name = list(option.keys())[0]
-            dict[option_name] = option[option_name]
-        return dict
+            dictionary[option_name] = option[option_name]
+        return dictionary
 
     def load_field(self, new_type, field):
         """
