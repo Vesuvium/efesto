@@ -40,51 +40,22 @@ def test_blueprints_options(blueprints):
     assert result['option'] == 'value'
 
 
-def test_blueprints_field_type(magic, blueprints):
-    field = magic()
-    blueprints.field_type('section.field', field)
-    blueprints.parser.get.assert_called_with('section.field', 'type')
-    assert field.field_type == blueprints.parser.get()
-
-
-def test_blueprints_field_unique(magic, blueprints):
-    field = magic()
-    blueprints.field_unique('section.field', field)
-    blueprints.parser.getboolean.assert_called_with('section.field', 'unique',
-                                                    fallback=False)
-    assert field.unique == blueprints.parser.getboolean()
-
-
-def test_blueprints_field_nullable(magic, blueprints):
-    field = magic()
-    blueprints.field_nullable('section.field', field)
-    blueprints.parser.getboolean.assert_called_with('section.field',
-                                                    'nullable', fallback=False)
-    assert field.nullable == blueprints.parser.getboolean()
-
-
 def test_blueprints_load_field(patch, magic, blueprints):
-    patch.object(Fields, 'create')
-    patch.many(Blueprints, ['field_type', 'field_unique', 'field_nullable'])
+    patch.object(Blueprints, 'make_field')
     new_type = magic()
-    blueprints.load_field('section', 'field', new_type)
-    Fields.create.assert_called_with(name='field', type_id=new_type.id,
-                                     owner_id=1)
-    blueprints.parser.has_section.assert_called_with('section.field')
-    Blueprints.field_type.assert_called_with('section.field', Fields.create())
-    Blueprints.field_unique.assert_called_with('section.field',
-                                               Fields.create())
-    Blueprints.field_nullable.assert_called_with('section.field',
-                                                 Fields.create())
-    assert Fields.create().save.call_count == 1
+    result = blueprints.load_field(new_type, 'field')
+    blueprints.make_field.assert_called_with('field', new_type.id)
+    assert result == blueprints.make_field()
 
 
-def test_blueprints_section_fields(magic, blueprints):
-    section = magic()
-    result = blueprints.section_fields(section)
-    blueprints.parser.has_option.assert_called_with(section, 'fields')
-    blueprints.parser.get.assert_called_with(section, 'fields')
-    assert result == blueprints.parser.get()
+def test_blueprints_load_field_complex(patch, magic, blueprints):
+    patch.many(Blueprints, ['make_field', 'options'])
+    new_type = magic()
+    result = blueprints.load_field(new_type, {'field': 'options'})
+    blueprints.options.assert_called_with('options')
+    blueprints.make_field.assert_called_with('field', new_type.id,
+                                             **blueprints.options())
+    assert result == blueprints.make_field()
 
 
 def test_blueprints_load_type(patch, blueprints):

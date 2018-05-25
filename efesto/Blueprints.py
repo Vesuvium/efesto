@@ -25,36 +25,16 @@ class Blueprints:
             dict[option_name] = option[option_name]
         return dict
 
-    def field_type(self, field_section, field):
-        field.field_type = self.parser.get(field_section, 'type')
-
-    def field_unique(self, field_section, field):
-        field.unique = self.parser.getboolean(field_section, 'unique',
-                                              fallback=False)
-
-    def field_nullable(self, field_section, field):
-        field.nullable = self.parser.getboolean(field_section, 'nullable',
-                                                fallback=False)
-
-    def load_field(self, section, field, new_type):
+    def load_field(self, new_type, field):
         """
         Loads a field in the database. If a field section is specified, parse
         it.
         """
-        new_field = Fields.create(name=field, type_id=new_type.id, owner_id=1)
-        field_section = '{}.{}'.format(section, field)
-        if self.parser.has_section(field_section):
-            self.field_type(field_section, new_field)
-            self.field_unique(field_section, new_field)
-            self.field_nullable(field_section, new_field)
-        new_field.save()
-
-    def section_fields(self, section):
-        """
-        Finds the fields for a section
-        """
-        if self.parser.has_option(section, 'fields'):
-            return self.parser.get(section, 'fields')
+        if isinstance(field, str):
+            return self.make_field(field, new_type.id)
+        for field_name, options in field.items():
+            options_dict = self.options(options)
+            return self.make_field(field_name, new_type.id, **options_dict)
 
     @staticmethod
     def load_type(table):
