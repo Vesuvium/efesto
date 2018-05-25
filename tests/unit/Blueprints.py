@@ -22,6 +22,7 @@ def test_blueprints_init(patch):
     YAML.__init__.assert_called_with(typ='safe')
     assert isinstance(blueprint.yaml, YAML)
 
+
 def test_blueprints_make_field(patch, blueprints):
     patch.object(Fields, 'create')
     blueprints.make_field('field', 1)
