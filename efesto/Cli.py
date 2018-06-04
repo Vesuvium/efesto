@@ -46,7 +46,7 @@ class Cli:
         """
         config = Config()
         token = Tokens.encode(config.jwt_secret, expiration=expiration,
-                              sub=user)
+                              sub=user, aud=config.jwt_audience)
         click.echo(token)
 
     @main.command()
