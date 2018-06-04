@@ -52,7 +52,8 @@ def test_cli_token(patch, runner, app):
     patch.object(Tokens, 'encode')
     patch.object(click, 'echo')
     result = runner.invoke(Cli.token, ['user'])
-    Tokens.encode.assert_called_with('secret', expiration=100, sub='user')
+    Tokens.encode.assert_called_with('secret', expiration=100, sub='user',
+                                     aud='efesto')
     click.echo.assert_called_with(Tokens.encode())
     assert result.exit_code == 0
 
@@ -60,7 +61,8 @@ def test_cli_token(patch, runner, app):
 def test_cli_token_expiration(patch, runner, app):
     patch.object(Tokens, 'encode')
     result = runner.invoke(Cli.token, ['user', '200'])
-    Tokens.encode.assert_called_with('secret', expiration=200, sub='user')
+    Tokens.encode.assert_called_with('secret', expiration=200, sub='user',
+                                     aud='efesto')
     assert result.exit_code == 0
 
 
