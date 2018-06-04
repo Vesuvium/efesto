@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from peewee import (BooleanField, CharField, DateTimeField, FloatField,
-                    ForeignKeyField, IntegerField)
+                    ForeignKeyField, IntegerField, TextField)
 
 from .models import Base, Fields, Users
 
@@ -12,6 +12,7 @@ class Generator:
 
     mappings = {
         'string': CharField,
+        'text': TextField,
         'int': IntegerField,
         'float': FloatField,
         'bool': BooleanField,
