@@ -21,6 +21,7 @@ def test_config():
     assert Config.defaults['db_url'] == db_url
     assert Config.defaults['jwt_secret'] == 'secret'
     assert Config.defaults['jwt_leeway'] == 5
+    assert Config.defaults['jwt_audience'] == 'efesto'
 
 
 def test_config_init(patch):
