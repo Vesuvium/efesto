@@ -13,7 +13,8 @@ class App:
         """
         config = Config()
         Base.init_db(config.db_url)
-        api = Api(middleware=Authentication(config.jwt_secret))
+        middleware = Authentication(config.jwt_secret, config.jwt_audience)
+        api = Api(middleware=middleware)
         api.add_endpoint('/users', Users)
         api.add_endpoint('/fields', Fields)
         api.add_endpoint('/types', Types)

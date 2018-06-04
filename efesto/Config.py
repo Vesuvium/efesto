@@ -7,7 +7,8 @@ class Config:
     defaults = {
         'db_url': 'postgres://postgres:postgres@localhost:5432/efesto',
         'jwt_secret': 'secret',
-        'jwt_leeway': 5
+        'jwt_leeway': 5,
+        'jwt_audience': 'efesto'
     }
 
     def __init__(self):

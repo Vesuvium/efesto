@@ -12,12 +12,12 @@ from pytest import fixture, mark, raises
 
 @fixture
 def authentication():
-    return Authentication('secret')
+    return Authentication('secret', 'audience')
 
 
-def test_middleware_authentication_init():
-    authentication = Authentication('secret')
+def test_middleware_authentication_init(authentication):
     assert authentication.secret == 'secret'
+    assert authentication.audience == 'audience'
 
 
 def test_middleware_unauthorized(authentication):
@@ -44,7 +44,8 @@ def test_authentication_bearer_token_none(patch, authentication, string):
 def test_middleware_authentication_decode(patch, authentication):
     patch.object(jwt, 'decode')
     result = authentication.decode('token')
-    jwt.decode.assert_called_with('token', authentication.secret)
+    jwt.decode.assert_called_with('token', authentication.secret,
+                                  audience=authentication.audience)
     assert result == jwt.decode()
 
 

@@ -9,8 +9,9 @@ from jwt.exceptions import DecodeError, ExpiredSignatureError
 
 class Authentication:
 
-    def __init__(self, secret):
+    def __init__(self, secret, audience):
         self.secret = secret
+        self.audience = audience
 
     @staticmethod
     def unauthorized():
@@ -35,7 +36,7 @@ class Authentication:
         Decode a token
         """
         try:
-            return jwt.decode(token, self.secret)
+            return jwt.decode(token, self.secret, audience=self.audience)
         except (DecodeError, ExpiredSignatureError):
             return self.unauthorized()
 
