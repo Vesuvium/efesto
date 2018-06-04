@@ -36,7 +36,7 @@ class Authentication:
         Decode a token
         """
         try:
-            return jwt.decode(token, self.secret)
+            return jwt.decode(token, self.secret, audience=self.audience)
         except (DecodeError, ExpiredSignatureError):
             return self.unauthorized()
 

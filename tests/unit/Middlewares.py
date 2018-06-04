@@ -44,7 +44,8 @@ def test_authentication_bearer_token_none(patch, authentication, string):
 def test_middleware_authentication_decode(patch, authentication):
     patch.object(jwt, 'decode')
     result = authentication.decode('token')
-    jwt.decode.assert_called_with('token', authentication.secret)
+    jwt.decode.assert_called_with('token', authentication.secret,
+                                  audience=authentication.audience)
     assert result == jwt.decode()
 
 
