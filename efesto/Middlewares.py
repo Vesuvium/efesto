@@ -9,8 +9,9 @@ from jwt.exceptions import DecodeError, ExpiredSignatureError
 
 class Authentication:
 
-    def __init__(self, secret):
+    def __init__(self, secret, audience):
         self.secret = secret
+        self.audience = audience
 
     @staticmethod
     def unauthorized():

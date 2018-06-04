@@ -12,12 +12,12 @@ from pytest import fixture, mark, raises
 
 @fixture
 def authentication():
-    return Authentication('secret')
+    return Authentication('secret', 'audience')
 
 
-def test_middleware_authentication_init():
-    authentication = Authentication('secret')
+def test_middleware_authentication_init(authentication):
     assert authentication.secret == 'secret'
+    assert authentication.audience == 'audience'
 
 
 def test_middleware_unauthorized(authentication):
