@@ -99,10 +99,11 @@ def test_collection_on_post(patch, magic, collection, siren):
     response = magic()
     user = magic()
     patch.object(ujson, 'load')
+    patch.object(Collections, 'apply_owner')
     collection.on_post(request, response, user=user)
     ujson.load.assert_called_with(request.bounded_stream)
-    collection.model.create.assert_called_with(owner_id=user.id,
-                                               **ujson.load())
+    collection.apply_owner.assert_called_with(user, ujson.load())
+    collection.model.create.assert_called_with(**ujson.load())
     siren.__init__.assert_called_with(collection.model,
                                       collection.model.create(),
                                       request.path)

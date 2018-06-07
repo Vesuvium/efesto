@@ -61,7 +61,8 @@ class Collections:
 
     def on_post(self, request, response, **params):
         json = ujson.load(request.bounded_stream)
-        item = self.model.create(owner_id=params['user'].id, **json)
+        self.apply_owner(params['user'], json)
+        item = self.model.create(**json)
         body = Siren(self.model, item, request.path)
         response.body = body.encode()
 
