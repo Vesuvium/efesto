@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from efesto.models import Base, Fields
 
-from peewee import BooleanField, CharField, ForeignKeyField, SQL
+from peewee import BooleanField, CharField, ForeignKeyField, IntegerField, SQL
 
 
 def test_fields():
@@ -14,6 +14,8 @@ def test_fields():
     assert isinstance(Fields.nullable, BooleanField)
     assert Fields.nullable.default is False
     assert Fields.nullable.constraints == [SQL('DEFAULT false')]
+    assert isinstance(Fields.default_value, IntegerField)
+    assert Fields.default_value.null is True
     assert isinstance(Fields.type_id, ForeignKeyField)
     assert isinstance(Fields.owner, ForeignKeyField)
     assert issubclass(Fields, Base)
