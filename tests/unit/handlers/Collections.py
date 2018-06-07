@@ -45,6 +45,20 @@ def test_collection_items_none(collection):
     assert collection.items({}) == 20
 
 
+def test_collection_apply_owner(magic):
+    user = magic()
+    payload = {}
+    Collections.apply_owner(user, payload)
+    assert payload == {'owner_id': user.id}
+
+
+def test_collection_apply_owner_request(magic):
+    user = magic()
+    payload = {'owner_id': 1}
+    Collections.apply_owner(user, payload)
+    assert payload == {'owner_id': 1}
+
+
 def test_collections_embeds(collection):
     result = collection.embeds({'_embeds': 'one'})
     model = collection.model

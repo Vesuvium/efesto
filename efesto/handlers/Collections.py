@@ -38,6 +38,12 @@ class Collections:
     def items(params):
         return int(params.pop('items', 20))
 
+    @staticmethod
+    def apply_owner(user, payload):
+        if 'owner_id' in payload:
+            return None
+        payload['owner_id'] = user.id
+
     def on_get(self, request, response, **params):
         """
         Executes a get request
