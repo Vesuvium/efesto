@@ -5,7 +5,7 @@ from efesto.models import Base, db
 
 from peewee import (AutoField, BooleanField, CharField, DateTimeField,
                     FloatField, ForeignKeyField, IntegerField, Model,
-                    PrimaryKeyField, SQL)
+                    PrimaryKeyField, SQL, TextField)
 
 from playhouse import db_url
 
@@ -38,6 +38,7 @@ def test_get_columns():
         ('autofield', AutoField()),
         ('boolfield', BooleanField()),
         ('charfield', CharField()),
+        ('textfield', TextField()),
         ('datetimefield', DateTimeField()),
         ('floatfield', FloatField()),
         ('foreignfield', ForeignKeyField(Base)),
@@ -49,11 +50,12 @@ def test_get_columns():
     assert columns[0] == {'name': 'autofield', 'type': 'number'}
     assert columns[1] == {'name': 'boolfield', 'type': 'number'}
     assert columns[2] == {'name': 'charfield', 'type': 'text'}
-    assert columns[3] == {'name': 'datetimefield', 'type': 'date'}
-    assert columns[4] == {'name': 'floatfield', 'type': 'number'}
-    assert columns[5] == {'name': 'foreignfield', 'type': 'number'}
-    assert columns[6] == {'name': 'integerfield', 'type': 'number'}
-    assert columns[7] == {'name': 'primarykeyfield', 'type': 'number'}
+    assert columns[3] == {'name': 'textfield', 'type': 'text'}
+    assert columns[4] == {'name': 'datetimefield', 'type': 'date'}
+    assert columns[5] == {'name': 'floatfield', 'type': 'number'}
+    assert columns[6] == {'name': 'foreignfield', 'type': 'number'}
+    assert columns[7] == {'name': 'integerfield', 'type': 'number'}
+    assert columns[8] == {'name': 'primarykeyfield', 'type': 'number'}
 
 
 def test_base_init_db(patch):
