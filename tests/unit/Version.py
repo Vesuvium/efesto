@@ -3,4 +3,4 @@ from efesto.Version import version
 
 
 def test_version():
-    assert version == '0.11.4'
+    assert version == '0.12.0'
