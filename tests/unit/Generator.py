@@ -3,7 +3,7 @@ from efesto.Generator import Generator
 from efesto.models import Base, Fields
 
 from peewee import (BooleanField, CharField, DateTimeField, FloatField,
-                    ForeignKeyField, IntegerField, TextField)
+                    ForeignKeyField, IntegerField, SQL, TextField)
 
 from pytest import fixture, mark
 
@@ -37,7 +37,7 @@ def test_generator_init():
     ('date', DateTimeField)
 ])
 def test_generator_make_field(magic, generator, field_type, expected):
-    retrieved_field = magic(field_type=field_type)
+    retrieved_field = magic(field_type=field_type, default_value=None)
     field = generator.make_field(retrieved_field)
     assert isinstance(field, expected)
 
@@ -45,7 +45,7 @@ def test_generator_make_field(magic, generator, field_type, expected):
 def test_generator_make_field_custom(patch, magic, generator):
     patch.init(ForeignKeyField)
     generator.models = {'custom': magic()}
-    retrieved_field = magic(field_type='custom')
+    retrieved_field = magic(field_type='custom', default_value=None)
     field = generator.make_field(retrieved_field)
     ForeignKeyField.__init__.assert_called_with(generator.models['custom'])
     assert isinstance(field, ForeignKeyField)
@@ -56,15 +56,22 @@ def test_generator_make_field_not_found(magic, generator):
 
 
 def test_generator_make_field_nullable(magic, generator):
-    retrieved_field = magic(nullable=True)
+    retrieved_field = magic(nullable=True, default_value=None)
     field = generator.make_field(retrieved_field)
     assert field.null is True
 
 
 def test_generator_make_field_unique(magic, generator):
-    retrieved_field = magic(unique=True)
+    retrieved_field = magic(unique=True, default_value=None)
     field = generator.make_field(retrieved_field)
     assert field.unique is True
+
+
+def test_generator_make_field_default_value(magic, generator):
+    retrieved_field = magic(default_value=0)
+    field = generator.make_field(retrieved_field)
+    assert field.default == 0
+    assert field.constraints == [SQL('DEFAULT 0')]
 
 
 def test_generator_attributes(patch, magic, generator):
