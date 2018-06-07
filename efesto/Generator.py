@@ -23,6 +23,9 @@ class Generator:
         self.models = {}
 
     def make_field(self, field):
+        """
+        Generates a field from a field row
+        """
         custom_field = CharField
         if field.field_type in self.mappings:
             custom_field = self.mappings[field.field_type]
