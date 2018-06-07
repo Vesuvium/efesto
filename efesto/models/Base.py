@@ -12,6 +12,7 @@ class Base(Model):
         'AutoField': 'number',
         'BooleanField': 'number',
         'CharField': 'text',
+        'TextField': 'text',
         'DateTimeField': 'date',
         'FloatField': 'number',
         'ForeignKeyField': 'number',
