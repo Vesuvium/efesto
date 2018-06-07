@@ -38,6 +38,12 @@ class Collections:
     def items(params):
         return int(params.pop('items', 20))
 
+    @staticmethod
+    def apply_owner(user, payload):
+        if 'owner_id' in payload:
+            return None
+        payload['owner_id'] = user.id
+
     def on_get(self, request, response, **params):
         """
         Executes a get request
@@ -55,7 +61,8 @@ class Collections:
 
     def on_post(self, request, response, **params):
         json = ujson.load(request.bounded_stream)
-        item = self.model.create(owner_id=params['user'].id, **json)
+        self.apply_owner(params['user'], json)
+        item = self.model.create(**json)
         body = Siren(self.model, item, request.path)
         response.body = body.encode()
 

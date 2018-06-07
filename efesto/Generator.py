@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from peewee import (BooleanField, CharField, DateTimeField, FloatField,
-                    ForeignKeyField, IntegerField, TextField)
+                    ForeignKeyField, IntegerField, SQL, TextField)
 
 from .models import Base, Fields, Users
 
@@ -23,12 +23,20 @@ class Generator:
         self.models = {}
 
     def make_field(self, field):
+        """
+        Generates a field from a field row
+        """
         custom_field = CharField
         if field.field_type in self.mappings:
             custom_field = self.mappings[field.field_type]
         elif field.field_type in self.models:
             return ForeignKeyField(self.models[field.field_type])
-        return custom_field(null=field.nullable, unique=field.unique)
+        arguments = {'null': field.nullable, 'unique': field.unique}
+        if field.default_value is not None:
+            constraints = [SQL('DEFAULT {}'.format(field.default_value))]
+            arguments['default'] = field.default_value
+            arguments['constraints'] = constraints
+        return custom_field(**arguments)
 
     def attributes(self, fields):
         attributes = {}

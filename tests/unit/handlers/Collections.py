@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from efesto.Siren import Siren
 from efesto.handlers import Collections
 
 from falcon import HTTP_501
@@ -46,6 +45,20 @@ def test_collection_items_none(collection):
     assert collection.items({}) == 20
 
 
+def test_collection_apply_owner(magic):
+    user = magic()
+    payload = {}
+    Collections.apply_owner(user, payload)
+    assert payload == {'owner_id': user.id}
+
+
+def test_collection_apply_owner_request(magic):
+    user = magic()
+    payload = {'owner_id': 1}
+    Collections.apply_owner(user, payload)
+    assert payload == {'owner_id': 1}
+
+
 def test_collections_embeds(collection):
     result = collection.embeds({'_embeds': 'one'})
     model = collection.model
@@ -58,12 +71,10 @@ def test_collections_embeds_none(collection):
     assert result == []
 
 
-def test_collection_on_get(patch, magic, collection):
+def test_collection_on_get(patch, magic, collection, siren):
     request = magic()
     response = magic()
     user = magic()
-    patch.init(Siren)
-    patch.object(Siren, 'encode')
     patch.many(Collections, ['query', 'page', 'items', 'embeds'])
     collection.on_get(request, response, user=user)
     Collections.page.assert_called_with(request.params)
@@ -75,29 +86,28 @@ def test_collection_on_get(patch, magic, collection):
     user.do().paginate.assert_called_with(Collections.page(),
                                           Collections.items())
     assert user.do().paginate().execute.call_count == 1
-    Siren.__init__.assert_called_with(collection.model,
+    siren.__init__.assert_called_with(collection.model,
                                       list(user.do().execute()),
                                       request.path, page=Collections.page(),
                                       total=user.do().count())
-    Siren.encode.assert_called_with(includes=Collections.embeds())
-    assert response.body == Siren().encode()
+    siren.encode.assert_called_with(includes=Collections.embeds())
+    assert response.body == siren().encode()
 
 
-def test_collection_on_post(patch, magic, collection):
+def test_collection_on_post(patch, magic, collection, siren):
     request = magic()
     response = magic()
     user = magic()
-    patch.init(Siren)
-    patch.object(Siren, 'encode')
     patch.object(ujson, 'load')
+    patch.object(Collections, 'apply_owner')
     collection.on_post(request, response, user=user)
     ujson.load.assert_called_with(request.bounded_stream)
-    collection.model.create.assert_called_with(owner_id=user.id,
-                                               **ujson.load())
-    Siren.__init__.assert_called_with(collection.model,
+    collection.apply_owner.assert_called_with(user, ujson.load())
+    collection.model.create.assert_called_with(**ujson.load())
+    siren.__init__.assert_called_with(collection.model,
                                       collection.model.create(),
                                       request.path)
-    assert response.body == Siren.encode()
+    assert response.body == siren.encode()
 
 
 def test_collection_on_patch(patch, magic, collection):
