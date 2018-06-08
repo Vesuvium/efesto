@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from efesto.Generator import Generator
+from efesto.Transformer import Transformer
 from efesto.handlers import Collections, Items
 
 import falcon
@@ -30,10 +30,10 @@ class Api:
         self.object_route(endpoint, model)
 
     def dynamic_endpoints(self, types):
-        generator = Generator()
-        for dynamic_type in types:
-            model = generator.generate(dynamic_type)
-            self.add_endpoint('/{}'.format(dynamic_type.name), model)
+        transformer = Transformer()
+        transformer.transform('blueprint.yml')
+        for model_name, model in transformer.models.items():
+            self.add_endpoint('/{}'.format(model_name), model)
 
     def cherries(self):
         """
