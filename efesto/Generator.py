@@ -15,7 +15,7 @@ class Generator:
         'text': TextField,
         'int': IntegerField,
         'float': FloatField,
-        'bool': BooleanField,
+        'boolean': BooleanField,
         'date': DateTimeField
     }
 

@@ -20,7 +20,7 @@ def test_mappings():
     assert Generator.mappings['text'] == TextField
     assert Generator.mappings['int'] == IntegerField
     assert Generator.mappings['float'] == FloatField
-    assert Generator.mappings['bool'] == BooleanField
+    assert Generator.mappings['boolean'] == BooleanField
     assert Generator.mappings['date'] == DateTimeField
 
 
@@ -33,7 +33,7 @@ def test_generator_init():
     ('string', CharField),
     ('int', IntegerField),
     ('float', FloatField),
-    ('bool', BooleanField),
+    ('boolean', BooleanField),
     ('date', DateTimeField)
 ])
 def test_generator_make_field(magic, generator, field_type, expected):
