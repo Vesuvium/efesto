@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import ujson
+import rapidjson
 
 
 class Siren:
@@ -68,5 +68,7 @@ class Siren:
 
     def encode(self, *args, includes=[]):
         if isinstance(self.data, list):
-            return ujson.dumps(self.entities(includes=includes))
-        return ujson.dumps(self.entity(self.path, self.data))
+            return rapidjson.dumps(self.entities(includes=includes),
+                                   datetime_mode=1)
+        return rapidjson.dumps(self.entity(self.path, self.data),
+                               datetime_mode=1)

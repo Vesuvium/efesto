@@ -3,7 +3,7 @@ from efesto.Siren import Siren
 
 from pytest import fixture
 
-import ujson
+import rapidjson
 
 
 @fixture
@@ -74,22 +74,22 @@ def test_siren_make_entities_includes(patch, magic, siren):
 
 def test_siren_encode(patch):
     patch.object(Siren, 'entities')
-    patch.object(ujson, 'dumps')
+    patch.object(rapidjson, 'dumps')
     Siren().encode('utf-8')
-    ujson.dumps.assert_called_with(Siren.entities())
+    rapidjson.dumps.assert_called_with(Siren.entities(), datetime_mode=1)
 
 
 def test_siren_encode_includes(patch):
     patch.object(Siren, 'entities')
-    patch.object(ujson, 'dumps')
+    patch.object(rapidjson, 'dumps')
     Siren().encode(includes=['includes'])
     Siren.entities.assert_called_with(includes=['includes'])
 
 
 def test_siren_encode_one(patch, siren):
     patch.object(Siren, 'entity')
-    patch.object(ujson, 'dumps')
+    patch.object(rapidjson, 'dumps')
     siren.data = {}
     siren.encode('utf-8')
     Siren.entity.assert_called_with(siren.path, siren.data)
-    ujson.dumps.assert_called_with(Siren.entity())
+    rapidjson.dumps.assert_called_with(Siren.entity(), datetime_mode=1)
