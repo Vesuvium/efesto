@@ -41,6 +41,7 @@ setup(
         'click>=6.7',
         'colorama>=0.3.3',
         'aratrum>=0.3.2',
+        'python-rapidjson>=0.6.2',
         'pyjwt>=1.5.2',
         'ruamel.yaml>=0.15.37'
     ],
