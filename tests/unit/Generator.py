@@ -78,8 +78,8 @@ def test_generator_attributes(patch, magic, generator):
     patch.object(Generator, 'make_field')
     field = magic()
     field.name = 'one'
-    result = generator.attributes([field])
-    Generator.make_field.assert_called_with(field)
+    result = generator.attributes([field], 'classname')
+    Generator.make_field.assert_called_with(field, 'classname')
     assert result['one'] == generator.make_field()
 
 

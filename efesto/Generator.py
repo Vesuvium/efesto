@@ -38,10 +38,10 @@ class Generator:
             arguments['constraints'] = constraints
         return custom_field(**arguments)
 
-    def attributes(self, fields):
+    def attributes(self, fields, classname):
         attributes = {}
         for field in fields:
-            attributes[field.name] = self.make_field(field)
+            attributes[field.name] = self.make_field(field, classname)
         return attributes
 
     def new_model(self, type_instance):
