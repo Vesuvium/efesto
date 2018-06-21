@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from peewee import ModelSelect
+
 import rapidjson
 
 
@@ -27,6 +29,23 @@ class Siren:
         return links
 
     @classmethod
+    def _nested_entities(cls, include, item):
+        """
+        Parses nested entities. Used when a join is performed and thus
+        there are nested item to encode.
+        """
+        nested = getattr(item, include)
+        if isinstance(nested, ModelSelect):
+            nested = list(nested)
+            items = []
+            path = '/{}'.format(nested[0].__class__.__name__)
+            for item in nested:
+                items.append(cls.entity(path, item))
+            return items
+        path = '/{}'.format(nested.__class__.__name__)
+        return cls.entity(path, nested)
+
+    @classmethod
     def entity(cls, path, item, includes=[]):
         """
         Creates an entity from a model instance
@@ -35,10 +54,8 @@ class Siren:
         if path.endswith('/{}'.format(item.id)):
             href = path
 
-        for i in includes:
-            nested = getattr(item, i)
-            nested_path = '/{}'.format(nested.__class__.__name__)
-            item.__data__[i] = cls.entity(nested_path, nested)
+        for include in includes:
+            item.__data__[include] = cls._nested_entities(include, item)
 
         return {
             'properties': item.__data__,
