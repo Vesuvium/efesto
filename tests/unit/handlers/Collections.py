@@ -5,7 +5,7 @@ from falcon import HTTP_501
 
 from pytest import fixture
 
-import ujson
+import rapidjson
 
 
 @fixture
@@ -59,10 +59,22 @@ def test_collection_apply_owner_request(magic):
     assert payload == {'owner_id': 1}
 
 
-def test_collections_embeds(collection):
+def test_collections_embeds(collection, magic):
+    model = magic(one=magic(spec_set=['rel_model']))
+    collection.model = model
+    result = collection.embeds({'_embeds': 'one'})
+    collection.model.q.join.assert_called_with(model.one.rel_model, on=False)
+    assert result == ['one']
+
+
+def test_collections_embeds_reverse(collection):
+    """
+    Verifies that embeds work with backrefs.
+    """
     result = collection.embeds({'_embeds': 'one'})
     model = collection.model
-    collection.model.q.join.assert_called_with(model.one.rel_model, on=False)
+    model.one.field = 'field'
+    collection.model.q.join.assert_called_with(model, on=False)
     assert result == ['one']
 
 
@@ -98,12 +110,12 @@ def test_collection_on_post(patch, magic, collection, siren):
     request = magic()
     response = magic()
     user = magic()
-    patch.object(ujson, 'load')
+    patch.object(rapidjson, 'load')
     patch.object(Collections, 'apply_owner')
     collection.on_post(request, response, user=user)
-    ujson.load.assert_called_with(request.bounded_stream)
-    collection.apply_owner.assert_called_with(user, ujson.load())
-    collection.model.create.assert_called_with(**ujson.load())
+    rapidjson.load.assert_called_with(request.bounded_stream)
+    collection.apply_owner.assert_called_with(user, rapidjson.load())
+    collection.model.create.assert_called_with(**rapidjson.load())
     siren.__init__.assert_called_with(collection.model,
                                       collection.model.create(),
                                       request.path)
