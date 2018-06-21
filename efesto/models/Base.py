@@ -22,7 +22,6 @@ class Base(Model):
 
     class Meta:
         database = db
-        validate_backrefs = False
 
     @classmethod
     def get_columns(cls):
