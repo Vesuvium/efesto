@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*
 from falcon import HTTP_501
 
-import ujson
+import rapidjson
 
 from ..Siren import Siren
 
@@ -64,7 +64,7 @@ class Collections:
         response.body = body.encode(includes=embeds)
 
     def on_post(self, request, response, **params):
-        json = ujson.load(request.bounded_stream)
+        json = rapidjson.load(request.bounded_stream)
         self.apply_owner(params['user'], json)
         item = self.model.create(**json)
         body = Siren(self.model, item, request.path)
