@@ -29,7 +29,7 @@ class Siren:
         return links
 
     @classmethod
-    def _nested_entities(cls, include, item):
+    def nested_entities(cls, include, item):
         """
         Parses nested entities. Used when a join is performed and thus
         there are nested item to encode.
@@ -55,7 +55,7 @@ class Siren:
             href = path
 
         for include in includes:
-            item.__data__[include] = cls._nested_entities(include, item)
+            item.__data__[include] = cls.nested_entities(include, item)
 
         return {
             'properties': item.__data__,
