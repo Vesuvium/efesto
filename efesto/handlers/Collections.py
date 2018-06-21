@@ -27,6 +27,9 @@ class Collections:
             for embed in embeds:
                 property = getattr(self.model, embed)
                 model = property.rel_model
+                if hasattr(property, 'field'):
+                    property = property.field
+                    model = self.model
                 self.model.q.join(model, on=(property == model.id))
             return embeds
         return []
