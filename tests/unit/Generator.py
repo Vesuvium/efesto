@@ -38,7 +38,7 @@ def test_generator_init():
 ])
 def test_generator_make_field(magic, generator, field_type, expected):
     retrieved_field = magic(field_type=field_type, default_value=None)
-    field = generator.make_field(retrieved_field)
+    field = generator.make_field(retrieved_field, 'classname')
     assert isinstance(field, expected)
 
 
@@ -46,30 +46,31 @@ def test_generator_make_field_custom(patch, magic, generator):
     patch.init(ForeignKeyField)
     generator.models = {'custom': magic()}
     retrieved_field = magic(field_type='custom', default_value=None)
-    field = generator.make_field(retrieved_field)
-    ForeignKeyField.__init__.assert_called_with(generator.models['custom'])
+    field = generator.make_field(retrieved_field, 'classname')
+    ForeignKeyField.__init__.assert_called_with(generator.models['custom'],
+                                                backref='classname')
     assert isinstance(field, ForeignKeyField)
 
 
 def test_generator_make_field_not_found(magic, generator):
-    assert isinstance(generator.make_field(magic()), CharField)
+    assert isinstance(generator.make_field(magic(), 'classname'), CharField)
 
 
 def test_generator_make_field_nullable(magic, generator):
     retrieved_field = magic(nullable=True, default_value=None)
-    field = generator.make_field(retrieved_field)
+    field = generator.make_field(retrieved_field, 'classname')
     assert field.null is True
 
 
 def test_generator_make_field_unique(magic, generator):
     retrieved_field = magic(unique=True, default_value=None)
-    field = generator.make_field(retrieved_field)
+    field = generator.make_field(retrieved_field, 'classname')
     assert field.unique is True
 
 
 def test_generator_make_field_default_value(magic, generator):
     retrieved_field = magic(default_value=0)
-    field = generator.make_field(retrieved_field)
+    field = generator.make_field(retrieved_field, 'classname')
     assert field.default == 0
     assert field.constraints == [SQL('DEFAULT 0')]
 
