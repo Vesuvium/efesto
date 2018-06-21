@@ -38,7 +38,8 @@ class Siren:
         if isinstance(nested, ModelSelect):
             nested = list(nested)
             items = []
-            path = '/{}'.format(nested[0].__class__.__name__)
+            if len(nested) > 0:
+                path = '/{}'.format(nested[0].__class__.__name__)
             for item in nested:
                 items.append(cls.entity(path, item))
             return items

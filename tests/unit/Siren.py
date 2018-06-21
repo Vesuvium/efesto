@@ -30,6 +30,14 @@ def test_siren_paginate_last():
     assert links[1] == {'rel': ['previous'], 'href': 'path?page=2'}
 
 
+def test_nested_entities(patch, magic, siren):
+    patch.object(Siren, 'entity')
+    item = magic()
+    result = siren.nested_entities('include', item)
+    Siren.entity.assert_called_with('/MagicMock', item.include)
+    assert result == Siren.entity()
+
+
 def test_siren_entity(patch, magic, siren):
     item = magic(__data__='data')
     entity = siren.entity('', item)
