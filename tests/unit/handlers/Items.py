@@ -7,8 +7,7 @@ from peewee import DoesNotExist
 
 from pytest import fixture, raises
 
-
-import ujson
+import rapidjson
 
 
 @fixture
@@ -44,7 +43,7 @@ def test_items_on_get_404(patch, magic, item):
 
 
 def test_item_on_patch(patch, magic, item, siren):
-    patch.object(ujson, 'load')
+    patch.object(rapidjson, 'load')
     request = magic()
     response = magic()
     user = magic()

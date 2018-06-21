@@ -3,7 +3,7 @@ from falcon import HTTPNotFound, HTTP_204
 
 from peewee import DoesNotExist
 
-import ujson
+import rapidjson
 
 from ..Siren import Siren
 
@@ -35,7 +35,7 @@ class Items:
             result = user.do('edit', query, self.model).get()
         except DoesNotExist:
             raise HTTPNotFound()
-        json = ujson.load(request.bounded_stream)
+        json = rapidjson.load(request.bounded_stream)
         result.update_item(json)
         body = Siren(self.model, result, request.path)
         response.body = body.encode()
