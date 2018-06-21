@@ -89,7 +89,7 @@ def test_generator_new_model(patch, type_instance):
     model = Generator()
     model.generate(type_instance)
     Fields.select().where.assert_called_with(False)
-    Generator.attributes.assert_called_with(Fields.select().where())
+    Generator.attributes.assert_called_with(Fields.select().where(), 'custom')
     model = model.models['custom']
     assert isinstance(model.owner, ForeignKeyField)
     assert issubclass(model, Base)
