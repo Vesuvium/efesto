@@ -10,9 +10,9 @@ from ..Siren import Siren
 class Collections(BaseHandler):
 
     def query(self, params):
-        self.q = self.model.select()
+        self.model.q = self.model.select()
         for key, value in params.items():
-            self.q(key, value)
+            self.model.query(key, value)
 
     @staticmethod
     def page(params):

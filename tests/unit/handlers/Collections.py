@@ -21,12 +21,12 @@ def test_collection():
 
 def test_collection_query(collection):
     collection.query({})
-    assert collection.q == collection.model.select()
+    assert collection.model.q == collection.model.select()
 
 
 def test_collection_query_params(collection):
     collection.query({'key': 'value'})
-    collection.q.assert_called_with('key', 'value')
+    collection.model.query.assert_called_with('key', 'value')
 
 
 def test_collection_page(collection):
