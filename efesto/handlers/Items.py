@@ -12,6 +12,9 @@ class Items:
     def __init__(self, model):
         self.model = model
 
+    def query(self, params):
+        self.q = self.model.select().where(self.model.id == params['id'])
+
     def on_get(self, request, response, **params):
         """
         Executes a get request on a single item

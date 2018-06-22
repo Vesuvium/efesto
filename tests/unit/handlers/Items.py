@@ -20,6 +20,11 @@ def test_item_init():
     assert item.model == 'model'
 
 
+def test_item_query(item):
+    item.query({'id': 1})
+    assert item.q == item.model.select().where()
+
+
 def test_items_on_get(patch, magic, item, siren):
     request = magic()
     response = magic()
