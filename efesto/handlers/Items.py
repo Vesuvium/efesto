@@ -12,7 +12,7 @@ from ..Siren import Siren
 class Items(BaseHandler):
 
     def query(self, params):
-        self.q = self.model.select().where(self.model.id == params['id'])
+        self.model.q = self.model.select().where(self.model.id == params['id'])
 
     def on_get(self, request, response, **params):
         """
@@ -20,7 +20,7 @@ class Items(BaseHandler):
         """
         user = params['user']
         self.query(params)
-        embeds = self.embeds(params)
+        embeds = self.embeds(request.params)
         try:
             result = user.do('read', self.model.q, self.model).get()
         except DoesNotExist:

@@ -23,7 +23,7 @@ def test_item():
 
 def test_item_query(item):
     item.query({'id': 1})
-    assert item.q == item.model.select().where()
+    assert item.model.q == item.model.select().where()
 
 
 def test_items_on_get(patch, magic, item, siren):
@@ -34,7 +34,7 @@ def test_items_on_get(patch, magic, item, siren):
     params = {'user': user, 'id': 1}
     item.on_get(request, response, **params)
     Items.query.assert_called_with(params)
-    Items.embeds.assert_called_with(params)
+    Items.embeds.assert_called_with(request.params)
     user.do.assert_called_with('read', item.model.q, item.model)
     assert user.do().get.call_count == 1
     siren.__init__.assert_called_with(item.model, user.do().get(),
