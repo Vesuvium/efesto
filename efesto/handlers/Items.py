@@ -20,9 +20,9 @@ class Items:
         Executes a get request on a single item
         """
         user = params['user']
-        query = self.model.select().where(self.model.id == params['id'])
+        self.query(params)
         try:
-            result = user.do('read', query, self.model).get()
+            result = user.do('read', self.q, self.model).get()
         except DoesNotExist:
             raise HTTPNotFound()
         body = Siren(self.model, result, request.path)

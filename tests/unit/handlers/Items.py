@@ -12,7 +12,9 @@ import rapidjson
 
 @fixture
 def item(magic):
-    return Items(magic())
+    item = Items(magic())
+    item.q = magic()
+    return item
 
 
 def test_item_init():
@@ -26,13 +28,14 @@ def test_item_query(item):
 
 
 def test_items_on_get(patch, magic, item, siren):
+    patch.object(Items, 'query')
     request = magic()
     response = magic()
     user = magic()
-    item.on_get(request, response, user=user, id=1)
-    item.model.select().where.assert_called_with(False)
-    user.do.assert_called_with('read', item.model.select().where(),
-                               item.model)
+    params = {'user': user, 'id': 1}
+    item.on_get(request, response, **params)
+    Items.query.assert_called_with(params)
+    user.do.assert_called_with('read', item.q, item.model)
     assert user.do().get.call_count == 1
     siren.__init__.assert_called_with(item.model, user.do().get(),
                                       request.path)
