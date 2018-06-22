@@ -22,7 +22,7 @@ class Items(BaseHandler):
         self.query(params)
         embeds = self.embeds(params)
         try:
-            result = user.do('read', self.q, self.model).get()
+            result = user.do('read', self.model.q, self.model).get()
         except DoesNotExist:
             raise HTTPNotFound()
         body = Siren(self.model, result, request.path)

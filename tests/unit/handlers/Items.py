@@ -35,7 +35,7 @@ def test_items_on_get(patch, magic, item, siren):
     item.on_get(request, response, **params)
     Items.query.assert_called_with(params)
     Items.embeds.assert_called_with(params)
-    user.do.assert_called_with('read', item.q, item.model)
+    user.do.assert_called_with('read', item.model.q, item.model)
     assert user.do().get.call_count == 1
     siren.__init__.assert_called_with(item.model, user.do().get(),
                                       request.path)
