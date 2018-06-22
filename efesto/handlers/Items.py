@@ -5,25 +5,28 @@ from peewee import DoesNotExist
 
 import rapidjson
 
+from .BaseHandler import BaseHandler
 from ..Siren import Siren
 
 
-class Items:
-    def __init__(self, model):
-        self.model = model
+class Items(BaseHandler):
+
+    def query(self, params):
+        self.model.q = self.model.select().where(self.model.id == params['id'])
 
     def on_get(self, request, response, **params):
         """
         Executes a get request on a single item
         """
         user = params['user']
-        query = self.model.select().where(self.model.id == params['id'])
+        self.query(params)
+        embeds = self.embeds(request.params)
         try:
-            result = user.do('read', query, self.model).get()
+            result = user.do('read', self.model.q, self.model).get()
         except DoesNotExist:
             raise HTTPNotFound()
         body = Siren(self.model, result, request.path)
-        response.body = body.encode()
+        response.body = body.encode(includes=embeds)
 
     def on_patch(self, request, response, **params):
         """

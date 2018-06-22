@@ -29,7 +29,7 @@ class Siren:
         return links
 
     @classmethod
-    def _nested_entities(cls, include, item):
+    def nested_entities(cls, include, item):
         """
         Parses nested entities. Used when a join is performed and thus
         there are nested item to encode.
@@ -38,7 +38,8 @@ class Siren:
         if isinstance(nested, ModelSelect):
             nested = list(nested)
             items = []
-            path = '/{}'.format(nested[0].__class__.__name__)
+            if len(nested) > 0:
+                path = '/{}'.format(nested[0].__class__.__name__)
             for item in nested:
                 items.append(cls.entity(path, item))
             return items
@@ -55,7 +56,7 @@ class Siren:
             href = path
 
         for include in includes:
-            item.__data__[include] = cls._nested_entities(include, item)
+            item.__data__[include] = cls.nested_entities(include, item)
 
         return {
             'properties': item.__data__,
@@ -87,5 +88,5 @@ class Siren:
         if isinstance(self.data, list):
             return rapidjson.dumps(self.entities(includes=includes),
                                    datetime_mode=1)
-        return rapidjson.dumps(self.entity(self.path, self.data),
-                               datetime_mode=1)
+        output = self.entity(self.path, self.data, includes=includes)
+        return rapidjson.dumps(output, datetime_mode=1)

@@ -3,36 +3,16 @@ from falcon import HTTP_501
 
 import rapidjson
 
+from .BaseHandler import BaseHandler
 from ..Siren import Siren
 
 
-class Collections:
-    def __init__(self, model):
-        self.model = model
+class Collections(BaseHandler):
 
     def query(self, params):
         self.model.q = self.model.select()
         for key, value in params.items():
             self.model.query(key, value)
-        return self.model.q
-
-    def embeds(self, params):
-        """
-        Parses embeds and set joins on the query
-        """
-        embeds = params.pop('_embeds', None)
-        if isinstance(embeds, str):
-            embeds = [embeds]
-        if embeds:
-            for embed in embeds:
-                property = getattr(self.model, embed)
-                model = property.rel_model
-                if hasattr(property, 'field'):
-                    property = property.field
-                    model = self.model
-                self.model.q.join(model, on=(property == model.id))
-            return embeds
-        return []
 
     @staticmethod
     def page(params):
@@ -55,9 +35,9 @@ class Collections:
         user = params['user']
         page = self.page(request.params)
         items = self.items(request.params)
-        query = self.query(request.params)
+        self.query(request.params)
         embeds = self.embeds(request.params)
-        result = user.do('read', query, self.model)
+        result = user.do('read', self.model.q, self.model)
         paginated_query = result.paginate(page, items).execute()
         body = Siren(self.model, list(paginated_query), request.path,
                      page=page, total=result.count())

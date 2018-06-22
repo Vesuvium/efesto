@@ -30,7 +30,15 @@ def test_siren_paginate_last():
     assert links[1] == {'rel': ['previous'], 'href': 'path?page=2'}
 
 
-def test_siren_entity(magic, siren):
+def test_nested_entities(patch, magic, siren):
+    patch.object(Siren, 'entity')
+    item = magic()
+    result = siren.nested_entities('include', item)
+    Siren.entity.assert_called_with('/MagicMock', item.include)
+    assert result == Siren.entity()
+
+
+def test_siren_entity(patch, magic, siren):
     item = magic(__data__='data')
     entity = siren.entity('', item)
     assert entity['properties'] == item.__data__
@@ -38,13 +46,12 @@ def test_siren_entity(magic, siren):
     assert entity['links'] == [{'href': '/{}'.format(item.id), 'rel': 'self'}]
 
 
-def test_siren_entity_nested(magic, siren):
-    nested = magic(__data__='extra', id=1)
-    item = magic(__data__={'nested': 1}, nested=nested)
+def test_siren_entity_nested(patch, magic, siren):
+    patch.object(Siren, 'nested_entities')
+    item = magic(__data__={'nested': 1})
     entity = siren.entity('', item, includes=['nested'])
-    assert entity['properties']['nested']['properties'] == 'extra'
-    assert entity['properties']['nested']['class'] == ['MagicMock']
-    assert entity['properties']['nested']['links'][0]['href'] == '/MagicMock/1'
+    Siren.nested_entities.assert_called_with('nested', item)
+    assert entity['properties']['nested'] == Siren.nested_entities()
 
 
 def test_siren_entity_path(magic, siren):
@@ -91,5 +98,5 @@ def test_siren_encode_one(patch, siren):
     patch.object(rapidjson, 'dumps')
     siren.data = {}
     siren.encode('utf-8')
-    Siren.entity.assert_called_with(siren.path, siren.data)
+    Siren.entity.assert_called_with(siren.path, siren.data, includes=[])
     rapidjson.dumps.assert_called_with(Siren.entity(), datetime_mode=1)
