@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from efesto.handlers import Items
+from efesto.handlers import BaseHandler, Items
 
 from falcon import HTTPNotFound, HTTP_204
 
@@ -17,9 +17,8 @@ def item(magic):
     return item
 
 
-def test_item_init():
-    item = Items('model')
-    assert item.model == 'model'
+def test_item():
+    assert issubclass(Items, BaseHandler)
 
 
 def test_item_query(item):
@@ -28,17 +27,19 @@ def test_item_query(item):
 
 
 def test_items_on_get(patch, magic, item, siren):
-    patch.object(Items, 'query')
+    patch.many(Items, ['query', 'embeds'])
     request = magic()
     response = magic()
     user = magic()
     params = {'user': user, 'id': 1}
     item.on_get(request, response, **params)
     Items.query.assert_called_with(params)
+    Items.embeds.assert_called_with(params)
     user.do.assert_called_with('read', item.q, item.model)
     assert user.do().get.call_count == 1
     siren.__init__.assert_called_with(item.model, user.do().get(),
                                       request.path)
+    siren.encode.assert_called_with(includes=Items.embeds())
     assert response.body == siren().encode()
 
 
