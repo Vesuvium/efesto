@@ -10,7 +10,9 @@ import rapidjson
 
 @fixture
 def collection(magic):
-    return Collections(magic())
+    collection = Collections(magic())
+    collection.q = magic()
+    return collection
 
 
 def test_collection_init():
@@ -19,14 +21,13 @@ def test_collection_init():
 
 
 def test_collection_query(collection):
-    result = collection.query({})
-    assert collection.model.select.call_count == 1
-    assert result == collection.model.q
+    collection.query({})
+    assert collection.q == collection.model.select()
 
 
 def test_collection_query_params(collection):
     collection.query({'key': 'value'})
-    collection.model.query.assert_called_with('key', 'value')
+    collection.q.assert_called_with('key', 'value')
 
 
 def test_collection_page(collection):
@@ -63,7 +64,7 @@ def test_collections_embeds(collection, magic):
     model = magic(one=magic(spec_set=['rel_model']))
     collection.model = model
     result = collection.embeds({'_embeds': 'one'})
-    collection.model.q.join.assert_called_with(model.one.rel_model, on=False)
+    collection.q.join.assert_called_with(model.one.rel_model, on=False)
     assert result == ['one']
 
 
@@ -74,7 +75,7 @@ def test_collections_embeds_reverse(collection):
     result = collection.embeds({'_embeds': 'one'})
     model = collection.model
     model.one.field = 'field'
-    collection.model.q.join.assert_called_with(model, on=False)
+    collection.q.join.assert_called_with(model, on=False)
     assert result == ['one']
 
 
@@ -93,8 +94,7 @@ def test_collection_on_get(patch, magic, collection, siren):
     Collections.items.assert_called_with(request.params)
     Collections.query.assert_called_with(request.params)
     Collections.embeds.assert_called_with(request.params)
-    user.do.assert_called_with('read', collection.query(),
-                               collection.model)
+    user.do.assert_called_with('read', collection.q, collection.model)
     user.do().paginate.assert_called_with(Collections.page(),
                                           Collections.items())
     assert user.do().paginate().execute.call_count == 1

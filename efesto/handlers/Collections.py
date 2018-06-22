@@ -11,10 +11,9 @@ class Collections:
         self.model = model
 
     def query(self, params):
-        self.model.q = self.model.select()
+        self.q = self.model.select()
         for key, value in params.items():
-            self.model.query(key, value)
-        return self.model.q
+            self.q(key, value)
 
     def embeds(self, params):
         """
@@ -30,7 +29,7 @@ class Collections:
                 if hasattr(property, 'field'):
                     property = property.field
                     model = self.model
-                self.model.q.join(model, on=(property == model.id))
+                self.q.join(model, on=(property == model.id))
             return embeds
         return []
 
@@ -55,9 +54,9 @@ class Collections:
         user = params['user']
         page = self.page(request.params)
         items = self.items(request.params)
-        query = self.query(request.params)
+        self.query(request.params)
         embeds = self.embeds(request.params)
-        result = user.do('read', query, self.model)
+        result = user.do('read', self.q, self.model)
         paginated_query = result.paginate(page, items).execute()
         body = Siren(self.model, list(paginated_query), request.path,
                      page=page, total=result.count())
