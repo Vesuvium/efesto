@@ -88,5 +88,5 @@ class Siren:
         if isinstance(self.data, list):
             return rapidjson.dumps(self.entities(includes=includes),
                                    datetime_mode=1)
-        return rapidjson.dumps(self.entity(self.path, self.data),
-                               datetime_mode=1)
+        output = self.entity(self.path, self.data, includes=includes)
+        return rapidjson.dumps(output, datetime_mode=1)

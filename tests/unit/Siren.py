@@ -98,5 +98,5 @@ def test_siren_encode_one(patch, siren):
     patch.object(rapidjson, 'dumps')
     siren.data = {}
     siren.encode('utf-8')
-    Siren.entity.assert_called_with(siren.path, siren.data)
+    Siren.entity.assert_called_with(siren.path, siren.data, includes=[])
     rapidjson.dumps.assert_called_with(Siren.entity(), datetime_mode=1)
