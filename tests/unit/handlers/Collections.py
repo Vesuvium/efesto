@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from efesto.handlers import Collections
+from efesto.handlers import BaseHandler, Collections
 
 from falcon import HTTP_501
 
@@ -15,9 +15,8 @@ def collection(magic):
     return collection
 
 
-def test_collection_init():
-    collection = Collections('model')
-    assert collection.model == 'model'
+def test_collection():
+    assert issubclass(Collections, BaseHandler)
 
 
 def test_collection_query(collection):
@@ -58,30 +57,6 @@ def test_collection_apply_owner_request(magic):
     payload = {'owner_id': 1}
     Collections.apply_owner(user, payload)
     assert payload == {'owner_id': 1}
-
-
-def test_collections_embeds(collection, magic):
-    model = magic(one=magic(spec_set=['rel_model']))
-    collection.model = model
-    result = collection.embeds({'_embeds': 'one'})
-    collection.q.join.assert_called_with(model.one.rel_model, on=False)
-    assert result == ['one']
-
-
-def test_collections_embeds_reverse(collection):
-    """
-    Verifies that embeds work with backrefs.
-    """
-    result = collection.embeds({'_embeds': 'one'})
-    model = collection.model
-    model.one.field = 'field'
-    collection.q.join.assert_called_with(model, on=False)
-    assert result == ['one']
-
-
-def test_collections_embeds_none(collection):
-    result = collection.embeds({'_embeds': None})
-    assert result == []
 
 
 def test_collection_on_get(patch, magic, collection, siren):
