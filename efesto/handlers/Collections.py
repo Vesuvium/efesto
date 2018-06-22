@@ -37,7 +37,7 @@ class Collections(BaseHandler):
         items = self.items(request.params)
         self.query(request.params)
         embeds = self.embeds(request.params)
-        result = user.do('read', self.q, self.model)
+        result = user.do('read', self.model.q, self.model)
         paginated_query = result.paginate(page, items).execute()
         body = Siren(self.model, list(paginated_query), request.path,
                      page=page, total=result.count())

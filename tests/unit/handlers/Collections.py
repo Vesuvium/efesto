@@ -69,7 +69,7 @@ def test_collection_on_get(patch, magic, collection, siren):
     Collections.items.assert_called_with(request.params)
     Collections.query.assert_called_with(request.params)
     Collections.embeds.assert_called_with(request.params)
-    user.do.assert_called_with('read', collection.q, collection.model)
+    user.do.assert_called_with('read', collection.model.q, collection.model)
     user.do().paginate.assert_called_with(Collections.page(),
                                           Collections.items())
     assert user.do().paginate().execute.call_count == 1
