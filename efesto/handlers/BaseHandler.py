@@ -19,6 +19,6 @@ class BaseHandler:
                 if hasattr(property, 'field'):
                     property = property.field
                     model = self.model
-                self.q.join(model, on=(property == model.id))
+                self.model.q.join(model, on=(property == model.id))
             return embeds
         return []

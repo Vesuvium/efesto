@@ -20,7 +20,7 @@ def test_basehandler_embeds(handler, magic):
     model = magic(one=magic(spec_set=['rel_model']))
     handler.model = model
     result = handler.embeds({'_embeds': 'one'})
-    handler.q.join.assert_called_with(model.one.rel_model, on=False)
+    handler.model.q.join.assert_called_with(model.one.rel_model, on=False)
     assert result == ['one']
 
 
@@ -31,7 +31,7 @@ def test_basehandler_embeds_reverse(handler):
     result = handler.embeds({'_embeds': 'one'})
     model = handler.model
     model.one.field = 'field'
-    handler.q.join.assert_called_with(model, on=False)
+    handler.model.q.join.assert_called_with(model, on=False)
     assert result == ['one']
 
 
