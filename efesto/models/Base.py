@@ -68,7 +68,7 @@ class Base(Model):
         if hasattr(cls, key) is False:
             return None
         operator = None
-        if value[0] in ['!', '>', '<']:
+        if value[0] in ['!', '>', '<', '~']:
             operator = value[0]
             value = value[1:]
         cls.q = cls.filter(key, value, operator)

@@ -115,7 +115,7 @@ def test_base_query_not_field(patch, magic):
     assert Base.q is None
 
 
-@mark.parametrize('operator', ['!', '>', '<'])
+@mark.parametrize('operator', ['!', '>', '<', '~'])
 def test_base_query_operators(patch, magic, operator):
     patch.object(Base, 'filter')
     Base.query('key', '{}value'.format(operator))
