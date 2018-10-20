@@ -5,7 +5,7 @@ from efesto.models import Base, db
 
 from peewee import (AutoField, BooleanField, CharField, DateTimeField,
                     FloatField, ForeignKeyField, IntegerField, Model,
-                    PrimaryKeyField, SQL, TextField)
+                    SQL, TextField)
 
 from playhouse import db_url
 
@@ -42,8 +42,7 @@ def test_get_columns():
         ('datetimefield', DateTimeField()),
         ('floatfield', FloatField()),
         ('foreignfield', ForeignKeyField(Base)),
-        ('integerfield', IntegerField()),
-        ('primarykeyfield', PrimaryKeyField())
+        ('integerfield', IntegerField())
     )
     Base._meta.fields = OrderedDict(fields)
     columns = Base.get_columns()
@@ -55,7 +54,6 @@ def test_get_columns():
     assert columns[5] == {'name': 'floatfield', 'type': 'number'}
     assert columns[6] == {'name': 'foreignfield', 'type': 'number'}
     assert columns[7] == {'name': 'integerfield', 'type': 'number'}
-    assert columns[8] == {'name': 'primarykeyfield', 'type': 'number'}
 
 
 def test_base_init_db(patch):
