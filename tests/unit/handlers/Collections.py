@@ -30,11 +30,13 @@ def test_collection_query_params(collection):
 
 
 def test_collection_page(collection):
-    assert collection.page({'page': '2'}) == 2
+    collection.page({'page': '2'})
+    assert collection._page == 2
 
 
 def test_collection_page_none(collection):
-    assert collection.page({}) == 1
+    collection.page({})
+    assert collection._page == 1
 
 
 def test_collection_items(collection):

@@ -14,9 +14,8 @@ class Collections(BaseHandler):
         for key, value in params.items():
             self.model.query(key, value)
 
-    @staticmethod
-    def page(params):
-        return int(params.pop('page', 1))
+    def page(self, params):
+        self._page = int(params.pop('page', 1))
 
     @staticmethod
     def items(params):
