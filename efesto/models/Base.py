@@ -16,8 +16,7 @@ class Base(Model):
         'DateTimeField': 'date',
         'FloatField': 'number',
         'ForeignKeyField': 'number',
-        'IntegerField': 'number',
-        'PrimaryKeyField': 'number'
+        'IntegerField': 'number'
     }
 
     class Meta:
