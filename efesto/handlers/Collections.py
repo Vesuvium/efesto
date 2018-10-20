@@ -45,9 +45,13 @@ class Collections(BaseHandler):
         """
         Gets data performing a read query with the current user.
         """
-        partial = user.do('read', self.model.q, self.model)
-        data = partial.paginate(self._page, self._items).execute()
-        return list(data)
+        return user.do('read', self.model.q, self.model)
+
+    def paginate_data(self, data):
+        """
+        Paginate data
+        """
+        return list(data.paginate(self._page, self._items).execute())
 
     def on_get(self, request, response, **params):
         """

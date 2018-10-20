@@ -95,14 +95,23 @@ def test_collection_get_data(collection, magic):
     """
     Ensures get_data can get the data.
     """
-    collection._page = 1
-    collection._items = 20
     user = magic()
     result = collection.get_data(user)
     user.do.assert_called_with('read', collection.model.q, collection.model)
-    user.do().paginate.assert_called_with(1, 20)
-    assert user.do().paginate().execute.call_count == 1
-    assert result == list(user.do().paginate().execute())
+    assert result == user.do()
+
+
+def test_collection_paginate_data(collection, magic):
+    """
+    Ensures Collections.paginate_data can paginate the get_data
+    """
+    collection._page = 1
+    collection._items = 20
+    data = magic()
+    result = collection.paginate_data(data)
+    data.paginate.assert_called_with(1, 20)
+    assert data.paginate().execute.call_count == 1
+    assert result == list(data.paginate().execute())
 
 
 def test_collection_on_get(patch, magic, collection, siren):
