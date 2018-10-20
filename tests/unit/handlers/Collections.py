@@ -115,7 +115,8 @@ def test_collection_paginate_data(collection, magic):
 
 
 def test_collection_on_get(patch, magic, collection, siren):
-    patch.many(Collections, ['process_params', 'embeds'])
+    patch.many(Collections, ['process_params', 'embeds', 'get_data',
+                             'paginate_data'])
     collection._page = 'page'
     collection._items = 'items'
     request = magic()
@@ -124,13 +125,11 @@ def test_collection_on_get(patch, magic, collection, siren):
     collection.on_get(request, response, user=user)
     Collections.process_params.assert_called_with(request.params)
     Collections.embeds.assert_called_with(request.params)
-    user.do.assert_called_with('read', collection.model.q, collection.model)
-    user.do().paginate.assert_called_with('page', 'items')
-    assert user.do().paginate().execute.call_count == 1
-    siren.__init__.assert_called_with(collection.model,
-                                      list(user.do().execute()),
-                                      request.path, page='page',
-                                      total=user.do().count())
+    Collections.get_data.assert_called_with(user)
+    Collections.paginate_data.assert_called_with(Collections.get_data())
+    args = (collection.model, Collections.paginate_data(), request.path)
+    count = Collections.get_data().count()
+    siren.__init__.assert_called_with(*args, page='page', total=count)
     siren.encode.assert_called_with(includes=Collections.embeds())
     assert response.body == siren().encode()
 

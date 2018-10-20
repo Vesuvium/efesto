@@ -60,10 +60,9 @@ class Collections(BaseHandler):
         user = params['user']
         self.process_params(request.params)
         embeds = self.embeds(request.params)
-        result = user.do('read', self.model.q, self.model)
-        paginated_query = result.paginate(self._page, self._items).execute()
-        body = Siren(self.model, list(paginated_query), request.path,
-                     page=self._page, total=result.count())
+        data = self.get_data(user)
+        body = Siren(self.model, self.paginate_data(data), request.path,
+                     page=self._page, total=data.count())
         response.body = body.encode(includes=embeds)
 
     def on_post(self, request, response, **params):
