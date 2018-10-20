@@ -79,6 +79,18 @@ def test_collection_apply_owner_request(magic):
     assert payload == {'owner_id': 1}
 
 
+def test_collection_process_params(patch, collection):
+    """
+    Ensures Collection.process_params processes params.
+    """
+    patch.many(Collections, ['page', 'items', 'order', 'query'])
+    collection.process_params('params')
+    assert Collections.page.call_count == 1
+    assert Collections.items.call_count == 1
+    assert Collections.order.call_count == 1
+    assert Collections.query.call_count == 1
+
+
 def test_collection_get_data(collection, magic):
     """
     Ensures get_data can get the data.

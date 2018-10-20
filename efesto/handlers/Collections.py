@@ -32,6 +32,15 @@ class Collections(BaseHandler):
             return None
         payload['owner_id'] = user.id
 
+    def process_params(self, params):
+        """
+        Processes the parameters of a request
+        """
+        self.page(params)
+        self.items(params)
+        self.order(params)
+        self.query(params)
+
     def get_data(self, user):
         """
         Gets data performing a read query with the current user.
