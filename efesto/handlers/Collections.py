@@ -17,9 +17,8 @@ class Collections(BaseHandler):
     def page(self, params):
         self._page = int(params.pop('page', 1))
 
-    @staticmethod
-    def items(params):
-        return int(params.pop('items', 20))
+    def items(self, params):
+        self._items = int(params.pop('items', 20))
 
     @staticmethod
     def order(params):

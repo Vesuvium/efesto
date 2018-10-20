@@ -40,11 +40,13 @@ def test_collection_page_none(collection):
 
 
 def test_collection_items(collection):
-    assert collection.items({'items': '2'}) == 2
+    collection.items({'items': '2'})
+    assert collection._items == 2
 
 
 def test_collection_items_none(collection):
-    assert collection.items({}) == 20
+    collection.items({})
+    assert collection._items == 20
 
 
 def test_collection_order(collection):
