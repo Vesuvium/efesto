@@ -106,22 +106,21 @@ def test_collection_get_data(collection, magic):
 
 
 def test_collection_on_get(patch, magic, collection, siren):
+    patch.many(Collections, ['process_params', 'embeds'])
+    collection._page = 'page'
+    collection._items = 'items'
     request = magic()
     response = magic()
     user = magic()
-    patch.many(Collections, ['query', 'page', 'items', 'embeds'])
     collection.on_get(request, response, user=user)
-    Collections.page.assert_called_with(request.params)
-    Collections.items.assert_called_with(request.params)
-    Collections.query.assert_called_with(request.params)
+    Collections.process_params.assert_called_with(request.params)
     Collections.embeds.assert_called_with(request.params)
     user.do.assert_called_with('read', collection.model.q, collection.model)
-    user.do().paginate.assert_called_with(Collections.page(),
-                                          Collections.items())
+    user.do().paginate.assert_called_with('page', 'items')
     assert user.do().paginate().execute.call_count == 1
     siren.__init__.assert_called_with(collection.model,
                                       list(user.do().execute()),
-                                      request.path, page=Collections.page(),
+                                      request.path, page='page',
                                       total=user.do().count())
     siren.encode.assert_called_with(includes=Collections.embeds())
     assert response.body == siren().encode()
