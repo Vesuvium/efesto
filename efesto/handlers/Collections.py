@@ -35,6 +35,14 @@ class Collections(BaseHandler):
             return None
         payload['owner_id'] = user.id
 
+    def get_data(self, user):
+        """
+        Gets data performing a read query with the current user.
+        """
+        partial = user.do('read', self.model.q, self.model)
+        data = partial.paginate(self._page, self._items).execute()
+        return list(data)
+
     def on_get(self, request, response, **params):
         """
         Executes a get request

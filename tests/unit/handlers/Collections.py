@@ -73,6 +73,20 @@ def test_collection_apply_owner_request(magic):
     assert payload == {'owner_id': 1}
 
 
+def test_collection_get_data(collection, magic):
+    """
+    Ensures get_data can get the data.
+    """
+    collection._page = 1
+    collection._items = 20
+    user = magic()
+    result = collection.get_data(user)
+    user.do.assert_called_with('read', collection.model.q, collection.model)
+    user.do().paginate.assert_called_with(1, 20)
+    assert user.do().paginate().execute.call_count == 1
+    assert result == list(user.do().paginate().execute())
+
+
 def test_collection_on_get(patch, magic, collection, siren):
     request = magic()
     response = magic()
