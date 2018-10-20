@@ -53,14 +53,16 @@ def test_collection_order(collection):
     """
     Ensures Collections.order can extract the _order parameter
     """
-    assert collection.order({'_order': 'column'}) == 'column'
+    collection.order({'_order': 'column'})
+    assert collection._order == 'column'
 
 
 def test_collection_order_none(collection):
     """
     Ensures Collections.order return None when there is no _order
     """
-    assert collection.order({}) is None
+    collection.order({})
+    assert collection._order is None
 
 
 def test_collection_apply_owner(magic):

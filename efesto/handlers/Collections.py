@@ -20,12 +20,11 @@ class Collections(BaseHandler):
     def items(self, params):
         self._items = int(params.pop('items', 20))
 
-    @staticmethod
-    def order(params):
+    def order(self, params):
         """
         Extracts the _order parameter when present
         """
-        return params.pop('_order', None)
+        self._order = params.pop('_order', None)
 
     @staticmethod
     def apply_owner(user, payload):
