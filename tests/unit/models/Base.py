@@ -89,6 +89,18 @@ def test_base_filter_operators(magic, operator):
     Base.q.where.assert_called_with(False)
 
 
+def test_base_filter_operators_startswith(magic):
+    """
+    Ensures ~ produces a startswith query.
+    """
+    Base.q = magic()
+    Base.key = magic()
+    Base.model = magic(key='value')
+    Base.filter('key', 'value', '~')
+    Base.key.startswith.assert_called_with('value')
+    Base.q.where.assert_called_with(Base.key.startswith())
+
+
 def test_base_query(patch, magic):
     patch.object(Base, 'filter')
     Base.query('key', 'value')
