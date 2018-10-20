@@ -23,6 +23,13 @@ class Collections(BaseHandler):
         return int(params.pop('items', 20))
 
     @staticmethod
+    def order(params):
+        """
+        Extracts the _order parameter when present
+        """
+        return params.pop('_order', None)
+
+    @staticmethod
     def apply_owner(user, payload):
         if 'owner_id' in payload:
             return None
