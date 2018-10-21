@@ -4,6 +4,7 @@
 class BaseHandler:
     def __init__(self, model):
         self.model = model
+        self._order = self.model.id
 
     def embeds(self, params):
         """

@@ -30,19 +30,48 @@ def test_collection_query_params(collection):
 
 
 def test_collection_page(collection):
-    assert collection.page({'page': '2'}) == 2
+    collection.page({'page': '2'})
+    assert collection._page == 2
 
 
 def test_collection_page_none(collection):
-    assert collection.page({}) == 1
+    collection.page({})
+    assert collection._page == 1
 
 
 def test_collection_items(collection):
-    assert collection.items({'items': '2'}) == 2
+    collection.items({'items': '2'})
+    assert collection._items == 2
 
 
 def test_collection_items_none(collection):
-    assert collection.items({}) == 20
+    collection.items({})
+    assert collection._items == 20
+
+
+def test_collection_order(collection):
+    """
+    Ensures Collections.order can extract the _order parameter
+    """
+    collection.order({'_order': 'rank'})
+    assert collection._order == collection.model.rank
+
+
+def test_collection_order_no_column(collection):
+    """
+    Ensures Collections.order works when the ordered column does not exist
+    """
+    collection.model.rank = None
+    collection.order({'_order': 'rank'})
+    assert collection._order == collection.model.id
+
+
+def test_collection_order_none(collection):
+    """
+    Ensures Collections.order return None when there is no _order
+    """
+    collection.order({})
+    assert collection._order is collection.model.id
 
 
 def test_collection_apply_owner(magic):
@@ -59,24 +88,58 @@ def test_collection_apply_owner_request(magic):
     assert payload == {'owner_id': 1}
 
 
+def test_collection_process_params(patch, collection):
+    """
+    Ensures Collection.process_params processes params.
+    """
+    patch.many(Collections, ['page', 'items', 'order', 'query'])
+    collection.process_params('params')
+    assert Collections.page.call_count == 1
+    assert Collections.items.call_count == 1
+    assert Collections.order.call_count == 1
+    assert Collections.query.call_count == 1
+
+
+def test_collection_get_data(collection, magic):
+    """
+    Ensures get_data can get the data.
+    """
+    user = magic()
+    result = collection.get_data(user)
+    user.do.assert_called_with('read', collection.model.q, collection.model)
+    assert result == user.do()
+
+
+def test_collection_paginate_data(collection, magic):
+    """
+    Ensures Collections.paginate_data can paginate the get_data
+    """
+    collection._page = 1
+    collection._items = 20
+    data = magic()
+    result = collection.paginate_data(data)
+    data.order_by.assert_called_with(collection._order)
+    data.order_by().paginate.assert_called_with(1, 20)
+    assert data.order_by().paginate().execute.call_count == 1
+    assert result == list(data.order_by().paginate().execute())
+
+
 def test_collection_on_get(patch, magic, collection, siren):
+    patch.many(Collections, ['process_params', 'embeds', 'get_data',
+                             'paginate_data'])
+    collection._page = 'page'
+    collection._items = 'items'
     request = magic()
     response = magic()
     user = magic()
-    patch.many(Collections, ['query', 'page', 'items', 'embeds'])
     collection.on_get(request, response, user=user)
-    Collections.page.assert_called_with(request.params)
-    Collections.items.assert_called_with(request.params)
-    Collections.query.assert_called_with(request.params)
+    Collections.process_params.assert_called_with(request.params)
     Collections.embeds.assert_called_with(request.params)
-    user.do.assert_called_with('read', collection.model.q, collection.model)
-    user.do().paginate.assert_called_with(Collections.page(),
-                                          Collections.items())
-    assert user.do().paginate().execute.call_count == 1
-    siren.__init__.assert_called_with(collection.model,
-                                      list(user.do().execute()),
-                                      request.path, page=Collections.page(),
-                                      total=user.do().count())
+    Collections.get_data.assert_called_with(user)
+    Collections.paginate_data.assert_called_with(Collections.get_data())
+    args = (collection.model, Collections.paginate_data(), request.path)
+    count = Collections.get_data().count()
+    siren.__init__.assert_called_with(*args, page='page', total=count)
     siren.encode.assert_called_with(includes=Collections.embeds())
     assert response.body == siren().encode()
 

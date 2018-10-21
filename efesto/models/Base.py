@@ -49,13 +49,16 @@ class Base(Model):
         """
         Adds a filter to the current query
         """
+        column = getattr(cls, key)
         if operator == '!':
-            return cls.q.where(getattr(cls, key) != value)
+            return cls.q.where(column != value)
         elif operator == '>':
-            return cls.q.where(getattr(cls, key) > value)
+            return cls.q.where(column > value)
         elif operator == '<':
-            return cls.q.where(getattr(cls, key) < value)
-        return cls.q.where(getattr(cls, key) == value)
+            return cls.q.where(column < value)
+        elif operator == '~':
+            return cls.q.where(column.startswith(value))
+        return cls.q.where(column == value)
 
     @classmethod
     def query(cls, key, value):
@@ -65,7 +68,7 @@ class Base(Model):
         if hasattr(cls, key) is False:
             return None
         operator = None
-        if value[0] in ['!', '>', '<']:
+        if value[0] in ['!', '>', '<', '~']:
             operator = value[0]
             value = value[1:]
         cls.q = cls.filter(key, value, operator)
