@@ -22,9 +22,15 @@ class Collections(BaseHandler):
 
     def order(self, params):
         """
-        Extracts the _order parameter when present
+        Sets _order to the requested order, or leaves it to the default value.
         """
-        self._order = params.pop('_order', None)
+        order = params.pop('_order', None)
+        if order is None:
+            return None
+        column = getattr(self.model, order)
+        if column is None:
+            return None
+        self._order = column
 
     @staticmethod
     def apply_owner(user, payload):
