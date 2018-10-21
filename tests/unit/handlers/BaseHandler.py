@@ -11,9 +11,11 @@ def handler(magic):
     return handler
 
 
-def test_basehandler_init():
-    handler = BaseHandler('model')
-    assert handler.model == 'model'
+def test_basehandler_init(magic):
+    model = magic()
+    handler = BaseHandler(model)
+    assert handler.model == model
+    assert handler._order == model.id
 
 
 def test_basehandler_embeds(handler, magic):

@@ -116,10 +116,9 @@ def test_collection_paginate_data(collection, magic):
     """
     collection._page = 1
     collection._items = 20
-    collection._order = 'order'
     data = magic()
     result = collection.paginate_data(data)
-    data.order_by.assert_called_with('order')
+    data.order_by.assert_called_with(collection._order)
     data.order_by().paginate.assert_called_with(1, 20)
     assert data.order_by().paginate().execute.call_count == 1
     assert result == list(data.order_by().paginate().execute())
