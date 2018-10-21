@@ -51,7 +51,8 @@ class Collections(BaseHandler):
         """
         Paginate data
         """
-        return list(data.paginate(self._page, self._items).execute())
+        query = data.order_by(self._order).paginate(self._page, self._items)
+        return list(query.execute())
 
     def on_get(self, request, response, **params):
         """

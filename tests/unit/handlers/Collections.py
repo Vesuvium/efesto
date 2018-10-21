@@ -107,11 +107,13 @@ def test_collection_paginate_data(collection, magic):
     """
     collection._page = 1
     collection._items = 20
+    collection._order = 'order'
     data = magic()
     result = collection.paginate_data(data)
-    data.paginate.assert_called_with(1, 20)
-    assert data.paginate().execute.call_count == 1
-    assert result == list(data.paginate().execute())
+    data.order_by.assert_called_with('order')
+    data.order_by().paginate.assert_called_with(1, 20)
+    assert data.order_by().paginate().execute.call_count == 1
+    assert result == list(data.order_by().paginate().execute())
 
 
 def test_collection_on_get(patch, magic, collection, siren):
