@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from efesto.models import db
-
-from peewee import PostgresqlDatabase
+from efesto.models import Proxy, db
 
 
 def test_db():
-    assert isinstance(db, PostgresqlDatabase)
+    assert isinstance(db, Proxy)

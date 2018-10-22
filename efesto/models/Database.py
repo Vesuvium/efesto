@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from peewee import PostgresqlDatabase
+from .Proxy import Proxy
 
-
-db = PostgresqlDatabase(None)
+db = Proxy()
