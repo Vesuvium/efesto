@@ -17,7 +17,7 @@ def config():
 
 
 def test_config():
-    db_url = 'postgres://postgres:postgres@localhost:5432/efesto'
+    db_url = 'sqlite:///efesto.db'
     assert Config.defaults['db_url'] == db_url
     assert Config.defaults['jwt_secret'] == 'secret'
     assert Config.defaults['jwt_leeway'] == 5

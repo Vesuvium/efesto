@@ -5,7 +5,7 @@ from efesto.models import Base, db
 
 from peewee import (AutoField, BooleanField, CharField, DateTimeField,
                     FloatField, ForeignKeyField, IntegerField, Model,
-                    SQL, TextField)
+                    PostgresqlDatabase, SQL, SqliteDatabase, TextField)
 
 from playhouse import db_url
 
@@ -56,13 +56,31 @@ def test_get_columns():
     assert columns[7] == {'name': 'integerfield', 'type': 'number'}
 
 
-def test_base_init_db(patch):
+def test_base_db_instance(patch):
+    patch.init(SqliteDatabase)
     patch.object(db_url, 'parse')
-    patch.object(db, 'init')
-    Base.init_db('url')
+    result = Base.db_instance('url')
     db_url.parse.assert_called_with('url')
     db_url.parse().pop.assert_called_with('database')
-    db.init.assert_called_with(db_url.parse().pop(), **db_url.parse())
+    SqliteDatabase.__init__.assert_called_with(db_url.parse().pop())
+    assert isinstance(result, SqliteDatabase)
+
+
+def test_base_db_instance_postgres(patch):
+    patch.init(PostgresqlDatabase)
+    patch.object(db_url, 'parse')
+    result = Base.db_instance('postgres')
+    db_str = db_url.parse()
+    PostgresqlDatabase.__init__.assert_called_with(db_str.pop(), **db_str)
+    assert isinstance(result, PostgresqlDatabase)
+
+
+def test_base_init_db(patch):
+    patch.object(Base, 'db_instance')
+    patch.object(db, 'initialize')
+    Base.init_db('url')
+    Base.db_instance.assert_called_with('url')
+    db.initialize.assert_called_with(Base.db_instance())
 
 
 def test_base_update_item(patch, base):

@@ -5,7 +5,7 @@ import os
 class Config:
 
     defaults = {
-        'db_url': 'postgres://postgres:postgres@localhost:5432/efesto',
+        'db_url': 'sqlite:///efesto.db',
         'jwt_secret': 'secret',
         'jwt_leeway': 5,
         'jwt_audience': 'efesto'

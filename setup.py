@@ -18,7 +18,7 @@ readme = io.open('README.md', 'r', encoding='utf-8').read()
 
 setup(
     name='efesto',
-    description='RESTful (micro)server that can build an API in minutes.',
+    description='RESTful (micro)server that can generate an API in minutes.',
     long_description=readme,
     long_description_content_type='text/markdown',
     url='https://github.com/getefesto/efesto',
