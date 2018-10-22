@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from peewee import IntegerField, Model, SQL
+from peewee import IntegerField, Model, PostgresqlDatabase, SQL, SqliteDatabase
 
 from playhouse import db_url
 
@@ -34,10 +34,22 @@ class Base(Model):
         return columns
 
     @staticmethod
-    def init_db(url):
+    def db_instance(url):
+        """
+        Create the correct database instance from the url
+        """
         dictionary = db_url.parse(url)
         name = dictionary.pop('database')
-        db.init(name, **dictionary)
+        if url.startswith('postgres'):
+            return PostgresqlDatabase(name, **dictionary)
+        return SqliteDatabase(name)
+
+    @classmethod
+    def init_db(cls, url):
+        """
+        Initailize the database with the instance
+        """
+        db.initialize(cls.db_instance(url))
 
     def update_item(self, data):
         for key, value in data.items():
