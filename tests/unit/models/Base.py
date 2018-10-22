@@ -107,6 +107,18 @@ def test_base_filter_operators(magic, operator):
     Base.q.where.assert_called_with(False)
 
 
+def test_base_filter_list(magic):
+    """
+    Ensures a list produces an IN query.
+    """
+    Base.q = magic()
+    Base.key = magic()
+    Base.model = magic(key='value')
+    Base.filter('key', ['a', 'b'], None)
+    Base.key.in_.assert_called_with(['a', 'b'])
+    Base.q.where.assert_called_with(Base.key.in_())
+
+
 def test_base_filter_operators_startswith(magic):
     """
     Ensures ~ produces a startswith query.

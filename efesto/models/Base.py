@@ -62,6 +62,8 @@ class Base(Model):
         Adds a filter to the current query
         """
         column = getattr(cls, key)
+        if isinstance(value, list):
+            return cls.q.where(column.in_(value))
         if operator == '!':
             return cls.q.where(column != value)
         elif operator == '>':
