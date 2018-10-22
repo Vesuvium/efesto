@@ -11,9 +11,8 @@ def test_app_run(patch):
     patch.many(Api, ['cherries', 'add_endpoint', 'dynamic_endpoints'])
     patch.object(Base, 'init_db')
     patch.object(Types, 'select')
-    url = 'postgres://postgres:postgres@localhost:5432/efesto'
     result = App.run()
-    Base.init_db.assert_called_with(url)
+    Base.init_db.assert_called_with('sqlite:///efesto.db')
     Authentication.__init__.assert_called_with('secret', 'efesto')
     assert Api.__init__.call_count == 1
     assert Api.add_endpoint.call_count == 3
