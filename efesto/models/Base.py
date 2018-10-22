@@ -72,6 +72,16 @@ class Base(Model):
             return cls.q.where(column.startswith(value))
         return cls.q.where(column == value)
 
+    @staticmethod
+    def cast(value):
+        if value == 'true':
+            return True
+        elif value == 'false':
+            return False
+        elif value == 'null':
+            return None
+        return value
+
     @classmethod
     def query(cls, key, value):
         """
@@ -83,7 +93,7 @@ class Base(Model):
         if value[0] in ['!', '>', '<', '~']:
             operator = value[0]
             value = value[1:]
-        cls.q = cls.filter(key, value, operator)
+        cls.q = cls.filter(key, cls.cast(value), operator)
 
     group = IntegerField(default=1, constraints=[SQL('DEFAULT 1')])
     owner_permission = IntegerField(default=3, constraints=[SQL('DEFAULT 3')])

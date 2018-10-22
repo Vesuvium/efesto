@@ -119,22 +119,36 @@ def test_base_filter_operators_startswith(magic):
     Base.q.where.assert_called_with(Base.key.startswith())
 
 
+def test_base_cast():
+    assert Base.cast('true') is True
+
+
+def test_base_cast_false():
+    assert Base.cast('false') is False
+
+
+def test_base_cast_none():
+    assert Base.cast('null') is None
+
+
 def test_base_query(patch, magic):
-    patch.object(Base, 'filter')
+    patch.many(Base, ['filter', 'cast'])
     Base.query('key', 'value')
-    Base.filter.assert_called_with('key', 'value', None)
+    Base.cast.assert_called_with('value')
+    Base.filter.assert_called_with('key', Base.cast(), None)
     assert Base.q == Base.filter()
 
 
 def test_base_query_not_field(patch, magic):
     Base.q = None
-    patch.object(Base, 'filter')
+    patch.many(Base, ['filter', 'cast'])
     Base.query('nokey', 'value')
     assert Base.q is None
 
 
 @mark.parametrize('operator', ['!', '>', '<', '~'])
 def test_base_query_operators(patch, magic, operator):
-    patch.object(Base, 'filter')
+    patch.many(Base, ['filter', 'cast'])
     Base.query('key', '{}value'.format(operator))
-    Base.filter.assert_called_with('key', 'value', operator)
+    Base.cast.assert_called_with('value')
+    Base.filter.assert_called_with('key', Base.cast(), operator)
