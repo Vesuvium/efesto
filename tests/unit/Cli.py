@@ -14,9 +14,9 @@ from pytest import fixture
 
 
 @fixture
-def quickstart(patch):
+def quickstart(patch, magic):
     patch.object(Base, 'init_db')
-    patch.object(db, 'create_tables')
+    db.create_tables = magic()
 
 
 @fixture
