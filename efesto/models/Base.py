@@ -10,13 +10,18 @@ class Base(Model):
 
     conversions = {
         'AutoField': 'number',
+        'BigIntegerField': 'number',
         'BooleanField': 'number',
         'CharField': 'text',
-        'TextField': 'text',
-        'DateTimeField': 'date',
+        'DateField': 'date',
+        'DateTimeField': 'datetime',
+        'DecimalField': 'number',
+        'DoubleField': 'number',
         'FloatField': 'number',
         'ForeignKeyField': 'number',
-        'IntegerField': 'number'
+        'IntegerField': 'number',
+        'TextField': 'text',
+        'UUIDField': 'text'
     }
 
     class Meta:
@@ -34,7 +39,7 @@ class Base(Model):
         return columns
 
     @staticmethod
-    def db_instance(url):
+    def db_instance(url, **kwargs):
         """
         Create the correct database instance from the url
         """
@@ -42,14 +47,14 @@ class Base(Model):
         name = dictionary.pop('database')
         if url.startswith('postgres'):
             return PostgresqlDatabase(name, **dictionary)
-        return SqliteDatabase(name)
+        return SqliteDatabase(name, **kwargs)
 
     @classmethod
-    def init_db(cls, url):
+    def init_db(cls, url, **kwargs):
         """
         Initailize the database with the instance
         """
-        db.initialize(cls.db_instance(url))
+        db.initialize(cls.db_instance(url, **kwargs))
 
     def update_item(self, data):
         for key, value in data.items():

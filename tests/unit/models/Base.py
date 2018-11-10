@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from collections import OrderedDict
-
 from efesto.models import Base, db
 
-from peewee import (AutoField, BooleanField, CharField, DateTimeField,
+from peewee import (AutoField, BigIntegerField, BooleanField, CharField,
+                    DateField, DateTimeField, DecimalField, DoubleField,
                     FloatField, ForeignKeyField, IntegerField, Model,
-                    PostgresqlDatabase, SQL, SqliteDatabase, TextField)
+                    PostgresqlDatabase, SQL, SqliteDatabase, TextField,
+                    UUIDField)
 
 from playhouse import db_url
 
@@ -33,27 +33,31 @@ def test_base_model():
     assert issubclass(Base, Model)
 
 
-def test_get_columns():
-    fields = (
-        ('autofield', AutoField()),
-        ('boolfield', BooleanField()),
-        ('charfield', CharField()),
-        ('textfield', TextField()),
-        ('datetimefield', DateTimeField()),
-        ('floatfield', FloatField()),
-        ('foreignfield', ForeignKeyField(Base)),
-        ('integerfield', IntegerField())
-    )
-    Base._meta.fields = OrderedDict(fields)
+@mark.parametrize('field, field_type', [
+    (AutoField, 'number'),
+    (BigIntegerField, 'number'),
+    (BooleanField, 'number'),
+    (CharField, 'text'),
+    (DateField, 'date'),
+    (DateTimeField, 'datetime'),
+    (DecimalField, 'number'),
+    (DoubleField, 'number'),
+    (FloatField, 'number'),
+    (IntegerField, 'number'),
+    (TextField, 'text'),
+    (UUIDField, 'text')
+
+])
+def test_get_columns(field, field_type):
+    Base._meta.fields = {'field': field()}
     columns = Base.get_columns()
-    assert columns[0] == {'name': 'autofield', 'type': 'number'}
-    assert columns[1] == {'name': 'boolfield', 'type': 'number'}
-    assert columns[2] == {'name': 'charfield', 'type': 'text'}
-    assert columns[3] == {'name': 'textfield', 'type': 'text'}
-    assert columns[4] == {'name': 'datetimefield', 'type': 'date'}
-    assert columns[5] == {'name': 'floatfield', 'type': 'number'}
-    assert columns[6] == {'name': 'foreignfield', 'type': 'number'}
-    assert columns[7] == {'name': 'integerfield', 'type': 'number'}
+    assert columns[0] == {'name': 'field', 'type': field_type}
+
+
+def test_get_columns_foreign_key():
+    Base._meta.fields = {'field': ForeignKeyField(Base)}
+    columns = Base.get_columns()
+    assert columns[0] == {'name': 'field', 'type': 'number'}
 
 
 def test_base_db_instance(patch):
@@ -75,12 +79,30 @@ def test_base_db_instance_postgres(patch):
     assert isinstance(result, PostgresqlDatabase)
 
 
+def test_base_db_instance_extra_options(patch):
+    patch.init(SqliteDatabase)
+    patch.object(db_url, 'parse')
+    Base.db_instance('url', autocommit=False)
+    pop = db_url.parse().pop()
+    SqliteDatabase.__init__.assert_called_with(pop, autocommit=False)
+
+
 def test_base_init_db(patch):
     patch.object(Base, 'db_instance')
     patch.object(db, 'initialize')
     Base.init_db('url')
     Base.db_instance.assert_called_with('url')
     db.initialize.assert_called_with(Base.db_instance())
+
+
+def test_base_init_db_extra_options(patch):
+    """
+    Ensures Base.init_db passes extra options to Base.db_instance
+    """
+    patch.object(Base, 'db_instance')
+    patch.object(db, 'initialize')
+    Base.init_db('url', autocommit=False)
+    Base.db_instance.assert_called_with('url', autocommit=False)
 
 
 def test_base_update_item(patch, base):
