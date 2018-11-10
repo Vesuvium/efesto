@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from peewee import (BigIntegerField, BooleanField, CharField, DateTimeField,
-                    FloatField, ForeignKeyField, IntegerField, SQL, TextField)
+                    DoubleField, FloatField, ForeignKeyField, IntegerField,
+                    SQL, TextField)
 
 from .models import Base, Fields, Users
 
@@ -16,6 +17,7 @@ class Generator:
         'int': IntegerField,
         'bigint': BigIntegerField,
         'float': FloatField,
+        'double': DoubleField,
         'boolean': BooleanField,
         'date': DateTimeField
     }
