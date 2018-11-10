@@ -4,7 +4,7 @@ from efesto.models import Base, Fields
 
 from peewee import (BigIntegerField, BooleanField, CharField, DateTimeField,
                     DecimalField, DoubleField, FloatField, ForeignKeyField,
-                    IntegerField, SQL, TextField)
+                    IntegerField, SQL, TextField, UUIDField)
 
 from pytest import fixture, mark
 
@@ -26,6 +26,7 @@ def test_mappings():
     assert Generator.mappings['decimal'] == DecimalField
     assert Generator.mappings['boolean'] == BooleanField
     assert Generator.mappings['date'] == DateTimeField
+    assert Generator.mappings['uuid'] == UUIDField
 
 
 def test_generator_init():
