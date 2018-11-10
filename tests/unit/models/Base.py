@@ -87,6 +87,16 @@ def test_base_init_db(patch):
     db.initialize.assert_called_with(Base.db_instance())
 
 
+def test_base_init_db_extra_options(patch):
+    """
+    Ensures Base.init_db passes extra options to Base.db_instance
+    """
+    patch.object(Base, 'db_instance')
+    patch.object(db, 'initialize')
+    Base.init_db('url', autocommit=False)
+    Base.db_instance.assert_called_with('url', autocommit=False)
+
+
 def test_base_update_item(patch, base):
     patch.object(Base, 'save')
     base.update_item({'hello': 'world'})

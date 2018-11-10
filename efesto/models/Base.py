@@ -50,11 +50,11 @@ class Base(Model):
         return SqliteDatabase(name)
 
     @classmethod
-    def init_db(cls, url):
+    def init_db(cls, url, **kwargs):
         """
         Initailize the database with the instance
         """
-        db.initialize(cls.db_instance(url))
+        db.initialize(cls.db_instance(url, **kwargs))
 
     def update_item(self, data):
         for key, value in data.items():
