@@ -79,6 +79,14 @@ def test_base_db_instance_postgres(patch):
     assert isinstance(result, PostgresqlDatabase)
 
 
+def test_base_db_instance_extra_options(patch):
+    patch.init(SqliteDatabase)
+    patch.object(db_url, 'parse')
+    Base.db_instance('url', autocommit=False)
+    pop = db_url.parse().pop()
+    SqliteDatabase.__init__.assert_called_with(pop, autocommit=False)
+
+
 def test_base_init_db(patch):
     patch.object(Base, 'db_instance')
     patch.object(db, 'initialize')

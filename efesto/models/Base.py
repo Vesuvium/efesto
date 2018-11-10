@@ -39,7 +39,7 @@ class Base(Model):
         return columns
 
     @staticmethod
-    def db_instance(url):
+    def db_instance(url, **kwargs):
         """
         Create the correct database instance from the url
         """
@@ -47,7 +47,7 @@ class Base(Model):
         name = dictionary.pop('database')
         if url.startswith('postgres'):
             return PostgresqlDatabase(name, **dictionary)
-        return SqliteDatabase(name)
+        return SqliteDatabase(name, **kwargs)
 
     @classmethod
     def init_db(cls, url, **kwargs):
