@@ -2,8 +2,8 @@
 from efesto.Generator import Generator
 from efesto.models import Base, Fields
 
-from peewee import (BooleanField, CharField, DateTimeField, FloatField,
-                    ForeignKeyField, IntegerField, SQL, TextField)
+from peewee import (BigIntegerField, BooleanField, CharField, DateTimeField,
+                    FloatField, ForeignKeyField, IntegerField, SQL, TextField)
 
 from pytest import fixture, mark
 
@@ -19,6 +19,7 @@ def test_mappings():
     assert Generator.mappings['string'] == CharField
     assert Generator.mappings['text'] == TextField
     assert Generator.mappings['int'] == IntegerField
+    assert Generator.mappings['bigint'] == BigIntegerField
     assert Generator.mappings['float'] == FloatField
     assert Generator.mappings['boolean'] == BooleanField
     assert Generator.mappings['date'] == DateTimeField
