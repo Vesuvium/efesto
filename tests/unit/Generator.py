@@ -2,9 +2,9 @@
 from efesto.Generator import Generator
 from efesto.models import Base, Fields
 
-from peewee import (BigIntegerField, BooleanField, CharField, DateTimeField,
-                    DecimalField, DoubleField, FloatField, ForeignKeyField,
-                    IntegerField, SQL, TextField, UUIDField)
+from peewee import (BigIntegerField, BooleanField, CharField, DateField,
+                    DateTimeField, DecimalField, DoubleField, FloatField,
+                    ForeignKeyField, IntegerField, SQL, TextField, UUIDField)
 
 from pytest import fixture, mark
 
@@ -25,7 +25,8 @@ def test_mappings():
     assert Generator.mappings['double'] == DoubleField
     assert Generator.mappings['decimal'] == DecimalField
     assert Generator.mappings['boolean'] == BooleanField
-    assert Generator.mappings['date'] == DateTimeField
+    assert Generator.mappings['date'] == DateField
+    assert Generator.mappings['datetime'] == DateTimeField
     assert Generator.mappings['uuid'] == UUIDField
 
 
@@ -36,10 +37,16 @@ def test_generator_init():
 
 @mark.parametrize('field_type, expected', [
     ('string', CharField),
+    ('text', TextField),
     ('int', IntegerField),
+    ('bigint', BigIntegerField),
     ('float', FloatField),
+    ('double', DoubleField),
+    ('decimal', DecimalField),
     ('boolean', BooleanField),
-    ('date', DateTimeField)
+    ('date', DateField),
+    ('datetime', DateTimeField),
+    ('uuid', UUIDField)
 ])
 def test_generator_make_field(magic, generator, field_type, expected):
     retrieved_field = magic(field_type=field_type, default_value=None)
