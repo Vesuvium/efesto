@@ -10,13 +10,18 @@ class Base(Model):
 
     conversions = {
         'AutoField': 'number',
+        'BigIntegerField': 'number',
         'BooleanField': 'number',
         'CharField': 'text',
-        'TextField': 'text',
-        'DateTimeField': 'date',
+        'DateField': 'date',
+        'DateTimeField': 'datetime',
+        'DecimalField': 'number',
+        'DoubleField': 'number',
         'FloatField': 'number',
         'ForeignKeyField': 'number',
-        'IntegerField': 'number'
+        'IntegerField': 'number',
+        'TextField': 'text',
+        'UUIDField': 'text'
     }
 
     class Meta:
