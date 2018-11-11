@@ -83,7 +83,7 @@ def test_siren_encode(patch):
     patch.object(Siren, 'entities')
     patch.object(rapidjson, 'dumps')
     Siren().encode('utf-8')
-    kwargs = {'datetime_mode': 1, 'number_mode': rapidjson.NM_NATIVE}
+    kwargs = {'datetime_mode': 1, 'number_mode': 7}
     rapidjson.dumps.assert_called_with(Siren.entities(), **kwargs)
 
 
@@ -100,5 +100,5 @@ def test_siren_encode_one(patch, siren):
     siren.data = {}
     siren.encode('utf-8')
     Siren.entity.assert_called_with(siren.path, siren.data, includes=[])
-    kwargs = {'datetime_mode': 1, 'number_mode': rapidjson.NM_NATIVE}
+    kwargs = {'datetime_mode': 1, 'number_mode': 7}
     rapidjson.dumps.assert_called_with(Siren.entity(), **kwargs)
