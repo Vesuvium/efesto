@@ -27,10 +27,15 @@ class Collections(BaseHandler):
         order = params.pop('_order', None)
         if order is None:
             return None
+
+        direction = 'asc'
+        if order[0] == '-':
+            order = order[1:]
+            direction = 'desc'
         column = getattr(self.model, order)
         if column is None:
             return None
-        self._order = column
+        self._order = getattr(column, direction)()
 
     @staticmethod
     def apply_owner(user, payload):

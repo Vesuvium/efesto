@@ -54,7 +54,15 @@ def test_collection_order(collection):
     Ensures Collections.order can extract the _order parameter
     """
     collection.order({'_order': 'rank'})
-    assert collection._order == collection.model.rank
+    assert collection._order == collection.model.rank.asc()
+
+
+def test_collection_order_desc(collection):
+    """
+    Ensures Collections.order allows descending queries
+    """
+    collection.order({'_order': '-rank'})
+    assert collection._order == collection.model.rank.desc()
 
 
 def test_collection_order_no_column(collection):
