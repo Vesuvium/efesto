@@ -85,8 +85,8 @@ class Siren:
         return {'entities': entities, 'actions': actions, 'links': links}
 
     def encode(self, *args, includes=[]):
+        kwargs = {'datetime_mode': 1, 'number_mode': rapidjson.NM_NATIVE}
         if isinstance(self.data, list):
-            return rapidjson.dumps(self.entities(includes=includes),
-                                   datetime_mode=1)
+            return rapidjson.dumps(self.entities(includes=includes), **kwargs)
         output = self.entity(self.path, self.data, includes=includes)
-        return rapidjson.dumps(output, datetime_mode=1)
+        return rapidjson.dumps(output, **kwargs)
