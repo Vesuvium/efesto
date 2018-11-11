@@ -15,7 +15,7 @@ class Tokens:
         payload = {**kwargs}
         if expiration:
             now = datetime.datetime.utcnow()
-            payload['exp'] = now + datetime.timedelta(100)
+            payload['exp'] = now + datetime.timedelta(expiration)
         return jwt.encode(payload, secret)
 
     @staticmethod
