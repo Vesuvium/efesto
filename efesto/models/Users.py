@@ -35,9 +35,7 @@ class Users(Base):
         """
         Does an action with a query, on a model
         """
-        actions = {
-            'read': 1,
-            'edit': 2,
-            'eliminate': 3
-        }
+        if self.superuser:
+            return query
+        actions = {'read': 1, 'edit': 2, 'eliminate': 3}
         return self._apply_permissions(query, model, actions[action])
