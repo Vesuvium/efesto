@@ -104,5 +104,5 @@ class Base(Model):
 
     group = IntegerField(default=1, constraints=[SQL('DEFAULT 1')])
     owner_permission = IntegerField(default=3, constraints=[SQL('DEFAULT 3')])
-    group_permission = IntegerField(default=1, constraints=[SQL('DEFAULT 1')])
+    group_permission = IntegerField(default=0, constraints=[SQL('DEFAULT 0')])
     others_permission = IntegerField(default=0, constraints=[SQL('DEFAULT 0')])

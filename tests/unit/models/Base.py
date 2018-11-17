@@ -25,8 +25,8 @@ def test_base_model():
     assert Base.owner_permission.default == 3
     assert Base.owner_permission.constraints == [SQL('DEFAULT 3')]
     assert isinstance(Base.group_permission, IntegerField)
-    assert Base.group_permission.default == 1
-    assert Base.group_permission.constraints == [SQL('DEFAULT 1')]
+    assert Base.group_permission.default == 0
+    assert Base.group_permission.constraints == [SQL('DEFAULT 0')]
     assert isinstance(Base.others_permission, IntegerField)
     assert Base.others_permission.default == 0
     assert Base.others_permission.constraints == [SQL('DEFAULT 0')]
