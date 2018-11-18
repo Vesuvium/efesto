@@ -6,20 +6,20 @@ class BaseHandler:
         self.model = model
         self._order = self.model.id
 
+    def join(self, table):
+        property = getattr(self.model, table)
+        model = property.rel_model
+        if hasattr(property, 'field'):
+            property = property.field
+        return self.model.q.join(model, on=(property == model.id))
+
     def embeds(self, params):
         """
         Parses embeds and set joins on the query
         """
-        embeds = params.pop('_embeds', None)
+        embeds = params.pop('_embeds', [])
         if isinstance(embeds, str):
             embeds = [embeds]
-        if embeds:
-            for embed in embeds:
-                property = getattr(self.model, embed)
-                model = property.rel_model
-                if hasattr(property, 'field'):
-                    property = property.field
-                    model = self.model
-                self.model.q.join(model, on=(property == model.id))
-            return embeds
-        return []
+        for embed in embeds:
+            self.model.q = self.join(embed)
+        return embeds
