@@ -18,25 +18,28 @@ def test_basehandler_init(magic):
     assert handler._order == model.id
 
 
-def test_basehandler_embeds(handler, magic):
+def test_basehandler_join(handler, magic):
+    """
+    Ensures join performs the joins correctly.
+    """
     model = magic(one=magic(spec_set=['rel_model']))
     handler.model = model
-    result = handler.embeds({'_embeds': 'one'})
+    result = handler.join('one')
     handler.model.q.join.assert_called_with(model.one.rel_model, on=False)
-    assert result == ['one']
+    assert result == handler.model.q.join()
 
 
-def test_basehandler_embeds_reverse(handler):
+def test_basehandler_embeds(patch, handler, magic):
     """
-    Verifies that embeds work with backrefs.
+    Ensures embeds updates the query and returns embeds.
     """
+    patch.object(BaseHandler, 'join')
     result = handler.embeds({'_embeds': 'one'})
-    model = handler.model
-    model.one.field = 'field'
-    handler.model.q.join.assert_called_with(model, on=False)
+    BaseHandler.join.assert_called_with('one')
+    assert handler.model.q == BaseHandler.join()
     assert result == ['one']
 
 
 def test_basehandler_embeds_none(handler):
-    result = handler.embeds({'_embeds': None})
+    result = handler.embeds({})
     assert result == []
