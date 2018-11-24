@@ -6,6 +6,7 @@ from efesto.App import App
 from efesto.Blueprints import Blueprints
 from efesto.Cli import Cli
 from efesto.Tokens import Tokens
+from efesto.Version import version
 from efesto.models import Base, Fields, Types, Users, db
 
 from peewee import OperationalError, ProgrammingError
@@ -96,6 +97,12 @@ def test_cli_load_blueprint(patch, runner, quickstart):
     runner.invoke(Cli.load_blueprint, ['filename'])
     Blueprints.load.assert_called_with('filename')
     assert Base.init_db.call_count == 1
+
+
+def test_cli_version(patch, runner):
+    patch.object(click, 'echo')
+    runner.invoke(Cli.version, [])
+    click.echo.assert_called_with('Version {}'.format(version))
 
 
 def test_cli_run(app, runner):

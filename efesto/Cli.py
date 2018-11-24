@@ -8,6 +8,7 @@ from .Blueprints import Blueprints
 from .Config import Config
 from .Generator import Generator
 from .Tokens import Tokens
+from .Version import version
 from .models import Base, Fields, Types, Users, db
 
 
@@ -82,6 +83,10 @@ class Cli:
         for dynamic_type in types:
             generator.generate(dynamic_type)
         db.create_tables(generator.models.values(), safe=True)
+
+    @main.command()
+    def version():
+        click.echo('Version {}'.format(version))
 
     @main.command()
     def run():

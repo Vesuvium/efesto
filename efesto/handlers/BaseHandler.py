@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from peewee import JOIN
 
 
 class BaseHandler:
@@ -11,7 +12,7 @@ class BaseHandler:
         model = property.rel_model
         if hasattr(property, 'field'):
             property = property.field
-        return self.model.q.join(model, on=(property == model.id))
+        return self.model.q.join_from(self.model, model, JOIN.LEFT_OUTER)
 
     def embeds(self, params):
         """
