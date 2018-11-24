@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from efesto.handlers import BaseHandler
 
-from peewee import JOIN
-
 from pytest import fixture
 
 
@@ -20,29 +18,25 @@ def test_basehandler_init(magic):
     assert handler._order == model.id
 
 
-def test_basehandler_join(handler, magic):
-    """
-    Ensures join performs the joins correctly.
-    """
+def test_basehandler_embeds(handler, magic):
     model = magic(one=magic(spec_set=['rel_model']))
     handler.model = model
-    result = handler.join('one')
-    args = (handler.model, model.one.rel_model, JOIN.LEFT_OUTER)
-    handler.model.q.join_from.assert_called_with(*args)
-    assert result == handler.model.q.join_from()
-
-
-def test_basehandler_embeds(patch, handler, magic):
-    """
-    Ensures embeds updates the query and returns embeds.
-    """
-    patch.object(BaseHandler, 'join')
     result = handler.embeds({'_embeds': 'one'})
-    BaseHandler.join.assert_called_with('one')
-    assert handler.model.q == BaseHandler.join()
+    handler.model.q.join.assert_called_with(model.one.rel_model, on=False)
+    assert result == ['one']
+
+
+def test_basehandler_embeds_reverse(handler):
+    """
+    Verifies that embeds work with backrefs.
+    """
+    result = handler.embeds({'_embeds': 'one'})
+    model = handler.model
+    model.one.field = 'field'
+    handler.model.q.join.assert_called_with(model, on=False)
     assert result == ['one']
 
 
 def test_basehandler_embeds_none(handler):
-    result = handler.embeds({})
+    result = handler.embeds({'_embeds': None})
     assert result == []
