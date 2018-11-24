@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from efesto.handlers import BaseHandler
 
+from peewee import JOIN
+
 from pytest import fixture
 
 
@@ -25,8 +27,9 @@ def test_basehandler_join(handler, magic):
     model = magic(one=magic(spec_set=['rel_model']))
     handler.model = model
     result = handler.join('one')
-    handler.model.q.join.assert_called_with(model.one.rel_model, on=False)
-    assert result == handler.model.q.join()
+    args = (handler.model, model.one.rel_model, JOIN.LEFT_OUTER)
+    handler.model.q.join_from.assert_called_with(*args)
+    assert result == handler.model.q.join_from()
 
 
 def test_basehandler_embeds(patch, handler, magic):
