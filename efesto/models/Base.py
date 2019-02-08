@@ -111,6 +111,13 @@ class Base(Model):
             setattr(self, key, value)
         return self.save()
 
+    def edit(cls, data):
+        try:
+            with db.atomic():
+                return cls.update_item(data)
+        except IntegrityError:
+            return None
+
     group = IntegerField(default=1, constraints=[SQL('DEFAULT 1')])
     owner_permission = IntegerField(default=3, constraints=[SQL('DEFAULT 3')])
     group_permission = IntegerField(default=0, constraints=[SQL('DEFAULT 0')])

@@ -202,3 +202,19 @@ def test_base_update_item(patch, base):
     result = base.update_item({'hello': 'world'})
     assert base.hello == 'world'
     assert result == base.save()
+
+
+@mark.skip
+def test_base_edit(patch, base):
+    patch.object(db, 'atomic')
+    patch.object(Base, 'update_item')
+    result = base.edit({'hello': 'world'})
+    Base.update_item.assert_called_with({'hello': 'world'})
+    assert result == Base.update_item()
+
+
+@mark.skip
+def test_base_edit_error(patch, magic):
+    patch.object(db, 'atomic')
+    patch.object(Base, 'update_item', side_effect=IntegrityError)
+    assert Base.edit({'hello': 'world'}) is None
