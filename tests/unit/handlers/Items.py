@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from efesto.handlers import BaseHandler, Items
 
-from falcon import HTTPNotFound, HTTP_204
+from falcon import HTTPBadRequest, HTTPNotFound, HTTP_204
 
 from peewee import DoesNotExist
 
@@ -60,10 +60,20 @@ def test_item_on_patch(patch, magic, item, siren):
     item.model.select().where.assert_called_with(False)
     user.do.assert_called_with('edit', item.model.select().where(),
                                item.model)
-    assert user.do().get.call_count == 1
+    user.do().get().edit.assert_called_with(rapidjson.load())
     siren.__init__.assert_called_with(item.model, user.do().get(),
                                       request.path)
     assert response.body == siren().encode()
+
+
+def test_item_on_patch_400(patch, magic, item):
+    patch.object(rapidjson, 'load')
+    request = magic()
+    response = magic()
+    user = magic()
+    user.do().get().edit.return_value = None
+    with raises(HTTPBadRequest):
+        item.on_patch(request, response, user=user, id=1)
 
 
 def test_items_on_patch_404(patch, magic, item):

@@ -3,8 +3,8 @@ from efesto.models import Base, db
 
 from peewee import (AutoField, BigIntegerField, BooleanField, CharField,
                     DateField, DateTimeField, DecimalField, DoubleField,
-                    FloatField, ForeignKeyField, IntegerField, Model,
-                    PostgresqlDatabase, SQL, SqliteDatabase, TextField,
+                    FloatField, ForeignKeyField, IntegerField, IntegrityError,
+                    Model, PostgresqlDatabase, SQL, SqliteDatabase, TextField,
                     UUIDField)
 
 from playhouse import db_url
@@ -105,13 +105,6 @@ def test_base_init_db_extra_options(patch):
     Base.db_instance.assert_called_with('url', autocommit=False)
 
 
-def test_base_update_item(patch, base):
-    patch.object(Base, 'save')
-    base.update_item({'hello': 'world'})
-    assert base.hello == 'world'
-    assert base.save.call_count == 1
-
-
 def test_base_filter(magic):
     Base.q = magic()
     Base.key = 'value'
@@ -186,3 +179,42 @@ def test_base_query_operators(patch, magic, operator):
     Base.query('key', '{}value'.format(operator))
     Base.cast.assert_called_with('value')
     Base.filter.assert_called_with('key', Base.cast(), operator)
+
+
+@mark.skip
+def test_base_write(patch, magic):
+    patch.object(db, 'atomic')
+    patch.object(Base, 'create')
+    result = Base.write(args='args')
+    Base.create.assert_called_with(args='args')
+    assert result == Base.create()
+
+
+@mark.skip
+def test_base_write_error(patch, magic):
+    patch.object(db, 'atomic',)
+    patch.object(Base, 'create', side_effect=IntegrityError)
+    assert Base.write(args='args') is None
+
+
+def test_base_update_item(patch, base):
+    patch.object(Base, 'save')
+    result = base.update_item({'hello': 'world'})
+    assert base.hello == 'world'
+    assert result == base.save()
+
+
+@mark.skip
+def test_base_edit(patch, base):
+    patch.object(db, 'atomic')
+    patch.object(Base, 'update_item')
+    result = base.edit({'hello': 'world'})
+    Base.update_item.assert_called_with({'hello': 'world'})
+    assert result == Base.update_item()
+
+
+@mark.skip
+def test_base_edit_error(patch, magic):
+    patch.object(db, 'atomic')
+    patch.object(Base, 'update_item', side_effect=IntegrityError)
+    assert Base.edit({'hello': 'world'}) is None

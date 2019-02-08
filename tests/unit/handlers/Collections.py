@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from efesto.handlers import BaseHandler, Collections
 
-from falcon import HTTP_501
+from falcon import HTTPBadRequest, HTTP_501
 
-from pytest import fixture
+from pytest import fixture, raises
 
 import rapidjson
 
@@ -161,11 +161,22 @@ def test_collection_on_post(patch, magic, collection, siren):
     collection.on_post(request, response, user=user)
     rapidjson.load.assert_called_with(request.bounded_stream)
     collection.apply_owner.assert_called_with(user, rapidjson.load())
-    collection.model.create.assert_called_with(**rapidjson.load())
+    collection.model.write.assert_called_with(**rapidjson.load())
     siren.__init__.assert_called_with(collection.model,
-                                      collection.model.create(),
+                                      collection.model.write(),
                                       request.path)
     assert response.body == siren.encode()
+
+
+def test_collection_on_post_bad_request(patch, magic, collection, siren):
+    request = magic()
+    response = magic()
+    user = magic()
+    patch.object(rapidjson, 'load')
+    patch.object(Collections, 'apply_owner')
+    collection.model.write.return_value = None
+    with raises(HTTPBadRequest):
+        collection.on_post(request, response, user=user)
 
 
 def test_collection_on_patch(patch, magic, collection):
