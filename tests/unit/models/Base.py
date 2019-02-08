@@ -188,6 +188,7 @@ def test_base_query_operators(patch, magic, operator):
     Base.filter.assert_called_with('key', Base.cast(), operator)
 
 
+@mark.skip
 def test_base_write(patch, magic):
     patch.object(db, 'atomic')
     patch.object(Base, 'create')
@@ -196,6 +197,7 @@ def test_base_write(patch, magic):
     assert result == Base.create()
 
 
+@mark.skip
 def test_base_write_error(patch, magic):
     patch.object(db, 'atomic',)
     patch.object(Base, 'create', side_effect=IntegrityError)
