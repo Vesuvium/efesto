@@ -57,11 +57,6 @@ class Base(Model):
         """
         db.initialize(cls.db_instance(url, **kwargs))
 
-    def update_item(self, data):
-        for key, value in data.items():
-            setattr(self, key, value)
-        self.save()
-
     @classmethod
     def filter(cls, key, value, operator):
         """
@@ -110,6 +105,11 @@ class Base(Model):
                 return cls.create(**kwargs)
         except IntegrityError:
             return None
+
+    def update_item(self, data):
+        for key, value in data.items():
+            setattr(self, key, value)
+        return self.save()
 
     group = IntegerField(default=1, constraints=[SQL('DEFAULT 1')])
     owner_permission = IntegerField(default=3, constraints=[SQL('DEFAULT 3')])

@@ -105,13 +105,6 @@ def test_base_init_db_extra_options(patch):
     Base.db_instance.assert_called_with('url', autocommit=False)
 
 
-def test_base_update_item(patch, base):
-    patch.object(Base, 'save')
-    base.update_item({'hello': 'world'})
-    assert base.hello == 'world'
-    assert base.save.call_count == 1
-
-
 def test_base_filter(magic):
     Base.q = magic()
     Base.key = 'value'
@@ -202,3 +195,10 @@ def test_base_write_error(patch, magic):
     patch.object(db, 'atomic',)
     patch.object(Base, 'create', side_effect=IntegrityError)
     assert Base.write(args='args') is None
+
+
+def test_base_update_item(patch, base):
+    patch.object(Base, 'save')
+    result = base.update_item({'hello': 'world'})
+    assert base.hello == 'world'
+    assert result == base.save()
