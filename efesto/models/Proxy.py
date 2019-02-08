@@ -28,6 +28,9 @@ class Proxy(object):
             return getattr(self.obj, method)(*args, **kwargs)
         return inner
 
+    def atomic(self):
+        pass
+
     # Allow proxy to be used as a context-manager.
     __enter__ = passthrough('__enter__')
     __exit__ = passthrough('__exit__')

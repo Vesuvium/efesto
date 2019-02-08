@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from peewee import IntegerField, Model, PostgresqlDatabase, SQL, SqliteDatabase
+from peewee import (IntegerField, IntegrityError, Model, PostgresqlDatabase,
+                    SQL, SqliteDatabase)
 
 from playhouse import db_url
 
@@ -101,6 +102,14 @@ class Base(Model):
             operator = value[0]
             value = value[1:]
         cls.q = cls.filter(key, cls.cast(value), operator)
+
+    @classmethod
+    def write(cls, **kwargs):
+        try:
+            with db.atomic():
+                return cls.create(**kwargs)
+        except IntegrityError:
+            return None
 
     group = IntegerField(default=1, constraints=[SQL('DEFAULT 1')])
     owner_permission = IntegerField(default=3, constraints=[SQL('DEFAULT 3')])

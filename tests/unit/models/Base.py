@@ -3,8 +3,8 @@ from efesto.models import Base, db
 
 from peewee import (AutoField, BigIntegerField, BooleanField, CharField,
                     DateField, DateTimeField, DecimalField, DoubleField,
-                    FloatField, ForeignKeyField, IntegerField, Model,
-                    PostgresqlDatabase, SQL, SqliteDatabase, TextField,
+                    FloatField, ForeignKeyField, IntegerField, IntegrityError,
+                    Model, PostgresqlDatabase, SQL, SqliteDatabase, TextField,
                     UUIDField)
 
 from playhouse import db_url
@@ -186,3 +186,17 @@ def test_base_query_operators(patch, magic, operator):
     Base.query('key', '{}value'.format(operator))
     Base.cast.assert_called_with('value')
     Base.filter.assert_called_with('key', Base.cast(), operator)
+
+
+def test_base_write(patch, magic):
+    patch.object(db, 'atomic')
+    patch.object(Base, 'create')
+    result = Base.write(args='args')
+    Base.create.assert_called_with(args='args')
+    assert result == Base.create()
+
+
+def test_base_write_error(patch, magic):
+    patch.object(db, 'atomic',)
+    patch.object(Base, 'create', side_effect=IntegrityError)
+    assert Base.write(args='args') is None
