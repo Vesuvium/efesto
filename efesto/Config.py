@@ -5,8 +5,8 @@ from bassoon import Bassoon
 class Config(Bassoon):
 
     defaults = {
-        'db_url': 'sqlite:///efesto.db',
-        'jwt_secret': 'secret',
-        'jwt_leeway': 5,
-        'jwt_audience': 'efesto'
+        'DB_URL': 'sqlite:///efesto.db',
+        'JWT_SECRET': 'secret',
+        'JWT_LEEWAY': '5',
+        'JWT_AUDIENCE': 'efesto'
     }

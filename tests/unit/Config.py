@@ -10,7 +10,7 @@ def test_config():
 
 def test_config_defaults():
     db_url = 'sqlite:///efesto.db'
-    assert Config.defaults['db_url'] == db_url
-    assert Config.defaults['jwt_secret'] == 'secret'
-    assert Config.defaults['jwt_leeway'] == 5
-    assert Config.defaults['jwt_audience'] == 'efesto'
+    assert Config.defaults['DB_URL'] == db_url
+    assert Config.defaults['JWT_SECRET'] == 'secret'
+    assert Config.defaults['JWT_LEEWAY'] == '5'
+    assert Config.defaults['JWT_AUDIENCE'] == 'efesto'
