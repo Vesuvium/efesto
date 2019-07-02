@@ -28,6 +28,16 @@ class Generator:
     def __init__(self):
         self.models = {}
 
+    def field(self, field_type):
+        """
+        Finds the field to use, given a field type
+        """
+        if field_type in self.mappings:
+            return self.mappings[field_type]
+        elif field_type in self.models:
+            return ForeignKeyField
+        return CharField
+
     def make_field(self, field, classname):
         """
         Generates a field from a field row

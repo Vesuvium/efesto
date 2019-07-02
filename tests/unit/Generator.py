@@ -35,6 +35,20 @@ def test_generator_init():
     assert model.models == {}
 
 
+def test_generator_field(generator):
+    assert generator.field('unknown') == CharField
+
+
+def test_generator_field_from_mappings(generator):
+    generator.mappings = {'type': 'class'}
+    assert generator.field('type') == 'class'
+
+
+def test_generator_field_from_models(generator):
+    generator.models = {'type': 'model'}
+    assert generator.field('type') == ForeignKeyField
+
+
 @mark.parametrize('field_type, expected', [
     ('string', CharField),
     ('text', TextField),
