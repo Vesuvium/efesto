@@ -1,17 +1,9 @@
 #!/usr/bin/env python
 import io
-import os
-import sys
 
 from efesto.Version import version
 
 from setuptools import find_packages, setup
-
-
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    os.system('python setup.py bdist_wheel upload')
-    sys.exit()
 
 
 readme = io.open('README.md', 'r', encoding='utf-8').read()
@@ -34,13 +26,13 @@ setup(
     ],
     setup_requires=['pytest-runner'],
     install_requires=[
-        'falcon>=1.4.1',
-        'falcon-cors>=1.1.7',
-        'psycopg2-binary>=2.7.5',
-        'peewee>=3.7.1',
+        'bassoon>=1.0.0',
         'click==6.7',
         'colorama>=0.4.0',
-        'aratrum>=0.3.2',
+        'falcon>=1.4.1',
+        'falcon-cors>=1.1.7',
+        'peewee>=3.7.1',
+        'psycopg2-binary>=2.7.5',
         'python-rapidjson>=0.6.3',
         'pyjwt>=1.6.4',
         'ruamel.yaml>=0.15.74'

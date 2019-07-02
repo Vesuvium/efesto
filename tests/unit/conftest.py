@@ -39,6 +39,11 @@ def patch(mocker, patch_init, patch_many):
 
 
 @fixture
+def response(magic):
+    return magic()
+
+
+@fixture
 def type_instance(magic):
     type_instance = magic()
     type_instance.name = 'custom'
