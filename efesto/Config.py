@@ -8,5 +8,6 @@ class Config(Bassoon):
         'DB_URL': 'sqlite:///efesto.db',
         'JWT_SECRET': 'secret',
         'JWT_LEEWAY': '5',
-        'JWT_AUDIENCE': 'efesto'
+        'JWT_AUDIENCE': 'efesto',
+        'APP_NAME': 'efesto'
     }

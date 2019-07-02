@@ -14,3 +14,4 @@ def test_config_defaults():
     assert Config.defaults['JWT_SECRET'] == 'secret'
     assert Config.defaults['JWT_LEEWAY'] == '5'
     assert Config.defaults['JWT_AUDIENCE'] == 'efesto'
+    assert Config.defaults['APP_NAME'] == 'efesto'
