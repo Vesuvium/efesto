@@ -6,7 +6,7 @@ from peewee import (BigIntegerField, BooleanField, CharField, DateField,
                     DateTimeField, DecimalField, DoubleField, FloatField,
                     ForeignKeyField, IntegerField, SQL, TextField, UUIDField)
 
-from pytest import fixture, mark
+from pytest import fixture
 
 
 @fixture
@@ -49,56 +49,37 @@ def test_generator_field_from_models(generator):
     assert generator.field('type') == ForeignKeyField
 
 
-@mark.parametrize('field_type, expected', [
-    ('string', CharField),
-    ('text', TextField),
-    ('int', IntegerField),
-    ('bigint', BigIntegerField),
-    ('float', FloatField),
-    ('double', DoubleField),
-    ('decimal', DecimalField),
-    ('boolean', BooleanField),
-    ('date', DateField),
-    ('datetime', DateTimeField),
-    ('uuid', UUIDField)
-])
-def test_generator_make_field(magic, generator, field_type, expected):
-    retrieved_field = magic(field_type=field_type, default_value=None)
-    field = generator.make_field(retrieved_field, 'classname')
-    assert isinstance(field, expected)
+def test_generator_make_field(patch, magic, generator):
+    patch.object(Generator, 'field')
+    field = magic(default_value=None)
+    result = generator.make_field(field, 'classname')
+    Generator.field.assert_called_with(field.field_type)
+    Generator.field().assert_called_with(null=field.nullable,
+                                         unique=field.unique)
+    assert result == Generator.field()()
 
 
-def test_generator_make_field_custom(patch, magic, generator):
+def test_generator_make_field_foreign(patch, magic, generator):
     patch.init(ForeignKeyField)
-    generator.models = {'custom': magic()}
-    retrieved_field = magic(field_type='custom', default_value=None)
-    field = generator.make_field(retrieved_field, 'classname')
-    ForeignKeyField.__init__.assert_called_with(generator.models['custom'],
+    patch.object(Generator, 'field', return_value=ForeignKeyField)
+    field = magic(default_value=None)
+    result = generator.make_field(field, 'classname')
+    model = generator.models[field.field_type]
+    ForeignKeyField.__init__.assert_called_with(model, null=field.nullable,
+                                                unique=field.unique,
                                                 backref='classname')
-    assert isinstance(field, ForeignKeyField)
+    assert isinstance(result, ForeignKeyField)
 
 
-def test_generator_make_field_not_found(magic, generator):
-    assert isinstance(generator.make_field(magic(), 'classname'), CharField)
-
-
-def test_generator_make_field_nullable(magic, generator):
-    retrieved_field = magic(nullable=True, default_value=None)
-    field = generator.make_field(retrieved_field, 'classname')
-    assert field.null is True
-
-
-def test_generator_make_field_unique(magic, generator):
-    retrieved_field = magic(unique=True, default_value=None)
-    field = generator.make_field(retrieved_field, 'classname')
-    assert field.unique is True
-
-
-def test_generator_make_field_default_value(magic, generator):
-    retrieved_field = magic(default_value=0)
-    field = generator.make_field(retrieved_field, 'classname')
-    assert field.default == 0
-    assert field.constraints == [SQL('DEFAULT 0')]
+def test_generator_make_field_default_value(patch, magic, generator):
+    patch.init(SQL)
+    patch.object(Generator, 'field')
+    field = magic(default_value='value')
+    generator.make_field(field, 'classname')
+    SQL.__init__.assert_called_with('DEFAULT value')
+    kwargs = {'null': field.nullable, 'unique': field.unique,
+              'default': field.default_value, 'constraints': [SQL()]}
+    Generator.field().assert_called_with(**kwargs)
 
 
 def test_generator_attributes(patch, magic, generator):

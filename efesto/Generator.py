@@ -42,14 +42,12 @@ class Generator:
         """
         Generates a field from a field row
         """
-        custom_field = CharField
-        if field.field_type in self.mappings:
-            custom_field = self.mappings[field.field_type]
-        elif field.field_type in self.models:
-            return ForeignKeyField(self.models[field.field_type],
-                                   backref=classname)
+        custom_field = self.field(field.field_type)
         arguments = {'null': field.nullable, 'unique': field.unique}
-        if field.default_value is not None:
+        if custom_field == ForeignKeyField:
+            arguments['backref'] = classname
+            return custom_field(self.models[field.field_type], **arguments)
+        if field.default_value:
             constraints = [SQL('DEFAULT {}'.format(field.default_value))]
             arguments['default'] = field.default_value
             arguments['constraints'] = constraints
