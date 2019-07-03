@@ -16,5 +16,6 @@ def test_config_defaults():
     assert Config.defaults['JWT_LEEWAY'] == '5'
     assert Config.defaults['JWT_AUDIENCE'] == 'efesto'
     assert Config.defaults['LOG_LEVEL'] == 'error'
+    assert Config.defaults['PUBLIC_ENDPOINTS'] == 'index,version'
     assert Config.defaults['APP_NAME'] == 'efesto'
     assert Config.defaults['ADMIN_ENDPOINTS'] == '0'

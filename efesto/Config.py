@@ -11,6 +11,7 @@ class Config(Bassoon):
         'JWT_LEEWAY': '5',
         'JWT_AUDIENCE': 'efesto',
         'LOG_LEVEL': 'error',
+        'PUBLIC_ENDPOINTS': 'index,version',
         'APP_NAME': 'efesto',
         'ADMIN_ENDPOINTS': '0'
     }
