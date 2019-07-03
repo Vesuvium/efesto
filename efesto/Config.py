@@ -6,6 +6,7 @@ class Config(Bassoon):
 
     defaults = {
         'DB_URL': 'sqlite:///efesto.db',
+        'HATEOAS_ENCODER': 'siren',
         'JWT_SECRET': 'secret',
         'JWT_LEEWAY': '5',
         'JWT_AUDIENCE': 'efesto',
