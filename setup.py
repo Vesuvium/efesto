@@ -28,7 +28,7 @@ setup(
         'bassoon>=1.0.0',
         'click>=7.0',
         'colorama>=0.4.0',
-        'falcon>=1.4.1',
+        'falcon>=2.0.0',
         'falcon-cors>=1.1.7',
         'peewee>=3.7.1',
         'psycopg2-binary>=2.7.5',
