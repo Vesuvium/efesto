@@ -10,6 +10,7 @@ def test_config():
 
 def test_config_defaults():
     db_url = 'sqlite:///efesto.db'
+    assert Config.defaults['BATCH_ENDPOINTS'] == '1'
     assert Config.defaults['DB_URL'] == db_url
     assert Config.defaults['HATEOAS_ENCODER'] == 'siren'
     assert Config.defaults['JWT_SECRET'] == 'secret'

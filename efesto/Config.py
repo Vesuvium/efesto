@@ -5,6 +5,7 @@ from bassoon import Bassoon
 class Config(Bassoon):
 
     defaults = {
+        'BATCH_ENDPOINTS': '1',
         'DB_URL': 'sqlite:///efesto.db',
         'HATEOAS_ENCODER': 'siren',
         'JWT_SECRET': 'secret',
