@@ -26,7 +26,7 @@ setup(
     setup_requires=['pytest-runner'],
     install_requires=[
         'bassoon>=1.0.0',
-        'click==6.7',
+        'click>=7.0',
         'colorama>=0.4.0',
         'falcon>=1.4.1',
         'falcon-cors>=1.1.7',
