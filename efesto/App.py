@@ -12,8 +12,8 @@ class App:
         Runs efesto
         """
         config = Config()
-        Base.init_db(config.db_url)
-        middleware = Authentication(config.jwt_secret, config.jwt_audience)
+        Base.init_db(config.DB_URL)
+        middleware = Authentication(config.JWT_SECRET, config.JWT_AUDIENCE)
         api = Api(middleware=middleware)
         api.add_endpoint('/users', Users)
         api.add_endpoint('/fields', Fields)
