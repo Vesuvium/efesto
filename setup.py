@@ -30,7 +30,7 @@ setup(
         'colorama>=0.4.0',
         'falcon>=2.0.0',
         'falcon-cors>=1.1.7',
-        'peewee>=3.7.1',
+        'peewee>=3.9.0',
         'psycopg2-binary>=2.7.5',
         'python-rapidjson>=0.6.3',
         'pyjwt>=1.6.4',
