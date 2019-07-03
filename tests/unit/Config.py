@@ -10,6 +10,8 @@ def test_config():
 
 def test_config_defaults():
     db_url = 'sqlite:///efesto.db'
+    assert Config.defaults['ADMIN_ENDPOINTS'] == '0'
+    assert Config.defaults['APP_NAME'] == 'efesto'
     assert Config.defaults['BATCH_ENDPOINTS'] == '1'
     assert Config.defaults['DB_URL'] == db_url
     assert Config.defaults['HATEOAS_ENCODER'] == 'siren'
@@ -19,6 +21,4 @@ def test_config_defaults():
     assert Config.defaults['LOG_LEVEL'] == 'error'
     assert Config.defaults['PUBLIC_ENDPOINTS'] == 'index,version'
     assert Config.defaults['SWAGGER'] == '1'
-    assert Config.defaults['APP_NAME'] == 'efesto'
-    assert Config.defaults['ADMIN_ENDPOINTS'] == '0'
     assert Config.defaults['XCLACKS'] == '1'

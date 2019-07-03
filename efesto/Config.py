@@ -5,6 +5,8 @@ from bassoon import Bassoon
 class Config(Bassoon):
 
     defaults = {
+        'ADMIN_ENDPOINTS': '0',
+        'APP_NAME': 'efesto',
         'BATCH_ENDPOINTS': '1',
         'DB_URL': 'sqlite:///efesto.db',
         'HATEOAS_ENCODER': 'siren',
@@ -14,7 +16,5 @@ class Config(Bassoon):
         'LOG_LEVEL': 'error',
         'PUBLIC_ENDPOINTS': 'index,version',
         'SWAGGER': '1',
-        'APP_NAME': 'efesto',
-        'ADMIN_ENDPOINTS': '0',
         'XCLACKS': '1'
     }
