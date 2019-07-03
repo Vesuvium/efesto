@@ -31,11 +31,11 @@ class Cli:
         except OperationalError:
             print('An error occured during tables creation. '
                   'Please check your database credentials.')
-            exit()
+            exit(1)
         except ProgrammingError:
             print('An error occurred during tables creation. '
                   'Please check your database.')
-            exit()
+            exit(1)
         print('Quickstart finished successfully!')
 
     @main.command()
