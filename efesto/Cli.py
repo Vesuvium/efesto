@@ -25,7 +25,7 @@ class Cli:
         """
         print('Setting up efesto...')
         config = Config()
-        Base.init_db(config.db_url)
+        Base.init_db(config.DB_URL)
         try:
             db.create_tables([Fields, Types, Users])
         except OperationalError:
@@ -46,8 +46,8 @@ class Cli:
         Get an authentication token for an user
         """
         config = Config()
-        token = Tokens.encode(config.jwt_secret, expiration=expiration,
-                              sub=user, aud=config.jwt_audience)
+        token = Tokens.encode(config.JWT_SECRET, expiration=expiration,
+                              sub=user, aud=config.JWT_AUDIENCE)
         click.echo(token)
 
     @main.command()
@@ -55,7 +55,7 @@ class Cli:
     @click.option('--superuser', is_flag=True)
     def create_user(identifier, superuser):
         config = Config()
-        Base.init_db(config.db_url)
+        Base.init_db(config.DB_URL)
         user = Users(identifier=identifier, group=1, owner_permission=1,
                      group_permission=1, others_permission=1,
                      superuser=superuser)
@@ -68,7 +68,7 @@ class Cli:
         Load the specified blueprint file
         """
         config = Config()
-        Base.init_db(config.db_url)
+        Base.init_db(config.DB_URL)
         Blueprints().load(filename)
 
     @main.command()
@@ -77,7 +77,7 @@ class Cli:
         Generates dynamic tables from existing types
         """
         config = Config()
-        Base.init_db(config.db_url)
+        Base.init_db(config.DB_URL)
         types = Types.select().execute()
         generator = Generator()
         for dynamic_type in types:
