@@ -13,6 +13,7 @@ class Config(Bassoon):
         'JWT_AUDIENCE': 'efesto',
         'LOG_LEVEL': 'error',
         'PUBLIC_ENDPOINTS': 'index,version',
+        'SWAGGER': '1',
         'APP_NAME': 'efesto',
         'ADMIN_ENDPOINTS': '0'
     }
