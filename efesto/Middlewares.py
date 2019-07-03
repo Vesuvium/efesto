@@ -4,7 +4,8 @@ from efesto.models import Users
 from falcon import HTTPUnauthorized
 
 import jwt
-from jwt.exceptions import DecodeError, ExpiredSignatureError
+from jwt.exceptions import (DecodeError, ExpiredSignatureError,
+                            InvalidAudienceError)
 
 
 class Authentication:
@@ -37,7 +38,7 @@ class Authentication:
         """
         try:
             return jwt.decode(token, self.secret, audience=self.audience)
-        except (DecodeError, ExpiredSignatureError):
+        except (DecodeError, ExpiredSignatureError, InvalidAudienceError):
             return self.unauthorized()
 
     def login(self, payload):

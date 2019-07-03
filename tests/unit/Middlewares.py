@@ -5,7 +5,8 @@ from efesto.models import Users
 from falcon import HTTPUnauthorized
 
 import jwt
-from jwt.exceptions import DecodeError, ExpiredSignatureError
+from jwt.exceptions import (DecodeError, ExpiredSignatureError,
+                            InvalidAudienceError)
 
 from pytest import fixture, mark, raises
 
@@ -49,7 +50,9 @@ def test_middleware_authentication_decode(patch, authentication):
     assert result == jwt.decode()
 
 
-@mark.parametrize('error', [DecodeError, ExpiredSignatureError])
+@mark.parametrize('error', [
+    DecodeError, ExpiredSignatureError, InvalidAudienceError
+])
 def test_middleware_authentication_decode_error(patch, authentication, error):
     patch.object(jwt, 'decode', side_effect=error)
     patch.object(Authentication, 'unauthorized')
