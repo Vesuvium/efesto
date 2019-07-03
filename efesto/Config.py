@@ -15,5 +15,6 @@ class Config(Bassoon):
         'PUBLIC_ENDPOINTS': 'index,version',
         'SWAGGER': '1',
         'APP_NAME': 'efesto',
-        'ADMIN_ENDPOINTS': '0'
+        'ADMIN_ENDPOINTS': '0',
+        'XCLACKS': '1'
     }

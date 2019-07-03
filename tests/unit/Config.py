@@ -21,3 +21,4 @@ def test_config_defaults():
     assert Config.defaults['SWAGGER'] == '1'
     assert Config.defaults['APP_NAME'] == 'efesto'
     assert Config.defaults['ADMIN_ENDPOINTS'] == '0'
+    assert Config.defaults['XCLACKS'] == '1'
