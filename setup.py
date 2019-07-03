@@ -21,8 +21,7 @@ setup(
     packages=find_packages(),
     tests_require=[
         'pytest',
-        'pytest-mock',
-        'pytest-falcon'
+        'pytest-mock'
     ],
     setup_requires=['pytest-runner'],
     install_requires=[
