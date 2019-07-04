@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from .Api import Api
 from .Config import Config
-from .Middlewares import Authentication
+from .middlewares import Authentication
 from .models import Base, Fields, Types, Users
 
 

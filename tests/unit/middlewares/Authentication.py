@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from efesto.Middlewares import Authentication
+from efesto.middlewares import Authentication
 from efesto.models import Users
 
 from falcon import HTTPUnauthorized

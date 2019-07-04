@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from efesto.models import Users
-
 from falcon import HTTPUnauthorized
 
 import jwt
 from jwt.exceptions import (DecodeError, ExpiredSignatureError,
                             InvalidAudienceError)
+
+from ..models import Users
 
 
 class Authentication:

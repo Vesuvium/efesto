@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from efesto.Api import Api
 from efesto.App import App
-from efesto.Middlewares import Authentication
+from efesto.middlewares import Authentication
 from efesto.models import Base, Types
 
 
