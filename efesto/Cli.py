@@ -9,34 +9,30 @@ from .Config import Config
 from .Generator import Generator
 from .Tokens import Tokens
 from .Version import version
-from .models import Base, Fields, Types, Users, db
+from .models import Base, Users, db
 
 
 class Cli:
+    installation_error = ('An error occured during tables creation. '
+                          'Please check your database credentials.')
 
     @click.group()
     def main():
         pass
 
+    @staticmethod
     @main.command()
-    def quickstart():
+    def install():
         """
-        Quickstart efesto, creating default tables
+        Installs efesto using App.install
         """
-        print('Setting up efesto...')
-        config = Config()
-        Base.init_db(config.DB_URL)
+        click.echo('Setting up efesto...')
         try:
-            db.create_tables([Fields, Types, Users])
-        except OperationalError:
-            print('An error occured during tables creation. '
-                  'Please check your database credentials.')
+            App.install()
+        except (OperationalError, ProgrammingError):
+            click.echo(Cli.installation_error)
             exit(1)
-        except ProgrammingError:
-            print('An error occurred during tables creation. '
-                  'Please check your database.')
-            exit(1)
-        print('Quickstart finished successfully!')
+        click.echo('Installation successful!')
 
     @main.command()
     @click.argument('user')

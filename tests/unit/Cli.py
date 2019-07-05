@@ -7,11 +7,11 @@ from efesto.Blueprints import Blueprints
 from efesto.Cli import Cli
 from efesto.Tokens import Tokens
 from efesto.Version import version
-from efesto.models import Base, Fields, Types, Users, db
+from efesto.models import Base, Users, db
 
 from peewee import OperationalError, ProgrammingError
 
-from pytest import fixture
+from pytest import fixture, mark
 
 
 @fixture
@@ -30,22 +30,26 @@ def app(patch):
     patch.object(App, 'run')
 
 
-def test_quickstart(runner, quickstart):
-    result = runner.invoke(Cli.quickstart)
-    assert Base.init_db.call_count == 1
-    db.create_tables.assert_called_with([Fields, Types, Users])
+def test_cli():
+    message = ('An error occured during tables creation. '
+               'Please check your database credentials.')
+    assert Cli.installation_error == message
+
+
+def test_cli_install(patch, runner):
+    patch.object(click, 'echo')
+    patch.object(App, 'install')
+    result = runner.invoke(Cli.install)
+    assert App.install.call_count == 1
     assert result.exit_code == 0
 
 
-def test_quickstart_operational_error(runner, quickstart):
-    db.create_tables.side_effect = OperationalError
-    result = runner.invoke(Cli.quickstart)
-    assert result.exit_code == 1
-
-
-def test_quickstart_programming_error(runner, quickstart):
-    db.create_tables.side_effect = ProgrammingError
-    result = runner.invoke(Cli.quickstart)
+@mark.parametrize('error', [OperationalError, ProgrammingError])
+def test_cli_install_error(patch, runner, error):
+    patch.object(click, 'echo')
+    patch.object(App, 'install', side_effect=ProgrammingError)
+    result = runner.invoke(Cli.install)
+    click.echo.assert_called_with(Cli.installation_error)
     assert result.exit_code == 1
 
 
