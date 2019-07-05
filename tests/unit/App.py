@@ -3,7 +3,7 @@ from efesto.Api import Api
 from efesto.App import App
 from efesto.Config import Config
 from efesto.middlewares import Authentication
-from efesto.models import Base, Types
+from efesto.models import Base, Fields, Types, Users, db
 
 
 def test_app_config(patch):
@@ -27,3 +27,11 @@ def test_app_run(patch):
     assert Types.select.call_count == 1
     Api.dynamic_endpoints.assert_called_with(Types.select().execute())
     assert result == Api.cherries()
+
+
+def test_app_install(patch, magic):
+    patch.object(Base, 'init_db')
+    patch.object(App, 'config')
+    db.create_tables = magic()
+    App.install()
+    db.create_tables.assert_called_with([Fields, Types, Users])

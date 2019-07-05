@@ -2,7 +2,7 @@
 from .Api import Api
 from .Config import Config
 from .middlewares import Authentication
-from .models import Base, Fields, Types, Users
+from .models import Base, Fields, Types, Users, db
 
 
 class App:
@@ -26,3 +26,12 @@ class App:
         types = Types.select().execute()
         api.dynamic_endpoints(types)
         return api.cherries()
+
+    @classmethod
+    def install(cls):
+        """
+        Installs efesto by creating the base tables.
+        """
+        config = cls.config()
+        Base.init_db(config.DB_URL)
+        db.create_tables([Fields, Types, Users])
