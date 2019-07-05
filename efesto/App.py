@@ -11,11 +11,12 @@ class App:
     def config():
         return Config()
 
-    def run():
+    @classmethod
+    def run(cls):
         """
         Runs efesto
         """
-        config = Config()
+        config = cls.config()
         Base.init_db(config.DB_URL)
         middleware = Authentication(config.JWT_SECRET, config.JWT_AUDIENCE)
         api = Api(middleware=middleware)
