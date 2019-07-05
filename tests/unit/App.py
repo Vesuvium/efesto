@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 from efesto.Api import Api
 from efesto.App import App
+from efesto.Config import Config
 from efesto.middlewares import Authentication
 from efesto.models import Base, Types
+
+
+def test_app_config(patch):
+    patch.init(Config)
+    assert isinstance(App.config(), Config)
 
 
 def test_app_run(patch):

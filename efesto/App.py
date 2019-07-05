@@ -7,6 +7,10 @@ from .models import Base, Fields, Types, Users
 
 class App:
 
+    @staticmethod
+    def config():
+        return Config()
+
     def run():
         """
         Runs efesto
