@@ -9,7 +9,7 @@ from .Config import Config
 from .Generator import Generator
 from .Tokens import Tokens
 from .Version import version
-from .models import Base, Users, db
+from .models import Base, Types, Users, db
 
 
 class Cli:
