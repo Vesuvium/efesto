@@ -23,6 +23,10 @@ setup(
         'pytest',
         'pytest-mock'
     ],
+    docs_require=[
+        'mkdocs',
+        'mkdocs-gitbook'
+    ],
     setup_requires=['pytest-runner'],
     install_requires=[
         'bassoon>=1.0.0',
