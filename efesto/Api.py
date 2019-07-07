@@ -21,11 +21,6 @@ class Api:
         self.api = falcon.API(**kwargs)
         self.generator = Generator()
 
-    def dynamic_endpoints(self, types):
-        generator = Generator()
-        for dynamic_type in types:
-            model = generator.generate(dynamic_type)
-            self.add_endpoint('/{}'.format(dynamic_type.name), model)
 
     def add_endpoint(self, route, handler):
         self.api.add_route(route, handler['handler'](handler['model']))
