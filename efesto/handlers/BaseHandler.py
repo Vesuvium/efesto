@@ -7,6 +7,13 @@ class BaseHandler:
         self.model = model
         self._order = self.model.id
 
+    @staticmethod
+    def parse_embeds(params):
+        embeds = params.pop('_embeds', [])
+        if isinstance(embeds, str):
+            return embeds.split(',')
+        return embeds
+
     def join(self, table):
         property = getattr(self.model, table)
         model = property.rel_model

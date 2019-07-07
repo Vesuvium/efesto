@@ -18,6 +18,18 @@ def test_basehandler_init(magic):
     assert handler._order == model.id
 
 
+def test_basehandler_parse_embeds():
+    assert BaseHandler.parse_embeds({'_embeds': ['one']}) == ['one']
+
+
+def test_basehandler_parse_embeds_string():
+    assert BaseHandler.parse_embeds({'_embeds': 'one,two'}) == ['one', 'two']
+
+
+def test_basehandler_parse_embeds_empty():
+    assert BaseHandler.parse_embeds({}) == []
+
+
 def test_basehandler_embeds(handler, magic):
     model = magic(one=magic(spec_set=['rel_model']))
     handler.model = model
