@@ -1,11 +1,21 @@
 # -*- coding: utf-8 -*-
-from efesto.Generator import Generator
-from efesto.handlers import Collections, Items
-
 import falcon
+
+from .Generator import Generator
+from .handlers import Collections, Items
+from .models import Fields, Types, Users
 
 
 class Api:
+
+    routes = {
+        '/fields': {'model': Fields, 'handler': Collections},
+        '/fields/{id}': {'model': Fields, 'handler': Items},
+        '/types': {'model': Types, 'handler': Collections},
+        '/types/{id}': {'model': Types, 'handler': Items},
+        '/users': {'model': Users, 'handler': Collections},
+        '/users/{id}': {'model': Users, 'handler': Items}
+    }
 
     def __init__(self, **kwargs):
         self.api = falcon.API(**kwargs)
