@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from efesto.Api import Api
 from efesto.Generator import Generator
-from efesto.handlers import Collections, Items
+from efesto.handlers import Collections, Items, Version
 from efesto.models import Fields, Types, Users
 
 import falcon
@@ -23,6 +23,7 @@ def test_api_routes():
     assert Api.routes['/types/{id}'] == {'model': Types, 'handler': Items}
     assert Api.routes['/users'] == {'model': Users, 'handler': Collections}
     assert Api.routes['/users/{id}'] == {'model': Users, 'handler': Items}
+    assert Api.routes['/version'] == Version
 
 
 def test_api_init(api):

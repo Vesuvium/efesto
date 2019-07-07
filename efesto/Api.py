@@ -2,7 +2,7 @@
 import falcon
 
 from .Generator import Generator
-from .handlers import Collections, Items
+from .handlers import Collections, Items, Version
 from .models import Fields, Types, Users
 
 
@@ -14,7 +14,8 @@ class Api:
         '/types': {'model': Types, 'handler': Collections},
         '/types/{id}': {'model': Types, 'handler': Items},
         '/users': {'model': Users, 'handler': Collections},
-        '/users/{id}': {'model': Users, 'handler': Items}
+        '/users/{id}': {'model': Users, 'handler': Items},
+        '/version': Version
     }
 
     def __init__(self, **kwargs):
