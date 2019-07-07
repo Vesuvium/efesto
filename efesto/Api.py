@@ -46,6 +46,16 @@ class Api:
             model = generator.generate(dynamic_type)
             self.add_endpoint('/{}'.format(dynamic_type.name), model)
 
+    def start(self):
+        """
+        Mounts the routes and starts the API
+        """
+        for type in Types.select().execute():
+            self.type_route(type)
+        for route, handler in self.routes.items():
+            self.add_endpoint(route, handler)
+        return self.api
+
     def cherries(self):
         """
         This method is the cherry on the cake

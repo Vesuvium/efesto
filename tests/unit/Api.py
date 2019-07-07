@@ -87,5 +87,16 @@ def test_api_dynamic_endpoints(patch, api, type_instance):
     api.add_endpoint.assert_called_with('/custom', Generator.generate())
 
 
+def test_api_start(patch, magic, api):
+    patch.object(Types, 'select')
+    patch.many(Api, ['type_route', 'add_endpoint'])
+    Types.select.return_value = magic(execute=magic(return_value=['type']))
+    api.routes = {'route': 'handler'}
+    result = api.start()
+    Api.type_route.assert_called_with('type')
+    Api.add_endpoint.assert_called_with('route', 'handler')
+    assert result == api.api
+
+
 def test_api_cherries(api):
     assert api.cherries() == api.api
