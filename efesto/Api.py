@@ -21,10 +21,6 @@ class Api:
         self.api = falcon.API(**kwargs)
         self.generator = Generator()
 
-    @staticmethod
-    def collection(model):
-        return Collections(model)
-
     def dynamic_endpoints(self, types):
         generator = Generator()
         for dynamic_type in types:

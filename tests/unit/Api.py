@@ -37,14 +37,6 @@ def test_api_init_kwargs(patch):
     falcon.API.assert_called_with(key='value')
 
 
-def test_api_collection(patch, magic, api):
-    patch.init(Collections)
-    model = magic()
-    result = api.collection(model)
-    Collections.__init__.assert_called_with(model)
-    assert isinstance(result, Collections)
-
-
 def test_api_add_endpoint(patch, magic, api):
     handler = magic()
     api.add_endpoint('route', {'handler': handler, 'model': 'model'})
