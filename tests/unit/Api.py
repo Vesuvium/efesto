@@ -12,6 +12,7 @@ from pytest import fixture
 @fixture
 def api(patch):
     patch.object(falcon, 'API')
+    patch.init(Generator)
     return Api()
 
 
@@ -24,14 +25,14 @@ def test_api_routes():
     assert Api.routes['/users/{id}'] == {'model': Users, 'handler': Items}
 
 
-def test_api_init(patch):
-    patch.object(falcon, 'API')
-    api = Api()
+def test_api_init(api):
     assert api.api == falcon.API()
+    assert isinstance(api.generator, Generator)
 
 
 def test_api_init_kwargs(patch):
     patch.object(falcon, 'API')
+    patch.init(Generator)
     Api(key='value')
     falcon.API.assert_called_with(key='value')
 

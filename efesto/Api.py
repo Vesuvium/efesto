@@ -19,6 +19,7 @@ class Api:
 
     def __init__(self, **kwargs):
         self.api = falcon.API(**kwargs)
+        self.generator = Generator()
 
     @staticmethod
     def collection(model):
