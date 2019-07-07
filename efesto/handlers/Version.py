@@ -8,4 +8,9 @@ class Version:
 
     @staticmethod
     def on_get(request, response):
-        response.body = json.dumps({'version': version})
+        data = {
+            'properties': {'version': version},
+            'links': [{'href': '/version', 'rel': 'self'}],
+            'class': ['Version']
+        }
+        response.body = json.dumps(data)
