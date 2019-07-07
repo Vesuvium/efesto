@@ -25,10 +25,6 @@ class Api:
     def collection(model):
         return Collections(model)
 
-    @staticmethod
-    def item(model):
-        return Items(model)
-
     def dynamic_endpoints(self, types):
         generator = Generator()
         for dynamic_type in types:
