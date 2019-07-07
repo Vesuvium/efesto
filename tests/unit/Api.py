@@ -37,6 +37,16 @@ def test_api_init_kwargs(patch):
     falcon.API.assert_called_with(key='value')
 
 
+def test_api_type_route(patch, api, type_instance):
+    patch.object(Generator, 'generate')
+    api.type_route(type_instance)
+    Generator.generate.assert_called_with(type_instance)
+    assert api.routes['/custom'] == {'model': Generator.generate(),
+                                     'handler': Collections}
+    assert api.routes['/custom/{id}'] == {'model': Generator.generate(),
+                                          'handler': Items}
+
+
 def test_api_add_endpoint(patch, magic, api):
     handler = magic()
     api.add_endpoint('route', {'handler': handler, 'model': 'model'})

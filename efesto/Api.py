@@ -21,6 +21,14 @@ class Api:
         self.api = falcon.API(**kwargs)
         self.generator = Generator()
 
+    def type_route(self, type):
+        """
+        Adds a type route from a Type found in the database.
+        """
+        model = self.generator.generate(type)
+        endpoint = f'/{type.name}'
+        self.routes[endpoint] = {'model': model, 'handler': Collections}
+        self.routes[f'{endpoint}/{{id}}'] = {'model': model, 'handler': Items}
 
     def add_endpoint(self, route, handler):
         self.api.add_route(route, handler['handler'](handler['model']))
