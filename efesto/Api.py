@@ -32,10 +32,6 @@ class Api:
     def list_route(self, endpoint, model):
         self.api.add_route(endpoint, self.collection(model))
 
-    def object_route(self, endpoint, model):
-        route = '{}/{}'.format(endpoint, '{id}')
-        self.api.add_route(route, self.item(model))
-
     def dynamic_endpoints(self, types):
         generator = Generator()
         for dynamic_type in types:

@@ -61,14 +61,6 @@ def test_api_list_route(patch, magic, api):
     api.api.add_route.assert_called_with('/endpoint', api.collection())
 
 
-def test_api_object_route(patch, magic, api):
-    patch.object(api, 'item')
-    model = magic()
-    api.object_route('/endpoint', model)
-    api.item.assert_called_with(model)
-    api.api.add_route.assert_called_with('/endpoint/{id}', api.item())
-
-
 def test_api_add_endpoint(patch, magic, api):
     handler = magic()
     api.add_endpoint('route', {'handler': handler, 'model': 'model'})
