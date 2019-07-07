@@ -63,7 +63,3 @@ def test_api_start(patch, magic, api):
     Api.type_route.assert_called_with('type')
     Api.add_endpoint.assert_called_with('route', 'handler')
     assert result == api.api
-
-
-def test_api_cherries(api):
-    assert api.cherries() == api.api

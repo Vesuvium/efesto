@@ -39,9 +39,3 @@ class Api:
         for route, handler in self.routes.items():
             self.add_endpoint(route, handler)
         return self.api
-
-    def cherries(self):
-        """
-        This method is the cherry on the cake
-        """
-        return self.api
