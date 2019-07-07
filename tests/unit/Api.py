@@ -53,14 +53,6 @@ def test_api_item(patch, magic, api):
     assert isinstance(result, Items)
 
 
-def test_api_list_route(patch, magic, api):
-    patch.object(api, 'collection')
-    model = magic()
-    api.list_route('/endpoint', model)
-    api.collection.assert_called_with(model)
-    api.api.add_route.assert_called_with('/endpoint', api.collection())
-
-
 def test_api_add_endpoint(patch, magic, api):
     handler = magic()
     api.add_endpoint('route', {'handler': handler, 'model': 'model'})
