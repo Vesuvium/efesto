@@ -31,7 +31,10 @@ class Api:
         self.routes[f'{endpoint}/{{id}}'] = {'model': model, 'handler': Items}
 
     def add_endpoint(self, route, handler):
-        self.api.add_route(route, handler['handler'](handler['model']))
+        if type(handler) == dict:
+            self.api.add_route(route, handler['handler'](handler['model']))
+        else:
+            self.api.add_route(route, handler)
 
     def start(self):
         """
