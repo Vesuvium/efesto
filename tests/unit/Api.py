@@ -70,11 +70,10 @@ def test_api_object_route(patch, magic, api):
 
 
 def test_api_add_endpoint(patch, magic, api):
-    patch.many(Api, ['list_route', 'object_route'])
-    model = magic()
-    api.add_endpoint('/endpoint', model)
-    api.list_route.assert_called_with('/endpoint', model)
-    api.object_route.assert_called_with('/endpoint', model)
+    handler = magic()
+    api.add_endpoint('route', {'handler': handler, 'model': 'model'})
+    handler.assert_called_with('model')
+    api.api.add_route.assert_called_with('route', handler())
 
 
 def test_api_dynamic_endpoints(patch, api, type_instance):

@@ -36,15 +36,14 @@ class Api:
         route = '{}/{}'.format(endpoint, '{id}')
         self.api.add_route(route, self.item(model))
 
-    def add_endpoint(self, endpoint, model):
-        self.list_route(endpoint, model)
-        self.object_route(endpoint, model)
-
     def dynamic_endpoints(self, types):
         generator = Generator()
         for dynamic_type in types:
             model = generator.generate(dynamic_type)
             self.add_endpoint('/{}'.format(dynamic_type.name), model)
+
+    def add_endpoint(self, route, handler):
+        self.api.add_route(route, handler['handler'](handler['model']))
 
     def start(self):
         """
