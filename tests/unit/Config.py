@@ -19,6 +19,8 @@ def test_config_defaults():
     assert Config.defaults['JWT_LEEWAY'] == '5'
     assert Config.defaults['JWT_AUDIENCE'] == 'efesto'
     assert Config.defaults['LOG_LEVEL'] == 'error'
+    format = '[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}'
+    assert Config.defaults['LOG_FORMAT'] == format
     assert Config.defaults['PUBLIC_ENDPOINTS'] == 'index,version'
     assert Config.defaults['SWAGGER'] == '1'
     assert Config.defaults['XCLACKS'] == '1'
