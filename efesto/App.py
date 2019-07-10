@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from .Api import Api
 from .Config import Config
-from .middlewares import Authentication
 from .models import Base, Fields, Types, Users, db
 
 
@@ -18,8 +17,7 @@ class App:
         """
         config = cls.config()
         Base.init_db(config.DB_URL)
-        middleware = Authentication(config.JWT_SECRET, config.JWT_AUDIENCE)
-        return Api(middleware=middleware).start()
+        return Api(config).start()
 
     @classmethod
     def install(cls):
