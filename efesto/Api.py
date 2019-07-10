@@ -3,6 +3,7 @@ import falcon
 
 from .Generator import Generator
 from .handlers import Collections, Items, Version
+from .middlewares import Authentication
 from .models import Fields, Types, Users
 
 
@@ -38,10 +39,15 @@ class Api:
         else:
             self.api.add_route(route, handler)
 
+    def middlewares(self):
+        return [Authentication(self.config.JWT_SECRET,
+                               self.config.JWT_AUDIENCE)]
+
     def start(self):
         """
         Mounts the routes and starts the API
         """
+        self.api = falcon.API(middleware=self.middlewares())
         for type in Types.select().execute():
             self.type_route(type)
         for route, handler in self.routes.items():

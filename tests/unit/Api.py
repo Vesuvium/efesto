@@ -2,6 +2,7 @@
 from efesto.Api import Api
 from efesto.Generator import Generator
 from efesto.handlers import Collections, Items, Version
+from efesto.middlewares import Authentication
 from efesto.models import Fields, Types, Users
 
 import falcon
@@ -51,6 +52,14 @@ def test_api_add_endpoint_dict(patch, magic, api):
     api.add_endpoint('route', {'handler': handler, 'model': 'model'})
     handler.assert_called_with('model')
     api.api.add_route.assert_called_with('route', handler())
+
+
+def test_api_middlewares(patch, api, config):
+    patch.init(Authentication)
+    result = api.middlewares()
+    Authentication.__init__.assert_called_with(config.JWT_SECRET,
+                                               config.JWT_AUDIENCE)
+    assert isinstance(result[0], Authentication)
 
 
 def test_api_start(patch, magic, api):
