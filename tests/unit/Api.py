@@ -10,10 +10,9 @@ from pytest import fixture
 
 
 @fixture
-def api(patch):
-    patch.object(falcon, 'API')
+def api(patch, config):
     patch.init(Generator)
-    return Api()
+    return Api(config)
 
 
 def test_api_routes():
@@ -26,16 +25,10 @@ def test_api_routes():
     assert Api.routes['/version'] == Version
 
 
-def test_api_init(api):
-    assert api.api == falcon.API()
+def test_api_init(api, config):
+    assert api.config == config
+    assert api.api is None
     assert isinstance(api.generator, Generator)
-
-
-def test_api_init_kwargs(patch):
-    patch.object(falcon, 'API')
-    patch.init(Generator)
-    Api(key='value')
-    falcon.API.assert_called_with(key='value')
 
 
 def test_api_type_route(patch, api, type_instance):

@@ -18,9 +18,10 @@ class Api:
         '/version': Version
     }
 
-    def __init__(self, **kwargs):
-        self.api = falcon.API(**kwargs)
+    def __init__(self, config):
+        self.config = config
         self.generator = Generator()
+        self.api = None
 
     def type_route(self, type):
         """

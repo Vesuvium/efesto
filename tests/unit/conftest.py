@@ -49,6 +49,11 @@ def http_request(magic):
 
 
 @fixture
+def config(magic):
+    return magic()
+
+
+@fixture
 def type_instance(magic):
     type_instance = magic()
     type_instance.name = 'custom'
