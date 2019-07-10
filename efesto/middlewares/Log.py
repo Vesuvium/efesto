@@ -6,10 +6,9 @@ from loguru import logger
 
 class Log:
 
-    def __init__(self):
+    def __init__(self, level, format):
         logger.remove()
-        format = '[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}'
-        logger.add(sys.stdout, format=format)
+        logger.add(sys.stdout, format=format, level=level.upper())
 
     def process_response(self, request, response, resource, success):
         status = response.status.split()[0]
