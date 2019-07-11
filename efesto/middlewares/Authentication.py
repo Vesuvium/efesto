@@ -10,9 +10,10 @@ from ..models import Users
 
 class Authentication:
 
-    def __init__(self, secret, audience):
+    def __init__(self, secret, audience, public_endpoints):
         self.secret = secret
         self.audience = audience
+        self.public_endpoints = public_endpoints.split(',')
 
     @staticmethod
     def unauthorized():

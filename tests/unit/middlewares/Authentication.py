@@ -13,12 +13,13 @@ from pytest import fixture, mark, raises
 
 @fixture
 def authentication():
-    return Authentication('secret', 'audience')
+    return Authentication('secret', 'audience', 'public')
 
 
 def test_middleware_authentication_init(authentication):
     assert authentication.secret == 'secret'
     assert authentication.audience == 'audience'
+    assert authentication.public_endpoints == ['public']
 
 
 def test_middleware_unauthorized(authentication):
