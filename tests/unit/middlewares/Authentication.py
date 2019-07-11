@@ -99,6 +99,14 @@ def test_authentication_process_resource(patch, http_request, auth):
     assert result['user'] == Authentication.login()
 
 
+def test_authentication_process_resource__is_public(patch, http_request, auth):
+    patch.many(Authentication, ['login', 'is_public'])
+    result = auth.process_resource(http_request, 'res', 'resource', {})
+    Authentication.is_public.assert_called_with(http_request.path,
+                                                http_request.method)
+    assert result is None
+
+
 def test_authentication_process_resource_no_auth(patch, http_request, auth):
     patch.object(Authentication, 'unauthorized')
     http_request.auth = None

@@ -67,6 +67,8 @@ class Authentication:
             return True
 
     def process_resource(self, request, response, resource, params):
+        if self.is_public(request.path, request.method):
+            return None
         if request.auth:
             user = self.login(request.auth)
             if user:
