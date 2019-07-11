@@ -67,12 +67,9 @@ class Authentication:
             return True
 
     def process_resource(self, request, response, resource, params):
-        if request.auth is None:
-            return self.unauthorized()
-
-        token = self.bearer_token(request.auth)
-        payload = self.decode(token)
-        user = self.login(payload)
-        if user is None:
-            return self.unauthorized()
-        params['user'] = user
+        if request.auth:
+            user = self.login(request.auth)
+            if user:
+                params['user'] = user
+                return params
+        return self.unauthorized()

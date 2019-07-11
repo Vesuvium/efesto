@@ -94,27 +94,22 @@ def test_authentication_is_public__always(auth):
     assert auth.is_public('/whatever', 'get') is True
 
 
-def test_authentication_process_resource(patch, magic, auth):
-    request = magic()
-    params = {}
-    patch.many(Authentication, ['bearer_token', 'decode', 'login'])
-    authentication.process_resource(request, magic(), magic(), params)
-    Authentication.bearer_token.assert_called_with(request.auth)
-    Authentication.decode.assert_called_with(Authentication.bearer_token())
-    Authentication.login.assert_called_with(Authentication.decode())
-    assert params['user'] == auth.login()
+def test_authentication_process_resource(patch, http_request, auth):
+    patch.object(Authentication, 'login')
+    result = auth.process_resource(http_request, 'res', 'resource', {})
+    Authentication.login.assert_called_with(http_request.auth)
+    assert result['user'] == Authentication.login()
 
 
-def test_authentication_process_resource_no_auth(patch, magic, auth):
-    request = magic(auth=None)
+def test_authentication_process_resource_no_auth(patch, http_request, auth):
     patch.object(Authentication, 'unauthorized')
-    result = auth.process_resource(request, magic(), magic(), {})
+    http_request.auth = None
+    result = auth.process_resource(http_request, 'res', 'resource', {})
     assert result == Authentication.unauthorized()
 
 
-def test_authentication_process_resource_no_user(patch, magic, auth):
-    patch.many(Authentication, ['bearer_token', 'decode', 'login',
-                                'unauthorized'])
+def test_authentication_process_resource_no_user(patch, http_request, auth):
+    patch.many(Authentication, ['login', 'unauthorized'])
     Authentication.login.return_value = None
-    result = auth.process_resource(magic(), magic(), magic(), {})
-    assert result == authentication.unauthorized()
+    result = auth.process_resource(http_request, 'res', 'resource', {})
+    assert result == auth.unauthorized()
