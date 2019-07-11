@@ -61,7 +61,8 @@ def test_api_middlewares(patch, api, config):
     patch.init(Log)
     result = api.middlewares()
     Authentication.__init__.assert_called_with(config.JWT_SECRET,
-                                               config.JWT_AUDIENCE)
+                                               config.JWT_AUDIENCE,
+                                               config.PUBLIC_ENDPOINTS)
     Log.__init__.assert_called_with(config.LOG_LEVEL, config.LOG_FORMAT)
     assert isinstance(result[0], Authentication)
     assert isinstance(result[1], Log)

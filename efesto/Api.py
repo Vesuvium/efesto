@@ -41,7 +41,9 @@ class Api:
 
     def middlewares(self):
         return [
-            Authentication(self.config.JWT_SECRET, self.config.JWT_AUDIENCE), Log(self.config.LOG_LEVEL, self.config.LOG_FORMAT)
+            Authentication(self.config.JWT_SECRET, self.config.JWT_AUDIENCE,
+                           self.config.PUBLIC_ENDPOINTS),
+            Log(self.config.LOG_LEVEL, self.config.LOG_FORMAT)
         ]
 
     def start(self):
