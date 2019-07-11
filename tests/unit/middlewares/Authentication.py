@@ -73,6 +73,28 @@ def test_middleware_authentication_login_bad_payload(patch, authentication):
     assert authentication.login({}) == Authentication.unauthorized()
 
 
+@mark.parametrize('endpoint', ['/', '/endpoint', '/endpoint/id'])
+def test_authentication_is_public(authentication, endpoint):
+    authentication.public_endpoints = 'index,endpoint'
+    assert authentication.is_public(endpoint, 'get') is True
+
+
+def test_authentication_is_public__method(authentication):
+    authentication.public_endpoints = 'post:endpoint'
+    assert authentication.is_public('/endpoint', 'post') is True
+
+
+@mark.parametrize('method', ['get', 'post', 'patch', 'delete'])
+def test_authentication_is_public__all_methods(authentication, method):
+    authentication.public_endpoints = '*:endpoint'
+    assert authentication.is_public('/endpoint', method) is True
+
+
+def test_authentication_is_public__always(authentication):
+    authentication.public_endpoints = '*'
+    assert authentication.is_public('/whatever', 'get') is True
+
+
 def test_authentication_process_resource(patch, magic, authentication):
     request = magic()
     params = {}

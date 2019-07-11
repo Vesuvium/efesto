@@ -47,6 +47,25 @@ class Authentication:
             return Users.login(payload['sub'])
         return self.unauthorized()
 
+    def is_public(self, path, method):
+        """
+        Whether a path and method are public endpoints. Public endpoints can
+        be defined as a comma-separated list of values. Examples:
+        'index,version', 'get:users', '*:users'
+        """
+        endpoint = path.split('/')[1]
+        if self.public_endpoints == '*':
+            return True
+        elif endpoint == '':
+            if 'index' in self.public_endpoints:
+                return True
+        elif endpoint in self.public_endpoints:
+            return True
+        elif f'{method}:{endpoint}' in self.public_endpoints:
+            return True
+        elif f'*:{endpoint}' in self.public_endpoints:
+            return True
+
     def process_resource(self, request, response, resource, params):
         if request.auth is None:
             return self.unauthorized()
