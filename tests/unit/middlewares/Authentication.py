@@ -27,7 +27,7 @@ def test_middleware_unauthorized(auth):
         auth.unauthorized()
 
 
-def test_middleware_authentication_bearer_token(authentication):
+def test_middleware_authentication_bearer_token(auth):
     """
     Ensures that a token can be fetched from the auth header
     """
@@ -61,15 +61,13 @@ def test_middleware_authentication_decode_error(patch, auth, error):
 
 def test_middleware_authentication_login(patch, auth):
     patch.object(Users, 'login')
-    result = auth.login({'sub': 'identifier'})
-    Users.login.assert_called_with('identifier')
+    patch.many(Authentication, ['decode', 'bearer_token'])
+    Authentication.decode.return_value = {'sub': 'sub'}
+    result = auth.login('auth_header')
+    Authentication.bearer_token.assert_called_with('auth_header')
+    Authentication.decode.assert_called_with(Authentication.bearer_token())
+    Users.login.assert_called_with('sub')
     assert result == Users.login()
-
-
-def test_middleware_authentication_login_bad_payload(patch, auth):
-    patch.object(Users, 'login', return_value=None)
-    patch.object(Authentication, 'unauthorized')
-    assert auth.login({}) == Authentication.unauthorized()
 
 
 @mark.parametrize('endpoint', ['/', '/endpoint', '/endpoint/id'])

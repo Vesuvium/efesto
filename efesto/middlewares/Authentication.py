@@ -42,10 +42,10 @@ class Authentication:
         except (DecodeError, ExpiredSignatureError, InvalidAudienceError):
             return self.unauthorized()
 
-    def login(self, payload):
+    def login(self, authentication):
+        payload = self.decode(self.bearer_token(authentication))
         if 'sub' in payload:
             return Users.login(payload['sub'])
-        return self.unauthorized()
 
     def is_public(self, path, method):
         """
