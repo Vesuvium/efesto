@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
-
 from ..Version import version
 
 
@@ -13,4 +11,4 @@ class Version:
             'links': [{'href': '/version', 'rel': 'self'}],
             'class': ['Version']
         }
-        response.body = json.dumps(data)
+        response.body = data
