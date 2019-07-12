@@ -3,8 +3,6 @@ from efesto.Siren import Siren
 
 from pytest import fixture
 
-import rapidjson
-
 
 @fixture
 def siren():
@@ -79,26 +77,22 @@ def test_siren_make_entities_includes(patch, magic, siren):
     Siren.entity.assert_called_with(siren.path, item, includes=['includes'])
 
 
-def test_siren_encode(patch):
+def test_siren_encode(patch, siren):
     patch.object(Siren, 'entities')
-    patch.object(rapidjson, 'dumps')
-    Siren().encode('utf-8')
-    kwargs = {'datetime_mode': 1, 'number_mode': 7}
-    rapidjson.dumps.assert_called_with(Siren.entities(), **kwargs)
+    result = siren.encode('string')
+    Siren.entities.assert_called_with(includes=[])
+    assert result == Siren.entities()
 
 
-def test_siren_encode_includes(patch):
+def test_siren_encode__includes(patch):
     patch.object(Siren, 'entities')
-    patch.object(rapidjson, 'dumps')
     Siren().encode(includes=['includes'])
     Siren.entities.assert_called_with(includes=['includes'])
 
 
 def test_siren_encode_one(patch, siren):
     patch.object(Siren, 'entity')
-    patch.object(rapidjson, 'dumps')
     siren.data = {}
-    siren.encode('utf-8')
+    result = siren.encode('string')
     Siren.entity.assert_called_with(siren.path, siren.data, includes=[])
-    kwargs = {'datetime_mode': 1, 'number_mode': 7}
-    rapidjson.dumps.assert_called_with(Siren.entity(), **kwargs)
+    assert result == Siren.entity()

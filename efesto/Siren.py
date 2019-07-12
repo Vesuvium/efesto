@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from peewee import ModelSelect
 
-import rapidjson
-
 
 class Siren:
 
@@ -85,8 +83,6 @@ class Siren:
         return {'entities': entities, 'actions': actions, 'links': links}
 
     def encode(self, *args, includes=[]):
-        kwargs = {'datetime_mode': 1, 'number_mode': 7}
         if isinstance(self.data, list):
-            return rapidjson.dumps(self.entities(includes=includes), **kwargs)
-        output = self.entity(self.path, self.data, includes=includes)
-        return rapidjson.dumps(output, **kwargs)
+            return self.entities(includes=includes)
+        return self.entity(self.path, self.data, includes=includes)
