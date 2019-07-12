@@ -3,7 +3,7 @@ import falcon
 
 from .Generator import Generator
 from .handlers import Collections, Items, Version
-from .middlewares import Authentication, Log
+from .middlewares import Authentication, Json, Log
 from .models import Fields, Types, Users
 
 
@@ -43,6 +43,7 @@ class Api:
         return [
             Authentication(self.config.JWT_SECRET, self.config.JWT_AUDIENCE,
                            self.config.PUBLIC_ENDPOINTS),
+            Json(),
             Log(self.config.LOG_LEVEL, self.config.LOG_FORMAT)
         ]
 

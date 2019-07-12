@@ -2,7 +2,7 @@
 from efesto.Api import Api
 from efesto.Generator import Generator
 from efesto.handlers import Collections, Items, Version
-from efesto.middlewares import Authentication, Log
+from efesto.middlewares import Authentication, Json, Log
 from efesto.models import Fields, Types, Users
 
 import falcon
@@ -65,7 +65,8 @@ def test_api_middlewares(patch, api, config):
                                                config.PUBLIC_ENDPOINTS)
     Log.__init__.assert_called_with(config.LOG_LEVEL, config.LOG_FORMAT)
     assert isinstance(result[0], Authentication)
-    assert isinstance(result[1], Log)
+    assert isinstance(result[1], Json)
+    assert isinstance(result[2], Log)
 
 
 def test_api_start(patch, magic, api):
