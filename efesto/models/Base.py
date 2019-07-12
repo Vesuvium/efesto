@@ -105,6 +105,8 @@ class Base(Model):
                 return cls.create(**kwargs)
         except IntegrityError:
             return None
+        except ValueError as error:
+            return None
 
     def update_item(self, data):
         for key, value in data.items():
