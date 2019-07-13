@@ -65,14 +65,12 @@ def test_item_on_patch(patch, magic, item, siren):
     assert response.body == siren().encode()
 
 
-def test_item_on_patch_400(patch, magic, item):
+def test_item_on_patch__badrequest(patch, magic, http_request, item):
     patch.object(rapidjson, 'load')
-    request = magic()
-    response = magic()
     user = magic()
     user.do().get().edit.return_value = None
-    with raises(HTTPBadRequest):
-        item.on_patch(request, response, user=user, id=1)
+    with raises(BadRequest):
+        item.on_patch(http_request, 'response', user=user, id=1)
 
 
 def test_items_on_patch_404(patch, magic, item):

@@ -41,7 +41,7 @@ class Items(BaseHandler):
             raise HTTPNotFound()
         json = rapidjson.load(request.bounded_stream)
         if result.edit(json) is None:
-            raise HTTPBadRequest('Bad request', 'bad request')
+            raise BadRequest('write_error', json)
         body = Siren(self.model, result, request.path)
         response.body = body.encode()
 
