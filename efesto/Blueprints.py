@@ -17,14 +17,6 @@ class Blueprints:
                               **options)
         field.save()
 
-    @staticmethod
-    def options(options):
-        dictionary = {}
-        for option in options:
-            option_name = list(option.keys())[0]
-            dictionary[option_name] = option[option_name]
-        return dictionary
-
     def load_field(self, new_type, field):
         """
         Loads a field in the database. If a field section is specified, parse
@@ -33,8 +25,7 @@ class Blueprints:
         if isinstance(field, str):
             return self.make_field(field, new_type.id)
         for field_name, options in field.items():
-            options_dict = self.options(options)
-            return self.make_field(field_name, new_type.id, **options_dict)
+            return self.make_field(field_name, new_type.id, **options)
 
     @staticmethod
     def load_type(table):
@@ -57,9 +48,9 @@ class Blueprints:
         """
         Parses the content of a blueprint
         """
-        for table in yaml:
+        for table in yaml['types']:
             new_type = self.load_type(table)
-            for field in yaml[table]:
+            for field in yaml['types'][table]:
                 self.load_field(new_type, field)
 
     def load(self, filename):

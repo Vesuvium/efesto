@@ -37,11 +37,6 @@ def test_blueprints_make_field_options(patch, blueprints):
                                      option='value')
 
 
-def test_blueprints_options(blueprints):
-    result = blueprints.options([{'option': 'value'}])
-    assert result['option'] == 'value'
-
-
 def test_blueprints_load_field(patch, magic, blueprints):
     patch.object(Blueprints, 'make_field')
     new_type = magic()
@@ -51,12 +46,10 @@ def test_blueprints_load_field(patch, magic, blueprints):
 
 
 def test_blueprints_load_field_complex(patch, magic, blueprints):
-    patch.many(Blueprints, ['make_field', 'options'])
+    patch.object(Blueprints, 'make_field')
     new_type = magic()
-    result = blueprints.load_field(new_type, {'field': 'options'})
-    blueprints.options.assert_called_with('options')
-    blueprints.make_field.assert_called_with('field', new_type.id,
-                                             **blueprints.options())
+    result = blueprints.load_field(new_type, {'field': {'key': 'value'}})
+    blueprints.make_field.assert_called_with('field', new_type.id, key='value')
     assert result == blueprints.make_field()
 
 
@@ -86,8 +79,8 @@ def test_blueprints_read_no_file(patch, blueprints):
 
 def test_blueprints_parse(patch, blueprints):
     patch.many(Blueprints, ['load_type', 'load_field'])
-    blueprints.parse({'table': ['field']})
-    blueprints.load_type.assert_called_with('table')
+    blueprints.parse({'types': {'type': ['field']}})
+    blueprints.load_type.assert_called_with('type')
     blueprints.load_field.assert_called_with(blueprints.load_type(), 'field')
 
 
