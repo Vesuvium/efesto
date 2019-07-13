@@ -63,16 +63,16 @@ def test_cli_token_expiration(patch, runner, app):
     assert result.exit_code == 0
 
 
-def test_cli_create_user(patch, runner):
+def test_cli_create__user(patch, runner):
     patch.object(App, 'create_user')
-    result = runner.invoke(Cli.create_user, ['identifier'])
+    result = runner.invoke(Cli.create, ['users', 'identifier'])
     App.create_user.assert_called_with('identifier', False)
     assert result.exit_code == 0
 
 
-def test_cli_create_user__superuser(patch, runner):
+def test_cli_create__user_superuser(patch, runner):
     patch.object(App, 'create_user')
-    result = runner.invoke(Cli.create_user, ['identifier', '--superuser'])
+    result = runner.invoke(Cli.create, ['users', 'identifier', '--superuser'])
     App.create_user.assert_called_with('identifier', True)
     assert result.exit_code == 0
 

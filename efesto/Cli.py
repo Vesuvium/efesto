@@ -46,11 +46,16 @@ class Cli:
 
     @staticmethod
     @main.command()
+    @click.argument('item_type')
     @click.argument('identifier')
     @click.option('--superuser', is_flag=True)
-    def create_user(identifier, superuser):
-        App.create_user(identifier, superuser)
-        click.echo(f'User {identifier} created.')
+    def create(item_type, identifier, superuser):
+        """
+        Creates an item
+        """
+        if item_type == 'users':
+            App.create_user(identifier, superuser)
+            click.echo(f'User {identifier} created.')
 
     @staticmethod
     @main.command()
