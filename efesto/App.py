@@ -2,6 +2,7 @@
 from .Api import Api
 from .Blueprints import Blueprints
 from .Config import Config
+from .Generator import Generator
 from .models import Base, Fields, Types, Users, db
 
 
@@ -10,6 +11,10 @@ class App:
     @staticmethod
     def config():
         return Config()
+
+    @staticmethod
+    def generator():
+        return Generator()
 
     @classmethod
     def init(cls):

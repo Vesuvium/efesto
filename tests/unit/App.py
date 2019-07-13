@@ -3,12 +3,18 @@ from efesto.Api import Api
 from efesto.App import App
 from efesto.Blueprints import Blueprints
 from efesto.Config import Config
+from efesto.Generator import Generator
 from efesto.models import Base, Fields, Types, Users, db
 
 
 def test_app_config(patch):
     patch.init(Config)
     assert isinstance(App.config(), Config)
+
+
+def test_app_generator(patch):
+    patch.init(Generator)
+    assert isinstance(App.generator(), Generator)
 
 
 def test_app_init(patch):
