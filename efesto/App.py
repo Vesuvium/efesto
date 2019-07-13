@@ -12,33 +12,37 @@ class App:
         return Config()
 
     @classmethod
+    def init(cls):
+        """
+        Inits database and configuration
+        """
+        config = cls.config()
+        Base.init_db(config.DB_URL)
+        return config
+
+    @classmethod
     def run(cls):
         """
         Runs efesto
         """
-        config = cls.config()
-        Base.init_db(config.DB_URL)
-        return Api(config).start()
+        return Api(cls.init()).start()
 
     @classmethod
     def install(cls):
         """
         Installs efesto by creating the base tables.
         """
-        config = cls.config()
-        Base.init_db(config.DB_URL)
+        cls.init()
         db.create_tables([Fields, Types, Users])
 
     @classmethod
     def create_user(cls, identifier, superuser):
-        config = cls.config()
-        Base.init_db(config.DB_URL)
+        cls.init()
         return Users(identifier=identifier, owner_permission=1,
                      group_permission=1, others_permission=1,
                      superuser=superuser).save()
 
     @classmethod
     def load(cls, filename):
-        config = cls.config()
-        Base.init_db(config.DB_URL)
+        cls.init()
         return Blueprints().load(filename)

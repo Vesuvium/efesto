@@ -11,32 +11,37 @@ def test_app_config(patch):
     assert isinstance(App.config(), Config)
 
 
+def test_app_init(patch):
+    patch.object(Base, 'init_db')
+    patch.object(App, 'config')
+    result = App.init()
+    Base.init_db.assert_called_with(App.config().DB_URL)
+    assert result == App.config()
+
+
 def test_app_run(patch):
     patch.init(Api)
     patch.object(Api, 'start')
-    patch.object(Base, 'init_db')
-    patch.object(App, 'config')
+    patch.object(App, 'init')
     result = App.run()
-    Base.init_db.assert_called_with(App.config().DB_URL)
-    Api.__init__.assert_called_with(App.config())
+    Api.__init__.assert_called_with(App.init())
     assert result == Api.start()
 
 
 def test_app_install(patch, magic):
-    patch.object(Base, 'init_db')
-    patch.object(App, 'config')
+    patch.object(App, 'init')
     db.create_tables = magic()
     App.install()
+    assert App.init.call_count == 1
     db.create_tables.assert_called_with([Fields, Types, Users])
 
 
 def test_app_create_user(patch):
-    patch.object(Base, 'init_db')
     patch.init(Users)
     patch.object(Users, 'save')
-    patch.object(App, 'config')
+    patch.object(App, 'init')
     result = App.create_user('id', 'super')
-    Base.init_db.assert_called_with(App.config().DB_URL)
+    assert App.init.call_count == 1
     Users.__init__.assert_called_with(identifier='id', owner_permission=1,
                                       group_permission=1, others_permission=1,
                                       superuser='super')
@@ -44,12 +49,11 @@ def test_app_create_user(patch):
 
 
 def test_app_load(patch):
-    patch.object(Base, 'init_db')
     patch.init(Blueprints)
     patch.object(Blueprints, 'load')
-    patch.object(App, 'config')
+    patch.object(App, 'init')
     result = App.load('file')
-    Base.init_db.assert_called_with(App.config().DB_URL)
+    assert App.init.call_count == 1
     assert Blueprints.__init__.call_count == 1
     Blueprints.load.assert_called_with('file')
     assert result == Blueprints.load()
