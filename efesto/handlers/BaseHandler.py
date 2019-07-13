@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from peewee import JOIN
 
+from ..exceptions import BadRequest
+
 
 class BaseHandler:
     def __init__(self, model):
@@ -27,7 +29,10 @@ class BaseHandler:
         """
         embeds = self.parse_embeds(params)
         for embed in embeds:
-            property = getattr(self.model, embed)
+            try:
+                property = getattr(self.model, embed)
+            except AttributeError:
+                raise BadRequest('embedding_error', embed)
             model = property.rel_model
             if hasattr(property, 'field'):
                 property = property.field

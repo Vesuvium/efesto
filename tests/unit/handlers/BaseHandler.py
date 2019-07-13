@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from efesto.exceptions import BadRequest
 from efesto.handlers import BaseHandler
 
-from pytest import fixture
+from pytest import fixture, raises
 
 
 @fixture
@@ -47,3 +48,10 @@ def test_basehandler_embeds_reverse(patch, handler):
     patch.object(BaseHandler, 'parse_embeds', return_value=['one'])
     handler.embeds('params')
     handler.model.q.join.assert_called_with(handler.model, on=False)
+
+
+def test_basehandler_embeds__error(patch, handler, magic):
+    patch.object(BaseHandler, 'parse_embeds', return_value=['one'])
+    handler.model = 'model'
+    with raises(BadRequest):
+        handler.embeds('params')
