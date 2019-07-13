@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from peewee import IntegrityError
+
 from .Api import Api
 from .Blueprints import Blueprints
 from .Config import Config
@@ -43,9 +45,12 @@ class App:
     @classmethod
     def create_user(cls, identifier, superuser):
         cls.init()
-        return Users(identifier=identifier, owner_permission=1,
-                     group_permission=1, others_permission=1,
-                     superuser=superuser).save()
+        try:
+            return Users(identifier=identifier, owner_permission=1,
+                         group_permission=1, others_permission=1,
+                         superuser=superuser).save()
+        except IntegrityError:
+            return None
 
     @classmethod
     def load(cls, filename):

@@ -6,6 +6,8 @@ from efesto.Config import Config
 from efesto.Generator import Generator
 from efesto.models import Base, Fields, Types, Users, db
 
+from peewee import IntegrityError
+
 
 def test_app_config(patch):
     patch.init(Config)
@@ -52,6 +54,13 @@ def test_app_create_user(patch):
                                       group_permission=1, others_permission=1,
                                       superuser='super')
     assert result == Users.save()
+
+
+def test_app_create_user__error(patch):
+    patch.init(Users)
+    patch.object(Users, 'save', side_effect=IntegrityError)
+    patch.object(App, 'init')
+    assert App.create_user('id', 'super') is None
 
 
 def test_app_load(patch, magic):
