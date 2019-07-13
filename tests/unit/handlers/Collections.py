@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from efesto.exceptions import BadRequest
 from efesto.handlers import BaseHandler, Collections
 
-from falcon import HTTPBadRequest, HTTP_501
+from falcon import HTTP_501
 
 from pytest import fixture, raises
 
@@ -175,7 +176,7 @@ def test_collection_on_post_bad_request(patch, magic, collection, siren):
     patch.object(rapidjson, 'load')
     patch.object(Collections, 'apply_owner')
     collection.model.write.return_value = None
-    with raises(HTTPBadRequest):
+    with raises(BadRequest):
         collection.on_post(request, response, user=user)
 
 

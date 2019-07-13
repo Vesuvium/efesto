@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*
-from falcon import HTTPBadRequest, HTTP_501
+from falcon import HTTP_501
 
 import rapidjson
 
 from .BaseHandler import BaseHandler
 from ..Siren import Siren
+from ..exceptions import BadRequest
 
 
 class Collections(BaseHandler):
@@ -82,7 +83,7 @@ class Collections(BaseHandler):
         self.apply_owner(params['user'], json)
         item = self.model.write(**json)
         if item is None:
-            raise HTTPBadRequest('Bad request', 'bad request')
+            raise BadRequest('write_error', json)
         body = Siren(self.model, item, request.path)
         response.body = body.encode()
 
