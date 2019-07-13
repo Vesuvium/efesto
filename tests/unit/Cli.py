@@ -3,7 +3,6 @@ import click
 from click.testing import CliRunner
 
 from efesto.App import App
-from efesto.Blueprints import Blueprints
 from efesto.Cli import Cli
 from efesto.Tokens import Tokens
 from efesto.Version import version
@@ -85,11 +84,10 @@ def test_cli_create_user__superuser(patch, runner):
     assert result.exit_code == 0
 
 
-def test_cli_load_blueprint(patch, runner, quickstart):
-    patch.object(Blueprints, 'load')
-    runner.invoke(Cli.load_blueprint, ['filename'])
-    Blueprints.load.assert_called_with('filename')
-    assert Base.init_db.call_count == 1
+def test_cli_load(patch, runner, quickstart):
+    patch.object(App, 'load')
+    runner.invoke(Cli.load, ['filename'])
+    App.load.assert_called_with('filename')
 
 
 def test_cli_version(patch, runner):

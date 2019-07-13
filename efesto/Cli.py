@@ -4,7 +4,6 @@ import click
 from peewee import OperationalError, ProgrammingError
 
 from .App import App
-from .Blueprints import Blueprints
 from .Config import Config
 from .Generator import Generator
 from .Tokens import Tokens
@@ -58,13 +57,11 @@ class Cli:
     @staticmethod
     @main.command()
     @click.argument('filename')
-    def load_blueprint(filename):
+    def load(filename):
         """
-        Load the specified blueprint file
+        Loads the specified blueprint.
         """
-        config = Config()
-        Base.init_db(config.DB_URL)
-        Blueprints().load(filename)
+        App.load(filename)
 
     @staticmethod
     @main.command()
