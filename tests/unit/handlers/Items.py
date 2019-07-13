@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from efesto.handlers import BaseHandler, Items
+from efesto.exceptions import BadRequest, NotFound
 
 from falcon import HTTPBadRequest, HTTPNotFound, HTTP_204
 
@@ -43,12 +44,10 @@ def test_items_on_get(patch, magic, item, siren):
     assert response.body == siren().encode()
 
 
-def test_items_on_get_404(patch, magic, item):
-    request = magic()
-    response = magic()
+def test_items_on_get__not_found(patch, magic, http_request, item):
     user = magic(do=magic(side_effect=DoesNotExist))
-    with raises(HTTPNotFound):
-        item.on_get(request, response, user=user, id=1)
+    with raises(NotFound):
+        item.on_get(http_request, 'response', user=user, id=1)
 
 
 def test_item_on_patch(patch, magic, item, siren):

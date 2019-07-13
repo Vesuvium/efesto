@@ -7,6 +7,7 @@ import rapidjson
 
 from .BaseHandler import BaseHandler
 from ..Siren import Siren
+from ..exceptions import BadRequest, NotFound
 
 
 class Items(BaseHandler):
@@ -24,7 +25,7 @@ class Items(BaseHandler):
         try:
             result = user.do('read', self.model.q, self.model).get()
         except DoesNotExist:
-            raise HTTPNotFound()
+            raise NotFound()
         body = Siren(self.model, result, request.path)
         response.body = body.encode(includes=embeds)
 
