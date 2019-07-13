@@ -9,7 +9,7 @@ from .Config import Config
 from .Generator import Generator
 from .Tokens import Tokens
 from .Version import version
-from .models import Base, Types, Users, db
+from .models import Base, Types, db
 
 
 class Cli:
@@ -52,12 +52,8 @@ class Cli:
     @click.argument('identifier')
     @click.option('--superuser', is_flag=True)
     def create_user(identifier, superuser):
-        config = Config()
-        Base.init_db(config.DB_URL)
-        user = Users(identifier=identifier, group=1, owner_permission=1,
-                     group_permission=1, others_permission=1,
-                     superuser=superuser)
-        user.save()
+        App.create_user(identifier, superuser)
+        click.echo(f'User {identifier} created.')
 
     @staticmethod
     @main.command()

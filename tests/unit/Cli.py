@@ -7,7 +7,7 @@ from efesto.Blueprints import Blueprints
 from efesto.Cli import Cli
 from efesto.Tokens import Tokens
 from efesto.Version import version
-from efesto.models import Base, Users, db
+from efesto.models import Base, db
 
 from peewee import OperationalError, ProgrammingError
 
@@ -71,28 +71,17 @@ def test_cli_token_expiration(patch, runner, app):
     assert result.exit_code == 0
 
 
-def test_cli_create_user(patch, runner, quickstart):
-    patch.init(Users)
-    patch.object(Users, 'save')
+def test_cli_create_user(patch, runner):
+    patch.object(App, 'create_user')
     result = runner.invoke(Cli.create_user, ['identifier'])
-    dictionary = {'identifier': 'identifier', 'group': 1,
-                  'group_permission': 1, 'owner_permission': 1,
-                  'others_permission': 1, 'superuser': False}
-    Users.__init__.assert_called_with(**dictionary)
-    assert Users.save.call_count == 1
+    App.create_user.assert_called_with('identifier', False)
     assert result.exit_code == 0
 
 
-def test_cli_create_user_superuser(patch, runner, quickstart):
-    patch.init(Users)
-    patch.object(Users, 'save')
+def test_cli_create_user__superuser(patch, runner):
+    patch.object(App, 'create_user')
     result = runner.invoke(Cli.create_user, ['identifier', '--superuser'])
-    dictionary = {'identifier': 'identifier', 'group': 1,
-                  'group_permission': 1, 'owner_permission': 1,
-                  'others_permission': 1, 'owner_permission': 1,
-                  'superuser': True}
-    Users.__init__.assert_called_with(**dictionary)
-    assert Users.save.call_count == 1
+    App.create_user.assert_called_with('identifier', True)
     assert result.exit_code == 0
 
 
