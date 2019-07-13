@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from efesto.handlers import BaseHandler, Items
 from efesto.exceptions import BadRequest, NotFound
+from efesto.handlers import BaseHandler, Items
 
-from falcon import HTTPBadRequest, HTTPNotFound, HTTP_204
+from falcon import HTTP_204
 
 from peewee import DoesNotExist
 
@@ -73,12 +73,10 @@ def test_item_on_patch__badrequest(patch, magic, http_request, item):
         item.on_patch(http_request, 'response', user=user, id=1)
 
 
-def test_items_on_patch_404(patch, magic, item):
-    request = magic()
-    response = magic()
+def test_items_on_patch__notfound(patch, magic, http_request, item):
     user = magic(do=magic(side_effect=DoesNotExist))
-    with raises(HTTPNotFound):
-        item.on_patch(request, response, user=user, id=1)
+    with raises(NotFound):
+        item.on_patch(http_request, 'response', user=user, id=1)
 
 
 def test_item_on_delete(patch, magic, item):

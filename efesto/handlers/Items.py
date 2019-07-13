@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from falcon import HTTPBadRequest, HTTPNotFound, HTTP_204
+from falcon import HTTP_204
 
 from peewee import DoesNotExist
 
@@ -38,7 +38,7 @@ class Items(BaseHandler):
         try:
             result = user.do('edit', query, self.model).get()
         except DoesNotExist:
-            raise HTTPNotFound()
+            raise NotFound()
         json = rapidjson.load(request.bounded_stream)
         if result.edit(json) is None:
             raise BadRequest('write_error', json)
