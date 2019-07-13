@@ -54,12 +54,19 @@ def test_app_create_user(patch):
     assert result == Users.save()
 
 
-def test_app_load(patch):
+def test_app_load(patch, magic):
     patch.init(Blueprints)
     patch.object(Blueprints, 'load')
-    patch.object(App, 'init')
-    result = App.load('file')
+    patch.init(Generator)
+    patch.object(Generator, 'generate')
+    patch.object(Types, 'select')
+    patch.many(App, ['init', 'generator'])
+    db.create_tables = magic()
+    Types.select().execute.return_value = ['type']
+    App.load('file')
     assert App.init.call_count == 1
     assert Blueprints.__init__.call_count == 1
     Blueprints.load.assert_called_with('file')
-    assert result == Blueprints.load()
+    App.generator().generate.assert_called_with('type')
+    db.create_tables.assert_called_with(App.generator().models.values(),
+                                        safe=True)

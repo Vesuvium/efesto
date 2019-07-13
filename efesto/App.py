@@ -49,5 +49,13 @@ class App:
 
     @classmethod
     def load(cls, filename):
+        """
+        Loads a blueprint.
+        """
         cls.init()
-        return Blueprints().load(filename)
+        Blueprints().load(filename)
+        types = Types.select().execute()
+        generator = cls.generator()
+        for dynamic_type in types:
+            generator.generate(dynamic_type)
+        db.create_tables(generator.models.values(), safe=True)
