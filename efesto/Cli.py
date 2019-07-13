@@ -5,10 +5,8 @@ from peewee import OperationalError, ProgrammingError
 
 from .App import App
 from .Config import Config
-from .Generator import Generator
 from .Tokens import Tokens
 from .Version import version
-from .models import Base, Types, db
 
 
 class Cli:
@@ -62,20 +60,6 @@ class Cli:
         Loads the specified blueprint.
         """
         App.load(filename)
-
-    @staticmethod
-    @main.command()
-    def generate():
-        """
-        Generates dynamic tables from existing types
-        """
-        config = Config()
-        Base.init_db(config.DB_URL)
-        types = Types.select().execute()
-        generator = Generator()
-        for dynamic_type in types:
-            generator.generate(dynamic_type)
-        db.create_tables(generator.models.values(), safe=True)
 
     @staticmethod
     @main.command()

@@ -6,17 +6,10 @@ from efesto.App import App
 from efesto.Cli import Cli
 from efesto.Tokens import Tokens
 from efesto.Version import version
-from efesto.models import Base, db
 
 from peewee import OperationalError, ProgrammingError
 
 from pytest import fixture, mark
-
-
-@fixture
-def quickstart(patch, magic):
-    patch.object(Base, 'init_db')
-    db.create_tables = magic()
 
 
 @fixture
@@ -84,7 +77,7 @@ def test_cli_create_user__superuser(patch, runner):
     assert result.exit_code == 0
 
 
-def test_cli_load(patch, runner, quickstart):
+def test_cli_load(patch, runner):
     patch.object(App, 'load')
     runner.invoke(Cli.load, ['filename'])
     App.load.assert_called_with('filename')
