@@ -64,10 +64,19 @@ def test_cli_token_expiration(patch, runner, app):
 
 
 def test_cli_create__user(patch, runner):
+    patch.object(click, 'echo')
     patch.object(App, 'create_user')
     result = runner.invoke(Cli.create, ['users', 'identifier'])
     App.create_user.assert_called_with('identifier', False)
+    click.echo.assert_called_with('User identifier created.')
     assert result.exit_code == 0
+
+
+def test_cli_create__user_none(patch, runner):
+    patch.object(click, 'echo')
+    patch.object(App, 'create_user', return_value=None)
+    runner.invoke(Cli.create, ['users', 'identifier'])
+    click.echo.assert_called_with('User identifier already exists.')
 
 
 def test_cli_create__user_superuser(patch, runner):

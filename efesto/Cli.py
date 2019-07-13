@@ -54,8 +54,9 @@ class Cli:
         Creates an item
         """
         if item_type == 'users':
-            App.create_user(identifier, superuser)
-            click.echo(f'User {identifier} created.')
+            if App.create_user(identifier, superuser):
+                return click.echo(f'User {identifier} created.')
+            return click.echo(f'User {identifier} already exists.')
 
     @staticmethod
     @main.command()
