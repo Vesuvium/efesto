@@ -27,3 +27,15 @@ def test_app_install(patch, magic):
     db.create_tables = magic()
     App.install()
     db.create_tables.assert_called_with([Fields, Types, Users])
+
+
+def test_app_create_user(patch):
+    patch.object(Base, 'init_db')
+    patch.init(Users)
+    patch.object(Users, 'save')
+    patch.object(App, 'config')
+    result = App.create_user('id', 'super')
+    Users.__init__.assert_called_with(identifier='id', owner_permission=1,
+                                      group_permission=1, others_permission=1,
+                                      superuser='super')
+    assert result == Users.save()

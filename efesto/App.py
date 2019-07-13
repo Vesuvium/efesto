@@ -27,3 +27,11 @@ class App:
         config = cls.config()
         Base.init_db(config.DB_URL)
         db.create_tables([Fields, Types, Users])
+
+    @classmethod
+    def create_user(cls, identifier, superuser):
+        config = cls.config()
+        Base.init_db(config.DB_URL)
+        return Users(identifier=identifier, owner_permission=1,
+                     group_permission=1, others_permission=1,
+                     superuser=superuser).save()
