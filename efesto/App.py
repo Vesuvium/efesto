@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from .Api import Api
+from .Blueprints import Blueprints
 from .Config import Config
 from .models import Base, Fields, Types, Users, db
 
@@ -35,3 +36,9 @@ class App:
         return Users(identifier=identifier, owner_permission=1,
                      group_permission=1, others_permission=1,
                      superuser=superuser).save()
+
+    @classmethod
+    def load(cls, filename):
+        config = cls.config()
+        Base.init_db(config.DB_URL)
+        return Blueprints().load(filename)

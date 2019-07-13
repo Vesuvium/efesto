@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from efesto.Api import Api
 from efesto.App import App
+from efesto.Blueprints import Blueprints
 from efesto.Config import Config
 from efesto.models import Base, Fields, Types, Users, db
 
@@ -35,7 +36,20 @@ def test_app_create_user(patch):
     patch.object(Users, 'save')
     patch.object(App, 'config')
     result = App.create_user('id', 'super')
+    Base.init_db.assert_called_with(App.config().DB_URL)
     Users.__init__.assert_called_with(identifier='id', owner_permission=1,
                                       group_permission=1, others_permission=1,
                                       superuser='super')
     assert result == Users.save()
+
+
+def test_app_load(patch):
+    patch.object(Base, 'init_db')
+    patch.init(Blueprints)
+    patch.object(Blueprints, 'load')
+    patch.object(App, 'config')
+    result = App.load('file')
+    Base.init_db.assert_called_with(App.config().DB_URL)
+    assert Blueprints.__init__.call_count == 1
+    Blueprints.load.assert_called_with('file')
+    assert result == Blueprints.load()
