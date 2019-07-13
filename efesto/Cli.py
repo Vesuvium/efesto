@@ -34,6 +34,7 @@ class Cli:
             exit(1)
         click.echo('Installation successful!')
 
+    @staticmethod
     @main.command()
     @click.argument('user')
     @click.argument('expiration', default=100)
@@ -46,6 +47,7 @@ class Cli:
                               sub=user, aud=config.JWT_AUDIENCE)
         click.echo(token)
 
+    @staticmethod
     @main.command()
     @click.argument('identifier')
     @click.option('--superuser', is_flag=True)
@@ -57,6 +59,7 @@ class Cli:
                      superuser=superuser)
         user.save()
 
+    @staticmethod
     @main.command()
     @click.argument('filename')
     def load_blueprint(filename):
@@ -67,6 +70,7 @@ class Cli:
         Base.init_db(config.DB_URL)
         Blueprints().load(filename)
 
+    @staticmethod
     @main.command()
     def generate():
         """
@@ -80,10 +84,12 @@ class Cli:
             generator.generate(dynamic_type)
         db.create_tables(generator.models.values(), safe=True)
 
+    @staticmethod
     @main.command()
     def version():
         click.echo('Version {}'.format(version))
 
+    @staticmethod
     @main.command()
     def run():
         return App.run()
