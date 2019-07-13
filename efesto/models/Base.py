@@ -105,12 +105,15 @@ class Base(Model):
                 return cls.create(**kwargs)
         except IntegrityError:
             return None
+        except ValueError:
+            return None
 
     def update_item(self, data):
         for key, value in data.items():
             setattr(self, key, value)
         return self.save()
 
+    @classmethod
     def edit(cls, data):
         try:
             with db.atomic():

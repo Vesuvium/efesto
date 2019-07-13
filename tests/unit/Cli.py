@@ -3,21 +3,13 @@ import click
 from click.testing import CliRunner
 
 from efesto.App import App
-from efesto.Blueprints import Blueprints
 from efesto.Cli import Cli
 from efesto.Tokens import Tokens
 from efesto.Version import version
-from efesto.models import Base, Fields, Types, Users, db
 
 from peewee import OperationalError, ProgrammingError
 
-from pytest import fixture
-
-
-@fixture
-def quickstart(patch, magic):
-    patch.object(Base, 'init_db')
-    db.create_tables = magic()
+from pytest import fixture, mark
 
 
 @fixture
@@ -30,22 +22,26 @@ def app(patch):
     patch.object(App, 'run')
 
 
-def test_quickstart(runner, quickstart):
-    result = runner.invoke(Cli.quickstart)
-    assert Base.init_db.call_count == 1
-    db.create_tables.assert_called_with([Fields, Types, Users])
+def test_cli():
+    message = ('An error occured during tables creation. '
+               'Please check your database credentials.')
+    assert Cli.installation_error == message
+
+
+def test_cli_install(patch, runner):
+    patch.object(click, 'echo')
+    patch.object(App, 'install')
+    result = runner.invoke(Cli.install)
+    assert App.install.call_count == 1
     assert result.exit_code == 0
 
 
-def test_quickstart_operational_error(runner, quickstart):
-    db.create_tables.side_effect = OperationalError
-    result = runner.invoke(Cli.quickstart)
-    assert result.exit_code == 1
-
-
-def test_quickstart_programming_error(runner, quickstart):
-    db.create_tables.side_effect = ProgrammingError
-    result = runner.invoke(Cli.quickstart)
+@mark.parametrize('error', [OperationalError, ProgrammingError])
+def test_cli_install_error(patch, runner, error):
+    patch.object(click, 'echo')
+    patch.object(App, 'install', side_effect=ProgrammingError)
+    result = runner.invoke(Cli.install)
+    click.echo.assert_called_with(Cli.installation_error)
     assert result.exit_code == 1
 
 
@@ -67,36 +63,33 @@ def test_cli_token_expiration(patch, runner, app):
     assert result.exit_code == 0
 
 
-def test_cli_create_user(patch, runner, quickstart):
-    patch.init(Users)
-    patch.object(Users, 'save')
-    result = runner.invoke(Cli.create_user, ['identifier'])
-    dictionary = {'identifier': 'identifier', 'group': 1,
-                  'group_permission': 1, 'owner_permission': 1,
-                  'others_permission': 1, 'superuser': False}
-    Users.__init__.assert_called_with(**dictionary)
-    assert Users.save.call_count == 1
+def test_cli_create__user(patch, runner):
+    patch.object(click, 'echo')
+    patch.object(App, 'create_user')
+    result = runner.invoke(Cli.create, ['users', 'identifier'])
+    App.create_user.assert_called_with('identifier', False)
+    click.echo.assert_called_with('User identifier created.')
     assert result.exit_code == 0
 
 
-def test_cli_create_user_superuser(patch, runner, quickstart):
-    patch.init(Users)
-    patch.object(Users, 'save')
-    result = runner.invoke(Cli.create_user, ['identifier', '--superuser'])
-    dictionary = {'identifier': 'identifier', 'group': 1,
-                  'group_permission': 1, 'owner_permission': 1,
-                  'others_permission': 1, 'owner_permission': 1,
-                  'superuser': True}
-    Users.__init__.assert_called_with(**dictionary)
-    assert Users.save.call_count == 1
+def test_cli_create__user_none(patch, runner):
+    patch.object(click, 'echo')
+    patch.object(App, 'create_user', return_value=None)
+    runner.invoke(Cli.create, ['users', 'identifier'])
+    click.echo.assert_called_with('User identifier already exists.')
+
+
+def test_cli_create__user_superuser(patch, runner):
+    patch.object(App, 'create_user')
+    result = runner.invoke(Cli.create, ['users', 'identifier', '--superuser'])
+    App.create_user.assert_called_with('identifier', True)
     assert result.exit_code == 0
 
 
-def test_cli_load_blueprint(patch, runner, quickstart):
-    patch.object(Blueprints, 'load')
-    runner.invoke(Cli.load_blueprint, ['filename'])
-    Blueprints.load.assert_called_with('filename')
-    assert Base.init_db.call_count == 1
+def test_cli_load(patch, runner):
+    patch.object(App, 'load')
+    runner.invoke(Cli.load, ['filename'])
+    App.load.assert_called_with('filename')
 
 
 def test_cli_version(patch, runner):

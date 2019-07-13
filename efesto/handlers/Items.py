@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from falcon import HTTPBadRequest, HTTPNotFound, HTTP_204
+from falcon import HTTP_204
 
 from peewee import DoesNotExist
 
@@ -7,6 +7,7 @@ import rapidjson
 
 from .BaseHandler import BaseHandler
 from ..Siren import Siren
+from ..exceptions import BadRequest, NotFound
 
 
 class Items(BaseHandler):
@@ -24,7 +25,7 @@ class Items(BaseHandler):
         try:
             result = user.do('read', self.model.q, self.model).get()
         except DoesNotExist:
-            raise HTTPNotFound()
+            raise NotFound()
         body = Siren(self.model, result, request.path)
         response.body = body.encode(includes=embeds)
 
@@ -37,10 +38,10 @@ class Items(BaseHandler):
         try:
             result = user.do('edit', query, self.model).get()
         except DoesNotExist:
-            raise HTTPNotFound()
+            raise NotFound()
         json = rapidjson.load(request.bounded_stream)
         if result.edit(json) is None:
-            raise HTTPBadRequest('Bad request', 'bad request')
+            raise BadRequest('write_error', json)
         body = Siren(self.model, result, request.path)
         response.body = body.encode()
 

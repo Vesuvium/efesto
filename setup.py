@@ -21,17 +21,21 @@ setup(
     packages=find_packages(),
     tests_require=[
         'pytest',
-        'pytest-mock',
-        'pytest-falcon'
+        'pytest-mock'
+    ],
+    docs_require=[
+        'mkdocs',
+        'mkdocs-gitbook'
     ],
     setup_requires=['pytest-runner'],
     install_requires=[
         'bassoon>=1.0.0',
-        'click==6.7',
+        'click>=7.0',
         'colorama>=0.4.0',
-        'falcon>=1.4.1',
+        'falcon>=2.0.0',
         'falcon-cors>=1.1.7',
-        'peewee>=3.7.1',
+        'loguru>=0.3',
+        'peewee>=3.9.0',
         'psycopg2-binary>=2.7.5',
         'python-rapidjson>=0.6.3',
         'pyjwt>=1.6.4',
@@ -44,8 +48,8 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     ],
     entry_points="""

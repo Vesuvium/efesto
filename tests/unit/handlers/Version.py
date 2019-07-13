@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-import json
-
 from efesto.Version import version
 from efesto.handlers import Version
 
 
-def test_version_on_get(patch, response):
-    patch.object(json, 'dumps')
+def test_version_on_get(response):
     Version.on_get('request', response)
-    json.dumps.assert_called_with({'version': version})
-    assert response.body == json.dumps()
+    data = {'properties': {'version': version},
+            'links': [{'href': '/version', 'rel': 'self'}],
+            'class': ['Version']}
+    assert response.body == data

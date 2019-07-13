@@ -8,6 +8,7 @@ class Users(Base):
     identifier = CharField(unique=True)
     superuser = BooleanField(default=False)
 
+    @staticmethod
     def login(identifier):
         """
         Logs in an user, when provided with a valid identifer

@@ -191,9 +191,10 @@ def test_base_write(patch, magic):
 
 
 @mark.skip
-def test_base_write_error(patch, magic):
-    patch.object(db, 'atomic',)
-    patch.object(Base, 'create', side_effect=IntegrityError)
+@mark.parametrize('error', [IntegrityError, ValueError])
+def test_base_write_error(patch, magic, error):
+    patch.object(db, 'atomic')
+    patch.object(Base, 'create', side_effect=error)
     assert Base.write(args='args') is None
 
 

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from efesto.exceptions import BadRequest, NotFound
 from efesto.handlers import BaseHandler, Items
 
-from falcon import HTTPBadRequest, HTTPNotFound, HTTP_204
+from falcon import HTTP_204
 
 from peewee import DoesNotExist
 
@@ -43,12 +44,10 @@ def test_items_on_get(patch, magic, item, siren):
     assert response.body == siren().encode()
 
 
-def test_items_on_get_404(patch, magic, item):
-    request = magic()
-    response = magic()
+def test_items_on_get__not_found(patch, magic, http_request, item):
     user = magic(do=magic(side_effect=DoesNotExist))
-    with raises(HTTPNotFound):
-        item.on_get(request, response, user=user, id=1)
+    with raises(NotFound):
+        item.on_get(http_request, 'response', user=user, id=1)
 
 
 def test_item_on_patch(patch, magic, item, siren):
@@ -66,22 +65,18 @@ def test_item_on_patch(patch, magic, item, siren):
     assert response.body == siren().encode()
 
 
-def test_item_on_patch_400(patch, magic, item):
+def test_item_on_patch__badrequest(patch, magic, http_request, item):
     patch.object(rapidjson, 'load')
-    request = magic()
-    response = magic()
     user = magic()
     user.do().get().edit.return_value = None
-    with raises(HTTPBadRequest):
-        item.on_patch(request, response, user=user, id=1)
+    with raises(BadRequest):
+        item.on_patch(http_request, 'response', user=user, id=1)
 
 
-def test_items_on_patch_404(patch, magic, item):
-    request = magic()
-    response = magic()
+def test_items_on_patch__notfound(patch, magic, http_request, item):
     user = magic(do=magic(side_effect=DoesNotExist))
-    with raises(HTTPNotFound):
-        item.on_patch(request, response, user=user, id=1)
+    with raises(NotFound):
+        item.on_patch(http_request, 'response', user=user, id=1)
 
 
 def test_item_on_delete(patch, magic, item):

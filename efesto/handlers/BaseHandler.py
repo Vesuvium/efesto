@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
 from peewee import JOIN
 
+from ..exceptions import BadRequest
+
 
 class BaseHandler:
     def __init__(self, model):
         self.model = model
         self._order = self.model.id
+
+    @staticmethod
+    def parse_embeds(params):
+        embeds = params.pop('_embeds', [])
+        if isinstance(embeds, str):
+            return embeds.split(',')
+        return embeds
 
     def join(self, table):
         property = getattr(self.model, table)
@@ -18,16 +27,15 @@ class BaseHandler:
         """
         Parses embeds and set joins on the query
         """
-        embeds = params.pop('_embeds', None)
-        if isinstance(embeds, str):
-            embeds = [embeds]
-        if embeds:
-            for embed in embeds:
+        embeds = self.parse_embeds(params)
+        for embed in embeds:
+            try:
                 property = getattr(self.model, embed)
-                model = property.rel_model
-                if hasattr(property, 'field'):
-                    property = property.field
-                    model = self.model
-                self.model.q.join(model, on=(property == model.id))
-            return embeds
-        return []
+            except AttributeError:
+                raise BadRequest('embedding_error', embed)
+            model = property.rel_model
+            if hasattr(property, 'field'):
+                property = property.field
+                model = self.model
+            self.model.q.join(model, on=(property == model.id))
+        return embeds

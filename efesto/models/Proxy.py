@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class Proxy(object):
+class Proxy:
     """
     Create a proxy or placeholder for another object.
     This is an alternative version of the original, that instead
@@ -21,7 +21,7 @@ class Proxy(object):
         self._callbacks.append(callback)
         return callback
 
-    def passthrough(method):
+    def passthrough(method):  # NOQA
         def inner(self, *args, **kwargs):
             if self.obj is None:
                 raise AttributeError('Cannot use uninitialized Proxy.')

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from efesto.Api import Api
 from efesto.Generator import Generator
-from efesto.handlers import Collections, Items
+from efesto.handlers import Collections, Items, Version
+from efesto.middlewares import Authentication, Json, Log
+from efesto.models import Fields, Types, Users
 
 import falcon
 
@@ -9,72 +11,72 @@ from pytest import fixture
 
 
 @fixture
-def api(patch):
-    patch.object(falcon, 'API')
-    return Api()
-
-
-def test_api_init(patch):
-    patch.object(falcon, 'API')
-    api = Api()
-    assert api.api == falcon.API()
-
-
-def test_api_init_kwargs(patch):
-    patch.object(falcon, 'API')
-    Api(key='value')
-    falcon.API.assert_called_with(key='value')
-
-
-def test_api_collection(patch, magic, api):
-    patch.init(Collections)
-    model = magic()
-    result = api.collection(model)
-    Collections.__init__.assert_called_with(model)
-    assert isinstance(result, Collections)
-
-
-def test_api_item(patch, magic, api):
-    patch.init(Items)
-    model = magic()
-    result = api.item(model)
-    Items.__init__.assert_called_with(model)
-    assert isinstance(result, Items)
-
-
-def test_api_list_route(patch, magic, api):
-    patch.object(api, 'collection')
-    model = magic()
-    api.list_route('/endpoint', model)
-    api.collection.assert_called_with(model)
-    api.api.add_route.assert_called_with('/endpoint', api.collection())
-
-
-def test_api_object_route(patch, magic, api):
-    patch.object(api, 'item')
-    model = magic()
-    api.object_route('/endpoint', model)
-    api.item.assert_called_with(model)
-    api.api.add_route.assert_called_with('/endpoint/{id}', api.item())
-
-
-def test_api_add_endpoint(patch, magic, api):
-    patch.many(Api, ['list_route', 'object_route'])
-    model = magic()
-    api.add_endpoint('/endpoint', model)
-    api.list_route.assert_called_with('/endpoint', model)
-    api.object_route.assert_called_with('/endpoint', model)
-
-
-def test_api_dynamic_endpoints(patch, api, type_instance):
+def api(patch, config):
     patch.init(Generator)
+    return Api(config)
+
+
+def test_api_routes():
+    assert Api.routes['/fields'] == {'model': Fields, 'handler': Collections}
+    assert Api.routes['/fields/{id}'] == {'model': Fields, 'handler': Items}
+    assert Api.routes['/types'] == {'model': Types, 'handler': Collections}
+    assert Api.routes['/types/{id}'] == {'model': Types, 'handler': Items}
+    assert Api.routes['/users'] == {'model': Users, 'handler': Collections}
+    assert Api.routes['/users/{id}'] == {'model': Users, 'handler': Items}
+    assert Api.routes['/version'] == Version
+
+
+def test_api_init(api, config):
+    assert api.config == config
+    assert api.api is None
+    assert isinstance(api.generator, Generator)
+
+
+def test_api_type_route(patch, api, type_instance):
     patch.object(Generator, 'generate')
-    patch.object(Api, 'add_endpoint')
-    api.dynamic_endpoints([type_instance])
-    assert Generator.__init__.call_count == 1
+    api.type_route(type_instance)
     Generator.generate.assert_called_with(type_instance)
-    api.add_endpoint.assert_called_with('/custom', Generator.generate())
+    assert api.routes['/custom'] == {'model': Generator.generate(),
+                                     'handler': Collections}
+    assert api.routes['/custom/{id}'] == {'model': Generator.generate(),
+                                          'handler': Items}
 
 
-def test_api_cherries(api):
-    assert api.cherries() == api.api
+def test_api_add_endpoint(patch, api, magic):
+    api.api = magic()
+    api.add_endpoint('route', 'handler')
+    api.api.add_route.assert_called_with('route', 'handler')
+
+
+def test_api_add_endpoint_dict(patch, magic, api):
+    handler = magic()
+    api.api = magic()
+    api.add_endpoint('route', {'handler': handler, 'model': 'model'})
+    handler.assert_called_with('model')
+    api.api.add_route.assert_called_with('route', handler())
+
+
+def test_api_middlewares(patch, api, config):
+    patch.init(Authentication)
+    patch.init(Log)
+    result = api.middlewares()
+    Authentication.__init__.assert_called_with(config.JWT_SECRET,
+                                               config.JWT_AUDIENCE,
+                                               config.PUBLIC_ENDPOINTS)
+    Log.__init__.assert_called_with(config.LOG_LEVEL, config.LOG_FORMAT)
+    assert isinstance(result[0], Authentication)
+    assert isinstance(result[1], Json)
+    assert isinstance(result[2], Log)
+
+
+def test_api_start(patch, magic, api):
+    patch.object(falcon, 'API')
+    patch.object(Types, 'select')
+    patch.many(Api, ['type_route', 'add_endpoint', 'middlewares'])
+    Types.select.return_value = magic(execute=magic(return_value=['type']))
+    api.routes = {'route': 'handler'}
+    result = api.start()
+    falcon.API.assert_called_with(middleware=Api.middlewares())
+    Api.type_route.assert_called_with('type')
+    Api.add_endpoint.assert_called_with('route', 'handler')
+    assert result == api.api
