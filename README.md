@@ -2,8 +2,8 @@
 
 [![Pypi](https://img.shields.io/pypi/v/efesto.svg?maxAge=600&style=for-the-badge)](https://pypi.python.org/pypi/efesto)
 [![Travis build](https://img.shields.io/travis/strangemachines/efesto.svg?maxAge=600&style=for-the-badge)](https://travis-ci.org/strangemachines/efesto)
-[![Codacy grade](https://img.shields.io/codacy/grade/f7e53f5fa09043a48a52eee5a706c684.svg?style=for-the-badge)](https://app.codacy.com/app/strangemachines/efesto)
-[![Codacy grade](https://img.shields.io/codacy/coverage/f7e53f5fa09043a48a52eee5a706c684.svg?style=for-the-badge)](https://app.codacy.com/app/strangemachines/efesto)
+[![Codacy grade](https://img.shields.io/codacy/grade/9a18a3f98f654fef8b6ff86e93f31b56.svg?style=for-the-badge)](https://app.codacy.com/app/strangemachines/efesto)
+[![Codacy grade](https://img.shields.io/codacy/coverage/9a18a3f98f654fef8b6ff86e93f31b56.svg?style=for-the-badge)](https://app.codacy.com/app/strangemachines/efesto)
 
 A micro REST API meant to be used almost out of the box with other
 microservices.
