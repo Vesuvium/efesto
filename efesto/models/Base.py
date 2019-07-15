@@ -113,11 +113,10 @@ class Base(Model):
             setattr(self, key, value)
         return self.save()
 
-    @classmethod
-    def edit(cls, data):
+    def edit(self, data):
         try:
             with db.atomic():
-                return cls.update_item(data)
+                return self.update_item(data)
         except IntegrityError:
             return None
 
