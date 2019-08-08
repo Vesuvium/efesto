@@ -10,4 +10,24 @@ if [ ! -z "$BLUEPRINT" ]; then
     efesto load blueprint.yml;
 fi
 
-gunicorn "efesto.App:App.run()" -b :5000
+if [ ! $WORKERS ]; then
+    WORKERS=3;
+fi
+
+if [ ! $WORKER_CLASS ]; then
+    WORKER_CLASS=sync;
+else
+    pip install $WORKER_CLASS;
+fi
+
+if [ ! $THREADS ]; then
+    THREADS=1;
+fi
+
+if [ ! $TIMEOUT ]; then
+    TIMEOUT=60;
+fi
+
+
+gunicorn "efesto.App:App.run()" -b :5000 -w $WORKERS -k $WORKER_CLASS \
+        --threads $THREADS -t $TIMEOUT --graceful-timeout $TIMEOUT
