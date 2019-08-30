@@ -70,6 +70,12 @@ def test_api_add_route__model(magic, api):
     api.api.add_route.assert_called_with('route', handler())
 
 
+def test_api_add_routes(patch, api):
+    patch.object(Api, 'add_route')
+    api.add_routes((('endpoint', 'handler'), ))
+    Api.add_route.assert_called_with('endpoint', 'handler')
+
+
 def test_api_middlewares(patch, api, config):
     patch.init(Authentication)
     patch.init(Log)
