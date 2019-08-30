@@ -31,8 +31,10 @@ class Api:
         """
         model = self.generator.generate(type)
         endpoint = f'/{type.name}'
-        self.routes[endpoint] = {'model': model, 'handler': Collections}
-        self.routes[f'{endpoint}/{{id}}'] = {'model': model, 'handler': Items}
+        items_endpoint = f'{endpoint}/{{id}}'
+        self.add_routes((
+            (endpoint, Collections, model), (items_endpoint, Items, model)
+        ))
 
     def add_route(self, endpoint, handler, model=None):
         if model:

@@ -35,12 +35,13 @@ def test_api_init(api, config):
 
 def test_api_type_route(patch, api, type_instance):
     patch.object(Generator, 'generate')
+    patch.object(Api, 'add_routes')
     api.type_route(type_instance)
     Generator.generate.assert_called_with(type_instance)
-    assert api.routes['/custom'] == {'model': Generator.generate(),
-                                     'handler': Collections}
-    assert api.routes['/custom/{id}'] == {'model': Generator.generate(),
-                                          'handler': Items}
+    Api.add_routes.assert_called_with((
+        ('/custom', Collections, Generator.generate()),
+        ('/custom/{id}', Items, Generator.generate())
+    ))
 
 
 def test_api_add_route(magic, api):
