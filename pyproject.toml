@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "efesto"
+version = "2.0.3"
+description = 'RESTful (micro)server that can generate an API in minutes.'
+authors = ["Jacopo Cascioli <jacopo@jacopocascioli.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+include = ["LICENSE", "README.md"]
+repository = "https://github.com/strangemachines/efesto"
+classifiers = [
+    'Intended Audience :: Developers',
+    'Development Status :: 5 - Production/Stable',
+    'Environment :: Web Environment',
+    'Topic :: Internet :: WWW/HTTP',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+    'Operating System :: OS Independent'
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.6"
+bassoon = "~1.0"
+click = "~7.0"
+colorama = "~0.4"
+falcon = "~2.0"
+falcon-cors = "~1.1.7"
+loguru = "~0.3"
+peewee = "~3.9"
+psycopg2-binary = "~2.7"
+python-rapidjson = "~0.6"
+pyjwt = "~1.6.4"
+"ruamel.yaml" = "~0.15"
+
+
+[tool.poetry.dev-dependencies]
+flake8 = "~3.7"
+flake8-quotes = "^2.1"
+flake8-import-order = "^0.18.1"
+ipython = "~7.8"
+mkdocs = "~1.0"
+mkdocs-gitbook = "~0.0"
+pep8-naming = "^0.8.2"
+pytest = "~3.0"
+pytest-mock = "~1.10"
+pytest-sugar = "~0.9"
+
+
+[tool.poetry.scripts]
+efesto = 'efesto.Cli:Cli.main'
+
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
