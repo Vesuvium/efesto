@@ -28,6 +28,10 @@ if [ ! $TIMEOUT ]; then
     TIMEOUT=60;
 fi
 
+if [ ! $JITTER ]; then
+    JITTER=$(( $WORKERS * 5 ));
+fi
 
 gunicorn "efesto.App:App.run()" -b :5000 -w $WORKERS -k $WORKER_CLASS \
-        --threads $THREADS -t $TIMEOUT --graceful-timeout $TIMEOUT
+        --threads $THREADS -t $TIMEOUT --graceful-timeout $TIMEOUT \
+        --max-requests-jitter $JITTER
