@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from efesto.Api import Api
 from efesto.Generator import Generator
+from efesto.Routes import Routes
 from efesto.handlers import Collections, Items, Version
 from efesto.middlewares import Authentication, Json, Log
 from efesto.models import Fields, Types, Users
@@ -92,11 +93,10 @@ def test_api_middlewares(patch, api, config):
 def test_api_start(patch, magic, api):
     patch.object(falcon, 'API')
     patch.object(Types, 'select')
-    patch.many(Api, ['type_route', 'add_endpoint', 'middlewares'])
+    patch.many(Api, ['type_route', 'add_routes', 'middlewares'])
     Types.select.return_value = magic(execute=magic(return_value=['type']))
-    api.routes = {'route': 'handler'}
     result = api.start()
     falcon.API.assert_called_with(middleware=Api.middlewares())
     Api.type_route.assert_called_with('type')
-    Api.add_endpoint.assert_called_with('route', 'handler')
+    Api.add_routes.assert_called_with(Routes.routes)
     assert result == api.api

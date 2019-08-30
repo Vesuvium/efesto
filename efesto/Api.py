@@ -2,6 +2,7 @@
 import falcon
 
 from .Generator import Generator
+from .Routes import Routes
 from .handlers import Collections, Items, Version
 from .middlewares import Authentication, Json, Log
 from .models import Fields, Types, Users
@@ -64,6 +65,5 @@ class Api:
         self.api = falcon.API(middleware=self.middlewares())
         for type in Types.select().execute():
             self.type_route(type)
-        for route, handler in self.routes.items():
-            self.add_endpoint(route, handler)
+        self.add_routes(Routes.routes)
         return self.api
