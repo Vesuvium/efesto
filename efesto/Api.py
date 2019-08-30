@@ -33,11 +33,12 @@ class Api:
         self.routes[endpoint] = {'model': model, 'handler': Collections}
         self.routes[f'{endpoint}/{{id}}'] = {'model': model, 'handler': Items}
 
-    def add_endpoint(self, route, handler):
-        if type(handler) == dict:
-            self.api.add_route(route, handler['handler'](handler['model']))
-        else:
-            self.api.add_route(route, handler)
+    def add_endpoint(self, route):
+        endpoint = route[0]
+        handler = route[1]
+        if len(route) == 2:
+            return self.api.add_route(endpoint, handler)
+        return self.api.add_route(endpoint, handler(route[2]))
 
     def middlewares(self):
         return [
