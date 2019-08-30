@@ -42,16 +42,16 @@ def test_api_type_route(patch, api, type_instance):
                                           'handler': Items}
 
 
-def test_api_add_endpoint(patch, api, magic):
+def test_api_add_endpoint(api, magic):
     api.api = magic()
-    api.add_endpoint('route', 'handler')
+    api.add_endpoint(('route', 'handler'))
     api.api.add_route.assert_called_with('route', 'handler')
 
 
-def test_api_add_endpoint_dict(patch, magic, api):
+def test_api_add_endpoint__dict(magic, api):
     handler = magic()
     api.api = magic()
-    api.add_endpoint('route', {'handler': handler, 'model': 'model'})
+    api.add_endpoint(('route', handler, 'model'))
     handler.assert_called_with('model')
     api.api.add_route.assert_called_with('route', handler())
 
