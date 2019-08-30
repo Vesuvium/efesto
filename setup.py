@@ -21,7 +21,8 @@ setup(
     packages=find_packages(),
     tests_require=[
         'pytest',
-        'pytest-mock'
+        'pytest-mock',
+        'pytest-sugar'
     ],
     docs_require=[
         'mkdocs',
