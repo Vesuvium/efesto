@@ -40,6 +40,11 @@ class Api:
             return self.api.add_route(endpoint, handler)
         return self.api.add_route(endpoint, handler(route[2]))
 
+    def add_route(self, endpoint, handler, model=None):
+        if model:
+            return self.api.add_route(endpoint, handler(model))
+        return self.api.add_route(endpoint, handler)
+
     def middlewares(self):
         return [
             Authentication(self.config.JWT_SECRET, self.config.JWT_AUDIENCE,

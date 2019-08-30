@@ -56,6 +56,20 @@ def test_api_add_endpoint__dict(magic, api):
     api.api.add_route.assert_called_with('route', handler())
 
 
+def test_api_add_route(magic, api):
+    api.api = magic()
+    api.add_route('route', 'handler')
+    api.api.add_route.assert_called_with('route', 'handler')
+
+
+def test_api_add_route__model(magic, api):
+    handler = magic()
+    api.api = magic()
+    api.add_route('route', handler, 'model')
+    handler.assert_called_with('model')
+    api.api.add_route.assert_called_with('route', handler())
+
+
 def test_api_middlewares(patch, api, config):
     patch.init(Authentication)
     patch.init(Log)
