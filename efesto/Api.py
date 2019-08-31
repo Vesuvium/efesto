@@ -3,22 +3,12 @@ import falcon
 
 from .Generator import Generator
 from .Routes import Routes
-from .handlers import Collections, Items, Version
+from .handlers import Collections, Items
 from .middlewares import Authentication, Json, Log
-from .models import Fields, Types, Users
+from .models import Types
 
 
 class Api:
-
-    routes = {
-        '/fields': {'model': Fields, 'handler': Collections},
-        '/fields/{id}': {'model': Fields, 'handler': Items},
-        '/types': {'model': Types, 'handler': Collections},
-        '/types/{id}': {'model': Types, 'handler': Items},
-        '/users': {'model': Users, 'handler': Collections},
-        '/users/{id}': {'model': Users, 'handler': Items},
-        '/version': Version
-    }
 
     def __init__(self, config):
         self.config = config
