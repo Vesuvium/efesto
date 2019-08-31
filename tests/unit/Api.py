@@ -81,12 +81,10 @@ def test_api_falcon(patch, api):
     assert result == falcon.API()
 
 
-def test_api_start(patch, magic, api):
-    patch.object(falcon, 'API')
+def test_api_start(patch, api):
     patch.object(Types, 'select')
-    patch.many(Api, ['custom_routes', 'routes', 'middlewares'])
-    result = api.start()
-    falcon.API.assert_called_with(middleware=Api.middlewares())
+    patch.many(Api, ['falcon', 'custom_routes', 'routes', 'middlewares'])
+    api.start()
     Api.custom_routes.assert_called_with(Types.select().execute())
     Api.routes.assert_called_with(Routes.routes)
-    assert result == api.api
+    assert api.api == Api.falcon()
