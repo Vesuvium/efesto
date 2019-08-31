@@ -3,6 +3,7 @@ from .Authentication import Authentication
 from .Clacks import Clacks
 from .Json import Json
 from .Log import Log
+from .Msgpack import Msgpack
 
 
-__all__ = ['Authentication', 'Clacks', 'Json', 'Log']
+__all__ = ['Authentication', 'Clacks', 'Json', 'Log', 'Msgpack']
