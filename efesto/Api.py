@@ -24,17 +24,6 @@ class Api:
         for route in routes:
             self.add_route(*route)
 
-    def type_route(self, type):
-        """
-        Adds a type route from a Type found in the database.
-        """
-        model = self.generator.generate(type)
-        endpoint = f'/{type.name}'
-        items_endpoint = f'{endpoint}/{{id}}'
-        self.add_routes((
-            (endpoint, Collections, model), (items_endpoint, Items, model)
-        ))
-
     def add_custom_route(self, name, model):
         endpoint = f'/{name}'
         items_endpoint = f'{endpoint}/{{id}}'
