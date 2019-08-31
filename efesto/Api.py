@@ -60,7 +60,6 @@ class Api:
         Mounts the routes and starts the API
         """
         self.api = falcon.API(middleware=self.middlewares())
-        for type in Types.select().execute():
-            self.type_route(type)
+        self.add_custom_routes(Types.select().execute())
         self.add_routes(Routes.routes)
         return self.api
