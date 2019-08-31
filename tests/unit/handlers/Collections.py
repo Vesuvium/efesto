@@ -6,8 +6,6 @@ from falcon import HTTP_501
 
 from pytest import fixture, raises
 
-import rapidjson
-
 
 @fixture
 def collection(magic):
@@ -157,23 +155,20 @@ def test_collection_on_post(patch, magic, collection, siren):
     request = magic()
     response = magic()
     user = magic()
-    patch.object(rapidjson, 'load')
     patch.object(Collections, 'apply_owner')
     collection.on_post(request, response, user=user)
-    rapidjson.load.assert_called_with(request.bounded_stream)
-    collection.apply_owner.assert_called_with(user, rapidjson.load())
-    collection.model.write.assert_called_with(**rapidjson.load())
+    collection.apply_owner.assert_called_with(user, request.payload)
+    collection.model.write.assert_called_with(**request.payload)
     siren.__init__.assert_called_with(collection.model,
                                       collection.model.write(),
                                       request.path)
     assert response.body == siren.encode()
 
 
-def test_collection_on_post_bad_request(patch, magic, collection, siren):
+def test_collection_on_post__write_error(patch, magic, collection, siren):
     request = magic()
     response = magic()
     user = magic()
-    patch.object(rapidjson, 'load')
     patch.object(Collections, 'apply_owner')
     collection.model.write.return_value = None
     with raises(BadRequest):
