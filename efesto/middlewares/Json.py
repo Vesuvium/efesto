@@ -1,8 +1,19 @@
 # -*- coding: utf-8 -*-
 import rapidjson
 
+from ..exceptions import BadRequest
+
 
 class Json:
+
+    def process_request(self, request, response):
+        if request.content_length:
+            try:
+                payload = request.bounded_stream.read()
+                request.payload = rapidjson.loads(payload)
+            except ValueError:
+                decoded_payload = payload.decode('utf-8')
+                raise BadRequest('payload_error', decoded_payload, 'JSON')
 
     def process_response(self, request, response, resource, success):
         if success:
