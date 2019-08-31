@@ -15,6 +15,7 @@ class Config(Bassoon):
         'JWT_AUDIENCE': 'efesto',
         'LOG_LEVEL': 'info',
         'LOG_FORMAT': '[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}',
+        'MIDDLEWARES': 'authentication:json:log',
         'PUBLIC_ENDPOINTS': 'index,version',
         'SWAGGER': '1',
         'XCLACKS': '1'
