@@ -3,8 +3,6 @@ from falcon import HTTP_204
 
 from peewee import DoesNotExist
 
-import rapidjson
-
 from .BaseHandler import BaseHandler
 from ..Siren import Siren
 from ..exceptions import BadRequest, NotFound
@@ -39,9 +37,8 @@ class Items(BaseHandler):
             result = user.do('edit', query, self.model).get()
         except DoesNotExist:
             raise NotFound()
-        json = rapidjson.load(request.bounded_stream)
-        if result.edit(json) is None:
-            raise BadRequest('write_error', json)
+        if result.edit(request.payload) is None:
+            raise BadRequest('write_error', request.payload)
         body = Siren(self.model, result, request.path)
         response.body = body.encode()
 
