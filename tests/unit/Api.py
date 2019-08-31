@@ -73,6 +73,14 @@ def test_api_middlewares(patch, api, config):
     assert isinstance(result[2], Log)
 
 
+def test_api_falcon(patch, api):
+    patch.object(falcon, 'API')
+    patch.object(Api, 'middlewares')
+    result = api.falcon()
+    falcon.API.assert_called_with(middleware=Api.middlewares())
+    assert result == falcon.API()
+
+
 def test_api_start(patch, magic, api):
     patch.object(falcon, 'API')
     patch.object(Types, 'select')
