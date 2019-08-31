@@ -54,6 +54,14 @@ def test_api_type_route(patch, api, type_instance):
     ))
 
 
+def test_api_add_custom_route(patch, api):
+    patch.object(Api, 'add_routes')
+    api.add_custom_route('name', 'model')
+    api.add_routes.assert_called_with((
+        ('/name', Collections, 'model'), ('/name/{id}', Items, 'model')
+    ))
+
+
 def test_api_middlewares(patch, api, config):
     patch.init(Authentication)
     patch.init(Log)
