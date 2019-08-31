@@ -2,9 +2,9 @@
 from efesto.Api import Api
 from efesto.Generator import Generator
 from efesto.Routes import Routes
-from efesto.handlers import Collections, Items, Version
+from efesto.handlers import Collections, Items
 from efesto.middlewares import Authentication, Json, Log
-from efesto.models import Fields, Types, Users
+from efesto.models import Types
 
 import falcon
 
@@ -15,16 +15,6 @@ from pytest import fixture
 def api(patch, config):
     patch.init(Generator)
     return Api(config)
-
-
-def test_api_routes():
-    assert Api.routes['/fields'] == {'model': Fields, 'handler': Collections}
-    assert Api.routes['/fields/{id}'] == {'model': Fields, 'handler': Items}
-    assert Api.routes['/types'] == {'model': Types, 'handler': Collections}
-    assert Api.routes['/types/{id}'] == {'model': Types, 'handler': Items}
-    assert Api.routes['/users'] == {'model': Users, 'handler': Collections}
-    assert Api.routes['/users/{id}'] == {'model': Users, 'handler': Items}
-    assert Api.routes['/version'] == Version
 
 
 def test_api_init(api, config):
