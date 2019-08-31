@@ -23,17 +23,6 @@ def test_api_init(api, config):
     assert isinstance(api.generator, Generator)
 
 
-def test_api_type_route(patch, api, type_instance):
-    patch.object(Generator, 'generate')
-    patch.object(Api, 'add_routes')
-    api.type_route(type_instance)
-    Generator.generate.assert_called_with(type_instance)
-    Api.add_routes.assert_called_with((
-        ('/custom', Collections, Generator.generate()),
-        ('/custom/{id}', Items, Generator.generate())
-    ))
-
-
 def test_api_add_route(magic, api):
     api.api = magic()
     api.add_route('route', 'handler')
@@ -52,6 +41,17 @@ def test_api_add_routes(patch, api):
     patch.object(Api, 'add_route')
     api.add_routes((('endpoint', 'handler'), ))
     Api.add_route.assert_called_with('endpoint', 'handler')
+
+
+def test_api_type_route(patch, api, type_instance):
+    patch.object(Generator, 'generate')
+    patch.object(Api, 'add_routes')
+    api.type_route(type_instance)
+    Generator.generate.assert_called_with(type_instance)
+    Api.add_routes.assert_called_with((
+        ('/custom', Collections, Generator.generate()),
+        ('/custom/{id}', Items, Generator.generate())
+    ))
 
 
 def test_api_middlewares(patch, api, config):
