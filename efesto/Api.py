@@ -15,6 +15,15 @@ class Api:
         self.generator = Generator()
         self.api = None
 
+    def add_route(self, endpoint, handler, model=None):
+        if model:
+            return self.api.add_route(endpoint, handler(model))
+        return self.api.add_route(endpoint, handler)
+
+    def add_routes(self, routes):
+        for route in routes:
+            self.add_route(*route)
+
     def type_route(self, type):
         """
         Adds a type route from a Type found in the database.
@@ -25,15 +34,6 @@ class Api:
         self.add_routes((
             (endpoint, Collections, model), (items_endpoint, Items, model)
         ))
-
-    def add_route(self, endpoint, handler, model=None):
-        if model:
-            return self.api.add_route(endpoint, handler(model))
-        return self.api.add_route(endpoint, handler)
-
-    def add_routes(self, routes):
-        for route in routes:
-            self.add_route(*route)
 
     def middlewares(self):
         return [
