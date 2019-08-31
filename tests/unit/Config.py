@@ -21,6 +21,7 @@ def test_config_defaults():
     assert Config.defaults['LOG_LEVEL'] == 'info'
     format = '[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}'
     assert Config.defaults['LOG_FORMAT'] == format
+    assert Config.defaults['MIDDLEWARES'] == 'authentication:json:log'
     assert Config.defaults['PUBLIC_ENDPOINTS'] == 'index,version'
     assert Config.defaults['SWAGGER'] == '1'
     assert Config.defaults['XCLACKS'] == '1'
