@@ -62,6 +62,15 @@ def test_api_add_custom_route(patch, api):
     ))
 
 
+def test_api_add_custom_routes(patch, api, type_instance):
+    patch.object(Generator, 'generate')
+    patch.object(Api, 'add_custom_route')
+    api.add_custom_routes((type_instance, ))
+    Generator.generate.assert_called_with(type_instance)
+    Api.add_custom_route.assert_called_with(type_instance.name,
+                                            Generator.generate())
+
+
 def test_api_middlewares(patch, api, config):
     patch.init(Authentication)
     patch.init(Log)

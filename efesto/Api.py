@@ -42,6 +42,11 @@ class Api:
             (endpoint, Collections, model), (items_endpoint, Items, model)
         ))
 
+    def add_custom_routes(self, custom_types):
+        for custom_type in custom_types:
+            model = self.generator.generate(custom_type)
+            self.add_custom_route(custom_type.name, model)
+
     def middlewares(self):
         return [
             Authentication(self.config.JWT_SECRET, self.config.JWT_AUDIENCE,
