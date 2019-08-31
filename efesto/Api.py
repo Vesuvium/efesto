@@ -35,6 +35,13 @@ class Api:
             (endpoint, Collections, model), (items_endpoint, Items, model)
         ))
 
+    def add_custom_route(self, name, model):
+        endpoint = f'/{name}'
+        items_endpoint = f'{endpoint}/{{id}}'
+        self.add_routes((
+            (endpoint, Collections, model), (items_endpoint, Items, model)
+        ))
+
     def middlewares(self):
         return [
             Authentication(self.config.JWT_SECRET, self.config.JWT_AUDIENCE,
