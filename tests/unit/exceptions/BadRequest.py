@@ -8,6 +8,7 @@ def test_bad_request():
     messsage = 'Cannot embed {} for this resource'
     assert BadRequest.errors['embedding_error'] == messsage
     assert BadRequest.errors['write_error'] == 'Cannot write {} to database'
+    assert BadRequest.errors['payload_error'] == 'Cannot decode << {} >> to {}'
     assert issubclass(BadRequest, HTTPBadRequest)
 
 
