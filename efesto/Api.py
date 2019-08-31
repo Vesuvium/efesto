@@ -44,6 +44,9 @@ class Api:
             Log(self.config.LOG_LEVEL, self.config.LOG_FORMAT)
         ]
 
+    def falcon(self):
+        return falcon.API(middleware=self.middlewares())
+
     def start(self):
         """
         Mounts the routes and starts the API
