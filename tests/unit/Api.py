@@ -87,10 +87,9 @@ def test_api_middlewares(patch, api, config):
 def test_api_start(patch, magic, api):
     patch.object(falcon, 'API')
     patch.object(Types, 'select')
-    patch.many(Api, ['type_route', 'add_routes', 'middlewares'])
-    Types.select.return_value = magic(execute=magic(return_value=['type']))
+    patch.many(Api, ['add_custom_routes', 'add_routes', 'middlewares'])
     result = api.start()
     falcon.API.assert_called_with(middleware=Api.middlewares())
-    Api.type_route.assert_called_with('type')
+    Api.add_custom_routes.assert_called_with(Types.select().execute())
     Api.add_routes.assert_called_with(Routes.routes)
     assert result == api.api
