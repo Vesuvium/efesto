@@ -4,6 +4,8 @@ from ..Version import version
 
 class Version:
 
+    __slots__ = ()
+
     @staticmethod
     def on_get(request, response):
         data = {
