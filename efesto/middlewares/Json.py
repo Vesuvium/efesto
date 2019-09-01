@@ -6,6 +6,8 @@ from ..exceptions import BadRequest
 
 class Json:
 
+    __slots__ = ()
+
     def __init__(self, config):
         pass
 
