@@ -6,6 +6,9 @@ from ..exceptions import BadRequest
 
 class Json:
 
+    def __init__(self, config):
+        pass
+
     def process_request(self, request, response):
         if request.content_length:
             try:
