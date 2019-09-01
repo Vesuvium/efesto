@@ -17,6 +17,12 @@ def api(patch, config):
     return Api(config)
 
 
+def test_api():
+    assert Api.available_middlewares['authentication'] == Authentication
+    assert Api.available_middlewares['json'] == Json
+    assert Api.available_middlewares['log'] == Log
+
+
 def test_api_init(api, config):
     assert api.config == config
     assert api.api is None
