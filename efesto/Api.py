@@ -10,6 +10,12 @@ from .models import Types
 
 class Api:
 
+    available_middlewares = {
+        'authentication': Authentication,
+        'json': Json,
+        'log': Log
+    }
+
     def __init__(self, config):
         self.config = config
         self.generator = Generator()
