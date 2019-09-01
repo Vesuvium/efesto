@@ -5,6 +5,9 @@ from ..exceptions import BadRequest
 
 
 class BaseHandler:
+
+    __slots__ = ('model', '_order', 'q')
+
     def __init__(self, model):
         self.model = model
         self._order = self.model.id
