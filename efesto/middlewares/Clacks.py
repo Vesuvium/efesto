@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 class Clacks:
 
+    __slots__ = ()
+
     def __init__(self, config):
         pass
 
