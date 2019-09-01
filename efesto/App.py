@@ -10,6 +10,8 @@ from .models import Base, Fields, Types, Users, db
 
 class App:
 
+    __slots__ = ()
+
     @staticmethod
     def config():
         return Config()
