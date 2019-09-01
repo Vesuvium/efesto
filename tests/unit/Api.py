@@ -3,7 +3,7 @@ from efesto.Api import Api
 from efesto.Generator import Generator
 from efesto.Routes import Routes
 from efesto.handlers import Collections, Items
-from efesto.middlewares import Authentication, Json, Log
+from efesto.middlewares import Authentication, Clacks, Json, Log, Msgpack
 from efesto.models import Types
 
 import falcon
@@ -19,8 +19,10 @@ def api(patch, config):
 
 def test_api():
     assert Api.available_middlewares['authentication'] == Authentication
+    assert Api.available_middlewares['clacks'] == Clacks
     assert Api.available_middlewares['json'] == Json
     assert Api.available_middlewares['log'] == Log
+    assert Api.available_middlewares['msgpack'] == Msgpack
 
 
 def test_api_init(api, config):
