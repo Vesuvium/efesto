@@ -4,6 +4,8 @@ from peewee import ModelSelect
 
 class Siren:
 
+    __slots__ = ('model', 'data', 'path', 'total', 'page')
+
     def __init__(self, model=None, data=[], path='', total=0, page=1):
         self.model = model
         self.data = data
