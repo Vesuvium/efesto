@@ -40,8 +40,7 @@ def test_generator_field(generator):
 
 
 def test_generator_field_from_mappings(generator):
-    generator.mappings = {'type': 'class'}
-    assert generator.field('type') == 'class'
+    assert generator.field('string') == CharField
 
 
 def test_generator_field_from_models(generator):
