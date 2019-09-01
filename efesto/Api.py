@@ -43,12 +43,12 @@ class Api:
             self.custom_route(custom_type.name, model)
 
     def middlewares(self):
-        return [
-            Authentication(self.config.JWT_SECRET, self.config.JWT_AUDIENCE,
-                           self.config.PUBLIC_ENDPOINTS),
-            Json(),
-            Log(self.config.LOG_LEVEL, self.config.LOG_FORMAT)
-        ]
+        middlewares = []
+        for name in self.config.MIDDLEWARES.lower().split(':'):
+            if name in self.available_middlewares:
+                middleware = self.available_middlewares[name]
+                middlewares.append(middleware(self.config))
+        return middlewares
 
     def falcon(self):
         return falcon.API(middleware=self.middlewares())
