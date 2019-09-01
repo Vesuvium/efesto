@@ -36,6 +36,7 @@ setup(
         'falcon>=2.0.0',
         'falcon-cors>=1.1.7',
         'loguru>=0.3',
+        'msgpack>=0.6',
         'peewee>=3.9.0',
         'psycopg2-binary>=2.7.5',
         'python-rapidjson>=0.6.3',
