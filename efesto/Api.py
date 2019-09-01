@@ -10,6 +10,8 @@ from .models import Types
 
 class Api:
 
+    __slots__ = ('config', 'generator', 'api')
+
     available_middlewares = {
         'authentication': Authentication,
         'clacks': Clacks,
