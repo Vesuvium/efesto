@@ -10,6 +10,8 @@ from ..models import Users
 
 class Authentication:
 
+    __slots__ = ('secret', 'audience', 'public_endpoints')
+
     def __init__(self, config):
         self.secret = config.JWT_SECRET
         self.audience = config.JWT_AUDIENCE
