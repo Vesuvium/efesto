@@ -9,6 +9,8 @@ from .Database import db
 
 class Base(Model):
 
+    __slots__ = ()
+
     conversions = {
         'AutoField': 'number',
         'BigIntegerField': 'number',
