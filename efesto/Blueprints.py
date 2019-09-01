@@ -8,6 +8,8 @@ from ruamel.yaml import YAML
 
 class Blueprints:
 
+    __slots__ = ('yaml', )
+
     def __init__(self):
         self.yaml = YAML(typ='safe')
 
