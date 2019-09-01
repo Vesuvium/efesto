@@ -10,6 +10,8 @@ class Tokens:
     Provides JWT encoding and decoding functionalities
     """
 
+    __slots__ = ()
+
     @staticmethod
     def encode(secret, expiration=0, **kwargs):
         payload = {**kwargs}
