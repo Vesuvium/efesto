@@ -10,6 +10,7 @@ class Generator:
     """
     A model generator that is used to generated dynamically defined models.
     """
+    __slots__ = ('models',)
 
     mappings = {
         'string': CharField,
