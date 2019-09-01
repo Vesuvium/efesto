@@ -9,14 +9,17 @@ from pytest import fixture
 
 
 @fixture
-def log(patch):
+def log(patch, config):
     patch.many(logger, ['remove', 'add'])
-    return Log('level', 'format')
+    return Log(config)
 
 
-def test_log_init(log):
+def test_log_init(log, config):
+    assert log.level == config.LOG_LEVEL.upper()
+    assert log.format == config.LOG_FORMAT
     assert logger.remove.call_count == 1
-    logger.add.assert_called_with(sys.stdout, format='format', level='LEVEL')
+    logger.add.assert_called_with(sys.stdout, format=log.format,
+                                  level=log.level)
 
 
 def test_log_process_response(patch, log, http_request, response):
