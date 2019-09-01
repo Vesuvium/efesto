@@ -12,14 +12,14 @@ from pytest import fixture, mark, raises
 
 
 @fixture
-def auth():
-    return Authentication('secret', 'audience', 'public')
+def auth(config):
+    return Authentication(config)
 
 
-def test_middleware_authentication_init(auth):
-    assert auth.secret == 'secret'
-    assert auth.audience == 'audience'
-    assert auth.public_endpoints == ['public']
+def test_middleware_authentication_init(auth, config):
+    assert auth.secret == config.JWT_SECRET
+    assert auth.audience == config.JWT_AUDIENCE
+    assert auth.public_endpoints == config.PUBLIC_ENDPOINTS.split(',')
 
 
 def test_middleware_unauthorized(auth):
