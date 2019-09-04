@@ -4,10 +4,10 @@ from efesto.models import Base, db
 from peewee import (AutoField, BigIntegerField, BooleanField, CharField,
                     DateField, DateTimeField, DecimalField, DoubleField,
                     FloatField, ForeignKeyField, IntegerField, IntegrityError,
-                    Model, PostgresqlDatabase, SQL, SqliteDatabase, TextField,
-                    UUIDField)
+                    Model, SQL, SqliteDatabase, TextField, UUIDField)
 
 from playhouse import db_url
+from playhouse.pool import PooledPostgresqlExtDatabase as PooledPostrgres
 
 from pytest import fixture, mark
 
@@ -70,16 +70,18 @@ def test_base_db_instance(patch):
     assert isinstance(result, SqliteDatabase)
 
 
-def test_base_db_instance_postgres(patch):
-    patch.init(PostgresqlDatabase)
+def test_base_db_instance__postgres(patch):
+    patch.init(PooledPostrgres)
     patch.object(db_url, 'parse')
     result = Base.db_instance('postgres')
     db_str = db_url.parse()
-    PostgresqlDatabase.__init__.assert_called_with(db_str.pop(), **db_str)
-    assert isinstance(result, PostgresqlDatabase)
+    PooledPostrgres.__init__.assert_called_with(db_str.pop(),
+                                                max_connections=32,
+                                                stale_timeout=300, **db_str)
+    assert isinstance(result, PooledPostrgres)
 
 
-def test_base_db_instance_extra_options(patch):
+def test_base_db_instance__extra_options(patch):
     patch.init(SqliteDatabase)
     patch.object(db_url, 'parse')
     Base.db_instance('url', autocommit=False)

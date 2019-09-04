@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from peewee import (IntegerField, IntegrityError, Model, PostgresqlDatabase,
-                    SQL, SqliteDatabase)
+from peewee import (IntegerField, IntegrityError, Model, SQL, SqliteDatabase)
 
 from playhouse import db_url
+from playhouse.pool import PooledPostgresqlExtDatabase as PooledPostrgres
 
 from .Database import db
 
@@ -49,7 +49,8 @@ class Base(Model):
         dictionary = db_url.parse(url)
         name = dictionary.pop('database')
         if url.startswith('postgres'):
-            return PostgresqlDatabase(name, **dictionary)
+            return PooledPostrgres(name, max_connections=32, stale_timeout=300,
+                                   **dictionary)
         return SqliteDatabase(name, **kwargs)
 
     @classmethod
