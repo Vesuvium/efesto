@@ -4,7 +4,7 @@ import falcon
 from .Generator import Generator
 from .Routes import Routes
 from .handlers import Collections, Items
-from .middlewares import Authentication, Clacks, Json, Log, Msgpack
+from .middlewares import Authentication, Clacks, Db, Json, Log, Msgpack
 from .models import Types
 
 
@@ -15,6 +15,7 @@ class Api:
     available_middlewares = {
         'authentication': Authentication,
         'clacks': Clacks,
+        'db': Db,
         'json': Json,
         'log': Log,
         'msgpack': Msgpack
