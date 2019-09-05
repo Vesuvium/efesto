@@ -26,4 +26,3 @@ def test_config_defaults():
     assert Config.defaults['MIDDLEWARES'] == 'db:authentication:json:log'
     assert Config.defaults['PUBLIC_ENDPOINTS'] == 'index,version'
     assert Config.defaults['SWAGGER'] == '1'
-    assert Config.defaults['XCLACKS'] == '1'
