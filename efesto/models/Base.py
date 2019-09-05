@@ -54,11 +54,11 @@ class Base(Model):
         return SqliteDatabase(name, **kwargs)
 
     @classmethod
-    def init_db(cls, url, **kwargs):
+    def init_db(cls, url, connections, timeout, **kwargs):
         """
-        Initailize the database with the instance
+        Initialize the database with the instance
         """
-        db.initialize(cls.db_instance(url, **kwargs))
+        db.initialize(cls.db_instance(url, connections, timeout, **kwargs))
 
     @classmethod
     def filter(cls, key, value, operator):

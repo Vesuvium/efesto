@@ -92,8 +92,8 @@ def test_base_db_instance__extra_options(patch):
 def test_base_init_db(patch):
     patch.object(Base, 'db_instance')
     patch.object(db, 'initialize')
-    Base.init_db('url')
-    Base.db_instance.assert_called_with('url')
+    Base.init_db('url', '32', '300')
+    Base.db_instance.assert_called_with('url', '32', '300')
     db.initialize.assert_called_with(Base.db_instance())
 
 
@@ -103,8 +103,8 @@ def test_base_init_db_extra_options(patch):
     """
     patch.object(Base, 'db_instance')
     patch.object(db, 'initialize')
-    Base.init_db('url', autocommit=False)
-    Base.db_instance.assert_called_with('url', autocommit=False)
+    Base.init_db('url', '32', '300', autocommit=False)
+    Base.db_instance.assert_called_with('url', '32', '300', autocommit=False)
 
 
 def test_base_filter(magic):
