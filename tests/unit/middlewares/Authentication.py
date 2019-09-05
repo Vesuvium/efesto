@@ -70,6 +70,12 @@ def test_middleware_authentication_login(patch, auth):
     assert result == Users.login()
 
 
+def test_middleware_authentication_login__none(patch, auth):
+    patch.object(Users, 'login')
+    patch.many(Authentication, ['decode', 'bearer_token'])
+    assert auth.login('auth_header') is None
+
+
 @mark.parametrize('endpoint', ['/', '/endpoint', '/endpoint/id'])
 def test_authentication_is_public(auth, endpoint):
     auth.public_endpoints = 'index,endpoint'
