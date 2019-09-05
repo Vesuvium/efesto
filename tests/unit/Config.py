@@ -14,6 +14,7 @@ def test_config_defaults():
     assert Config.defaults['APP_NAME'] == 'efesto'
     assert Config.defaults['BATCH_ENDPOINTS'] == '1'
     assert Config.defaults['DB_CONNECTIONS'] == '32'
+    assert Config.defaults['DB_TIMEOUT'] == '300'
     assert Config.defaults['DB_URL'] == db_url
     assert Config.defaults['HATEOAS_ENCODER'] == 'siren'
     assert Config.defaults['JWT_SECRET'] == 'secret'
