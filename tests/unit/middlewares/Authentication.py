@@ -76,6 +76,11 @@ def test_authentication_is_public(auth, endpoint):
     assert auth.is_public(endpoint, 'get') is True
 
 
+def test_authentication_is_public__none(auth):
+    auth.public_endpoints = 'endpoint'
+    assert auth.is_public('/', 'get') is None
+
+
 def test_authentication_is_public__method(auth):
     auth.public_endpoints = 'post:endpoint'
     assert auth.is_public('/endpoint', 'post') is True
