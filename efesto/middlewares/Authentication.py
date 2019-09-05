@@ -62,8 +62,9 @@ class Authentication:
             if 'index' in self.public_endpoints:
                 return True
         elif endpoint in self.public_endpoints:
-            return True
-        elif f'{method}:{endpoint}' in self.public_endpoints:
+            if method == 'get':
+                return True
+        if f'{method}:{endpoint}' in self.public_endpoints:
             return True
         elif f'*:{endpoint}' in self.public_endpoints:
             return True
