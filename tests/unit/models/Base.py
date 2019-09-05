@@ -63,7 +63,7 @@ def test_get_columns_foreign_key():
 def test_base_db_instance(patch):
     patch.init(SqliteDatabase)
     patch.object(db_url, 'parse')
-    result = Base.db_instance('url')
+    result = Base.db_instance('url', 'connections', '300')
     db_url.parse.assert_called_with('url')
     db_url.parse().pop.assert_called_with('database')
     SqliteDatabase.__init__.assert_called_with(db_url.parse().pop())
@@ -73,18 +73,18 @@ def test_base_db_instance(patch):
 def test_base_db_instance__postgres(patch):
     patch.init(PooledPostrgres)
     patch.object(db_url, 'parse')
-    result = Base.db_instance('postgres')
+    result = Base.db_instance('postgres', '32', '300')
     db_str = db_url.parse()
     PooledPostrgres.__init__.assert_called_with(db_str.pop(),
-                                                max_connections=32,
-                                                stale_timeout=300, **db_str)
+                                                max_connections='32',
+                                                stale_timeout='300', **db_str)
     assert isinstance(result, PooledPostrgres)
 
 
 def test_base_db_instance__extra_options(patch):
     patch.init(SqliteDatabase)
     patch.object(db_url, 'parse')
-    Base.db_instance('url', autocommit=False)
+    Base.db_instance('url', '32', '300', autocommit=False)
     pop = db_url.parse().pop()
     SqliteDatabase.__init__.assert_called_with(pop, autocommit=False)
 

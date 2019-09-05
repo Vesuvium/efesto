@@ -42,15 +42,15 @@ class Base(Model):
         return columns
 
     @staticmethod
-    def db_instance(url, **kwargs):
+    def db_instance(url, connections, timeout, **kwargs):
         """
         Create the correct database instance from the url
         """
         dictionary = db_url.parse(url)
         name = dictionary.pop('database')
         if url.startswith('postgres'):
-            return PooledPostrgres(name, max_connections=32, stale_timeout=300,
-                                   **dictionary)
+            return PooledPostrgres(name, max_connections=connections,
+                                   stale_timeout=timeout, **dictionary)
         return SqliteDatabase(name, **kwargs)
 
     @classmethod
