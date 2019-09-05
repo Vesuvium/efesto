@@ -19,6 +19,5 @@ class Config(Bassoon):
         'LOG_FORMAT': '[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}',
         'MIDDLEWARES': 'db:authentication:json:log',
         'PUBLIC_ENDPOINTS': 'index,version',
-        'SWAGGER': '1',
-        'XCLACKS': '1'
+        'SWAGGER': '1'
     }
