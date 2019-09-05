@@ -26,7 +26,8 @@ class App:
         Inits database and configuration
         """
         config = cls.config()
-        Base.init_db(config.DB_URL)
+        Base.init_db(config.DB_URL, config.DB_CONNECTIONS,
+                     config.DB_TIMEOUT)
         return config
 
     @classmethod

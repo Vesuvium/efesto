@@ -23,7 +23,9 @@ def test_app_init(patch):
     patch.object(Base, 'init_db')
     patch.object(App, 'config')
     result = App.init()
-    Base.init_db.assert_called_with(App.config().DB_URL)
+    Base.init_db.assert_called_with(App.config().DB_URL,
+                                    App.config().DB_CONNECTIONS,
+                                    App.config().DB_TIMEOUT)
     assert result == App.config()
 
 
