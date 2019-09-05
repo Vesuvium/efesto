@@ -8,6 +8,7 @@ class Config(Bassoon):
         'ADMIN_ENDPOINTS': '0',
         'APP_NAME': 'efesto',
         'BATCH_ENDPOINTS': '1',
+        'DB_CONNECTIONS': '32',
         'DB_URL': 'sqlite:///efesto.db',
         'HATEOAS_ENCODER': 'siren',
         'JWT_SECRET': 'secret',
