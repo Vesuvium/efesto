@@ -7,7 +7,7 @@ class Version:
     __slots__ = ()
 
     @staticmethod
-    def on_get(request, response):
+    def on_get(request, response, **params):
         data = {
             'properties': {'version': version},
             'links': [{'href': '/version', 'rel': 'self'}],
