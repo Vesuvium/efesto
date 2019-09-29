@@ -8,3 +8,4 @@ nav:
     - The command line: 'cli.md'
     - Middlewares: 'middlewares.md'
     - Blueprints: 'blueprints.md'
+    - Deploying: 'deploying.md'
