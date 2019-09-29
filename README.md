@@ -25,25 +25,25 @@ pip install efesto
 Create a postgresql database and export the database url:
 
 ```sh
-export db_url=postgres://postgres:postgres@localhost:5432/efesto
+export DB_URL=postgres://postgres:postgres@localhost:5432/efesto
 ```
 
 Export the jwt secret:
 
 ```sh
-export jwt_secret=secret
+export JWT_SECRET=secret
 ```
 
 Populate the db:
 
 ```sh
-efesto quickstart
+efesto install
 ```
 
 Create an admin:
 
 ```sh
-efesto create_user tofu --superuser
+efesto create users tofu --superuser
 ```
 
 Now you can start efesto, with either uwsgi or gunicorn:
@@ -52,21 +52,23 @@ Now you can start efesto, with either uwsgi or gunicorn:
 gunicorn "efesto.App:App.run()"
 ```
 
-Efesto should now be running, let's make sure it is. Create a jwt with the secret
-you have configured. Efesto comes with an helper for that:
+Efesto should now be running:
 
-```
-efesto token tofu 1000
-```
-
-Send a request with the token:
 
 ```sh
-curl http://localhost:8000/users -H "Authorization: Bearer token"
+curl http://localhost:8000/version
 ```
 
-Success! Efesto is running fine. Read the complete
-`documentation <http://efesto.readthedocs.io>`_  to find out more
+Read the complete [documentation](http://efesto.readthedocs.io) to find out more.
+
+## Docker
+
+Docker images are available in the hub:
+
+- `strangemachines/efesto:latest`
+- `strangemachines/efesto:2.3`
+- `strangemachines/efesto:2.2`
+- `strangemachines/efesto:2.1`
 
 ## Performance
 
@@ -77,16 +79,3 @@ printing out JSON.
 You have seen 100k requests benchmarks, but don't be fooled:
 most benchmarks from authors are made so that their package comes to the top
 and do not reflect real conditions.
-
-That said, Efesto's did not reach its maximum and a lot can be done to improve
-its performance.
-
-
-## Notes from the author
-
-- Efesto is not meant to be the solution to all problems. It can be quite good
-  as a prototyping and early stage backend, less so on the long term (see below)
-
-- Efesto lacks some strategic features and I can only put a limited amount
-  of time into Efesto. If you want some features done and can't contribute
-  yourself, I can be hired.
