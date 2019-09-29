@@ -1,12 +1,11 @@
 language: python
 sudo: false
 install:
-    - python setup.py install
-    - pip install tox
-    - pip install codacy-coverage
+    - pip install poetry
+    - poetry run pip install tox codacy-coverage
 after_success:
     - bash <(curl -s https://codecov.io/bash)
-    - python-codacy-coverage -r coverage.xml
+    - poetry run python-codacy-coverage -r coverage.xml
 
 matrix:
     include:
