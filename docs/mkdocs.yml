@@ -3,3 +3,4 @@ theme:
     name: gitbook
 nav:
     - Home: 'index.md'
+    - Installing: 'installing.md'
