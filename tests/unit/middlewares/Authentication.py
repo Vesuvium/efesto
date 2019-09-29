@@ -79,12 +79,12 @@ def test_middleware_authentication_login__none(patch, auth):
 @mark.parametrize('endpoint', ['/', '/endpoint', '/endpoint/id'])
 def test_authentication_is_public(auth, endpoint):
     auth.public_endpoints = 'index,endpoint'
-    assert auth.is_public(endpoint, 'get') is True
+    assert auth.is_public(endpoint, 'GET') is True
 
 
 def test_authentication_is_public__none(auth):
     auth.public_endpoints = 'endpoint'
-    assert auth.is_public('/', 'get') is None
+    assert auth.is_public('/', 'GET') is None
 
 
 def test_authentication_is_public__method(auth):
@@ -92,7 +92,7 @@ def test_authentication_is_public__method(auth):
     assert auth.is_public('/endpoint', 'post') is True
 
 
-@mark.parametrize('method', ['get', 'post', 'patch', 'delete'])
+@mark.parametrize('method', ['GET', 'POST', 'PATCH', 'DELETE'])
 def test_authentication_is_public__all_methods(auth, method):
     auth.public_endpoints = '*:endpoint'
     assert auth.is_public('/endpoint', method) is True
@@ -100,7 +100,7 @@ def test_authentication_is_public__all_methods(auth, method):
 
 def test_authentication_is_public__always(auth):
     auth.public_endpoints = '*'
-    assert auth.is_public('/whatever', 'get') is True
+    assert auth.is_public('/whatever', 'GET') is True
 
 
 def test_authentication_process_resource(patch, http_request, auth):
