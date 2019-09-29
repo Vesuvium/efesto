@@ -8,5 +8,6 @@ nav:
     - The command line: 'cli.md'
     - Middlewares: 'middlewares.md'
     - Blueprints: 'blueprints.md'
+    - Using the API: 'using-the-api.md'
     - Deploying: 'deploying.md'
     - Roadmap: 'roadmap.md'
