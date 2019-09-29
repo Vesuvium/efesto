@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "efesto"
-version = "2.3.0"
+version = "2.3.1"
 description = 'RESTful (micro)server that can generate an API in minutes.'
 authors = ["Jacopo Cascioli <jacopo@jacopocascioli.com>"]
 license = "GPL-3.0"
