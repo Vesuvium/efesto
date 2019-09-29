@@ -1,0 +1,11 @@
+.git
+
+__pycache__
+.cache
+.pytest_cache
+bench
+build
+dist
+docs
+poetry.lock
+tests
