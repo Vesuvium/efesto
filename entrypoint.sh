@@ -10,6 +10,10 @@ if [ ! -z "$BLUEPRINT" ]; then
     poetry run efesto load blueprint.yml;
 fi
 
+if [ ! $PORT ]; then
+    PORT=:5000
+fi
+
 if [ ! $WORKERS ]; then
     WORKERS=3;
 fi
@@ -32,6 +36,6 @@ if [ ! $JITTER ]; then
     JITTER=$(( $WORKERS * 5 ));
 fi
 
-poetry run gunicorn "efesto.App:App.run()" -b :5000 -w $WORKERS \
+poetry run gunicorn "efesto.App:App.run()" -b $PORT -w $WORKERS \
         -k $WORKER_CLASS --threads $THREADS -t $TIMEOUT \
         --graceful-timeout $TIMEOUT --max-requests-jitter $JITTER
