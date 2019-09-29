@@ -9,3 +9,11 @@ def test_version_on_get(response):
             'links': [{'href': '/version', 'rel': 'self'}],
             'class': ['Version']}
     assert response.body == data
+
+
+def test_version_on_get__params(response):
+    Version.on_get('request', response, user='user')
+    data = {'properties': {'version': version},
+            'links': [{'href': '/version', 'rel': 'self'}],
+            'class': ['Version']}
+    assert response.body == data
