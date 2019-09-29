@@ -21,7 +21,6 @@ classifiers = [
 python = "^3.6"
 bassoon = "~1.0"
 click = "~7.0"
-colorama = "~0.4"
 falcon = "~2.0"
 falcon-cors = "~1.1.7"
 loguru = "~0.3"
