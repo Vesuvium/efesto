@@ -7,3 +7,4 @@ nav:
     - Configuration: 'configuration.md'
     - The command line: 'cli.md'
     - Middlewares: 'middlewares.md'
+    - Blueprints: 'blueprints.md'
