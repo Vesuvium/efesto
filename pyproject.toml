@@ -33,6 +33,7 @@ pyjwt = "~1.6.4"
 
 
 [tool.poetry.dev-dependencies]
+coverage = "^4.5"
 flake8 = "~3.7"
 flake8-quotes = "^2.1"
 flake8-import-order = "^0.18.1"
@@ -43,6 +44,7 @@ pep8-naming = "^0.8.2"
 pytest = "~3.0"
 pytest-mock = "~1.10"
 pytest-sugar = "~0.9"
+tox = "^3.14"
 
 
 [tool.poetry.scripts]
