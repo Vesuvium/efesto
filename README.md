@@ -3,7 +3,8 @@
 [![Pypi](https://img.shields.io/pypi/v/efesto.svg?maxAge=600&style=for-the-badge)](https://pypi.python.org/pypi/efesto)
 [![Travis build](https://img.shields.io/travis/strangemachines/efesto.svg?maxAge=600&style=for-the-badge)](https://travis-ci.org/strangemachines/efesto)
 [![Codacy grade](https://img.shields.io/codacy/grade/9a18a3f98f654fef8b6ff86e93f31b56.svg?style=for-the-badge)](https://app.codacy.com/app/strangemachines/efesto)
-[![Codacy grade](https://img.shields.io/codacy/coverage/9a18a3f98f654fef8b6ff86e93f31b56.svg?style=for-the-badge)](https://app.codacy.com/app/strangemachines/efesto)
+[![Codacy coverage](https://img.shields.io/codacy/coverage/9a18a3f98f654fef8b6ff86e93f31b56.svg?style=for-the-badge)](https://app.codacy.com/app/strangemachines/efesto)
+[![Docs](https://img.shields.io/badge/docs-docs-brightgreen.svg?style=for-the-badge&cacheSeconds=3600)](https://efesto.strangemachines.io)
 
 A micro REST API meant to be used almost out of the box with other
 microservices.
@@ -59,7 +60,7 @@ Efesto should now be running:
 curl http://localhost:8000/version
 ```
 
-Read the complete [documentation](http://efesto.readthedocs.io) to find out more.
+Read the complete [documentation](http://efesto.strangemachines.io) to find out more.
 
 ## Docker
 
