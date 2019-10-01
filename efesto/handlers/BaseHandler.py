@@ -15,6 +15,8 @@ class BaseHandler:
     @staticmethod
     def parse_embeds(params):
         embeds = params.pop('_embeds', [])
+        if embeds == '':
+            return []
         if isinstance(embeds, str):
             return embeds.split(',')
         return embeds

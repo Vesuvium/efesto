@@ -31,6 +31,10 @@ def test_basehandler_parse_embeds_empty():
     assert BaseHandler.parse_embeds({}) == []
 
 
+def test_basehandler_parse_embeds__empty_string():
+    assert BaseHandler.parse_embeds({'_embeds': ''}) == []
+
+
 def test_basehandler_embeds(patch, handler, magic):
     patch.object(BaseHandler, 'parse_embeds', return_value=['one'])
     model = magic(one=magic(spec_set=['rel_model']))
