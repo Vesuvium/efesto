@@ -20,6 +20,8 @@ fi
 
 if [ ! $WORKER_CLASS ]; then
     WORKER_CLASS=sync;
+elif [ $WORKER_CLASS = "meinheld" ]; then
+    WORKER_CLASS="meinheld.gmeinheld.MeinheldWorker";
 else
     poetry run pip install $WORKER_CLASS;
 fi
