@@ -67,13 +67,15 @@ Read the complete [documentation](http://efesto.strangemachines.io) to find out 
 Docker images are available in the hub:
 
 - `strangemachines/efesto:latest`
+- `strangemachines/efesto:latest-meinheld`
 - `strangemachines/efesto:2.3`
+- `strangemachines/efesto:2.3-meinheld`
 - `strangemachines/efesto:2.2`
 - `strangemachines/efesto:2.1`
 
 ## Performance
 
-Efesto performs at about 200 requests/second on a small digital ocean
+Efesto performs at about 300 requests/second on the smallest digital ocean
 droplet, for requests that include JWT authentication, fetching data and
 printing out JSON.
 
