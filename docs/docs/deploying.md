@@ -37,7 +37,8 @@ How many workers should gunicorn use. Defaults to `3`.
 
 ### WORKER_CLASS
 
-The class of the gunicorn workers. Defaults to `sync`.
+The class of the gunicorn workers. Defaults to `sync`. Can be `sync`, 
+`tornado`, `gevent` or `meinheld`. Meinheld requires the specific build.
 
 When set, it will also install the worker with `pip install`.
 
