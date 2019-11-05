@@ -23,6 +23,7 @@ from .Users import Users
 class Fields(Base):
     name = CharField()
     field_type = CharField(default='string')
+    length = IntegerField(null=True)
     unique = BooleanField(default=False, constraints=[SQL('DEFAULT false')])
     nullable = BooleanField(default=False, constraints=[SQL('DEFAULT false')])
     default_value = IntegerField(null=True)
