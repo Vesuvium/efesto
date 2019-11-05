@@ -22,6 +22,8 @@ def test_fields():
     assert Fields.field_type.default == 'string'
     assert isinstance(Fields.name, CharField)
     assert isinstance(Fields.field_type, CharField)
+    assert isinstance(Fields.length, IntegerField)
+    assert Fields.length.null is True
     assert isinstance(Fields.unique, BooleanField)
     assert Fields.unique.default is False
     assert Fields.unique.constraints == [SQL('DEFAULT false')]
