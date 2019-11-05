@@ -59,6 +59,8 @@ class Generator:
         """
         custom_field = self.field(field.field_type)
         arguments = {'null': field.nullable, 'unique': field.unique}
+        if field.length:
+            arguments['max_length'] = field.length
         if custom_field == ForeignKeyField:
             arguments['backref'] = classname
             return custom_field(self.models[field.field_type], **arguments)
