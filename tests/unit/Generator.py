@@ -64,7 +64,7 @@ def test_generator_field_from_models(generator):
 
 def test_generator_make_field(patch, magic, generator):
     patch.object(Generator, 'field')
-    field = magic(default_value=None)
+    field = magic(default_value=None, length=None)
     result = generator.make_field(field, 'classname')
     Generator.field.assert_called_with(field.field_type)
     Generator.field().assert_called_with(null=field.nullable,
@@ -72,10 +72,10 @@ def test_generator_make_field(patch, magic, generator):
     assert result == Generator.field()()
 
 
-def test_generator_make_field_foreign(patch, magic, generator):
+def test_generator_make_field__foreign(patch, magic, generator):
     patch.init(ForeignKeyField)
     patch.object(Generator, 'field', return_value=ForeignKeyField)
-    field = magic(default_value=None)
+    field = magic(default_value=None, length=None)
     result = generator.make_field(field, 'classname')
     model = generator.models[field.field_type]
     ForeignKeyField.__init__.assert_called_with(model, null=field.nullable,
@@ -84,15 +84,23 @@ def test_generator_make_field_foreign(patch, magic, generator):
     assert isinstance(result, ForeignKeyField)
 
 
-def test_generator_make_field_default_value(patch, magic, generator):
+def test_generator_make_field__default_value(patch, magic, generator):
     patch.init(SQL)
     patch.object(Generator, 'field')
-    field = magic(default_value='value')
+    field = magic(default_value='value', length=None)
     generator.make_field(field, 'classname')
     SQL.__init__.assert_called_with('DEFAULT value')
     kwargs = {'null': field.nullable, 'unique': field.unique,
               'default': field.default_value, 'constraints': [SQL()]}
     Generator.field().assert_called_with(**kwargs)
+
+
+def test_generator_make_field__length(patch, magic, generator):
+    patch.object(Generator, 'field')
+    field = magic(default_value=None, length=1)
+    generator.make_field(field, 'classname')
+    Generator.field().assert_called_with(null=field.nullable,
+                                         unique=field.unique, max_length=1)
 
 
 def test_generator_attributes(patch, magic, generator):
