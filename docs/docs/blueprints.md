@@ -46,6 +46,19 @@ Supported field types are: `string`, `text`, `int`, `bigint`, `float`, `double`,
 `decimal`, `boolean`, `date` and `datetime`.
 
 
+### Field options
+
+We can specify the length of a string field:
+
+```yml
+types:
+    ingredients:
+        - name:
+            field_type: string
+            length: 1024
+```
+
+
 ### Unique fields
 
 We can mark fields as unique:
