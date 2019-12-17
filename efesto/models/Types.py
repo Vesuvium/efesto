@@ -13,12 +13,17 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
-from peewee import CharField, ForeignKeyField
+from psyker import Foreign, Model
 
 from .Base import Base
-from .Users import Users
 
 
-class Types(Base):
-    name = CharField()
-    owner = ForeignKeyField(Users)
+class Types(Model, Base):
+
+    @classmethod
+    def columns(cls):
+        return {
+            'name': 'str',
+            'owner': Foreign('owner', 'users'),
+            **cls.permissions()
+        }

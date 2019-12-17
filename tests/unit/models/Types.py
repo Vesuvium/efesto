@@ -15,10 +15,19 @@
 # -*- coding: utf-8 -*-
 from efesto.models import Base, Types
 
-from peewee import CharField, ForeignKeyField
+from psyker import Foreign, Model
 
 
 def test_types():
-    assert isinstance(Types.name, CharField)
-    assert isinstance(Types.owner, ForeignKeyField)
+    assert issubclass(Types, Model)
     assert issubclass(Types, Base)
+
+
+def test_types_columns(patch):
+    patch.init(Foreign)
+    patch.object(Types, 'permissions', return_value={'col': 'value'})
+    columns = Types.columns()
+    assert columns['name'] == 'str'
+    assert isinstance(columns['owner'], Foreign)
+    Foreign.__init__.assert_called_with('owner', 'users')
+    assert columns['col'] == 'value'
