@@ -29,9 +29,7 @@ class Blueprints:
 
     @staticmethod
     def make_field(field_name, type_id, **options):
-        field = Fields.create(name=field_name, type_id=type_id, owner_id=1,
-                              **options)
-        field.save()
+        Fields(name=field_name, type_id=type_id, owner_id=1, **options).save()
 
     def load_field(self, new_type, field):
         """
@@ -48,7 +46,7 @@ class Blueprints:
         """
         Loads a type in the database
         """
-        return Types.create(name=table, owner_id=1)
+        return Types(name=table, owner_id=1).save()
 
     def read(self, blueprint):
         """

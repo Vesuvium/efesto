@@ -38,17 +38,19 @@ def test_blueprints_init(patch):
 
 
 def test_blueprints_make_field(patch, blueprints):
-    patch.object(Fields, 'create')
+    patch.init(Fields)
+    patch.object(Fields, 'save')
     blueprints.make_field('field', 1)
-    Fields.create.assert_called_with(name='field', type_id=1, owner_id=1)
-    assert Fields.create().save.call_count == 1
+    Fields.__init__.assert_called_with(name='field', type_id=1, owner_id=1)
+    assert Fields.save.call_count == 1
 
 
 def test_blueprints_make_field_options(patch, blueprints):
-    patch.object(Fields, 'create')
+    patch.init(Fields)
+    patch.object(Fields, 'save')
     blueprints.make_field('field', 1, option='value')
-    Fields.create.assert_called_with(name='field', type_id=1, owner_id=1,
-                                     option='value')
+    Fields.__init__.assert_called_with(name='field', type_id=1, owner_id=1,
+                                       option='value')
 
 
 def test_blueprints_load_field(patch, magic, blueprints):
@@ -68,10 +70,11 @@ def test_blueprints_load_field_complex(patch, magic, blueprints):
 
 
 def test_blueprints_load_type(patch, blueprints):
-    patch.object(Types, 'create')
+    patch.init(Types)
+    patch.object(Types, 'save')
     result = blueprints.load_type('table')
-    Types.create.assert_called_with(name='table', owner_id=1)
-    assert result == Types.create()
+    Types.__init__.assert_called_with(name='table', owner_id=1)
+    assert result == Types.save()
 
 
 def test_blueprints_read(patch, blueprints):
