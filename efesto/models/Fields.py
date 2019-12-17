@@ -13,19 +13,23 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
-from peewee import BooleanField, CharField, ForeignKeyField, IntegerField, SQL
+from psyker import Column, Foreign, Model
 
 from .Base import Base
-from .Types import Types
-from .Users import Users
 
 
-class Fields(Base):
-    name = CharField()
-    field_type = CharField(default='string')
-    length = IntegerField(null=True)
-    unique = BooleanField(default=False, constraints=[SQL('DEFAULT false')])
-    nullable = BooleanField(default=False, constraints=[SQL('DEFAULT false')])
-    default_value = IntegerField(null=True)
-    type_id = ForeignKeyField(Types)
-    owner = ForeignKeyField(Users)
+class Fields(Model, Base):
+
+    @classmethod
+    def columns(cls):
+        return {
+            'name': 'str',
+            'field_type': Column('field_type', 'str', default="'string'"),
+            'length': 'int',
+            'unique': Column('unique', 'bool', default=False),
+            'nullable': Column('nullable', 'bool', default=False),
+            'default_value': 'int',
+            'type_id': Foreign('type_id', 'types'),
+            'owner': Foreign('owner', 'users'),
+            **cls.permissions()
+        }

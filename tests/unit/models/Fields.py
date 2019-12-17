@@ -15,23 +15,23 @@
 # -*- coding: utf-8 -*-
 from efesto.models import Base, Fields
 
-from peewee import BooleanField, CharField, ForeignKeyField, IntegerField, SQL
+from psyker import Column, Foreign, Model
 
 
 def test_fields():
-    assert Fields.field_type.default == 'string'
-    assert isinstance(Fields.name, CharField)
-    assert isinstance(Fields.field_type, CharField)
-    assert isinstance(Fields.length, IntegerField)
-    assert Fields.length.null is True
-    assert isinstance(Fields.unique, BooleanField)
-    assert Fields.unique.default is False
-    assert Fields.unique.constraints == [SQL('DEFAULT false')]
-    assert isinstance(Fields.nullable, BooleanField)
-    assert Fields.nullable.default is False
-    assert Fields.nullable.constraints == [SQL('DEFAULT false')]
-    assert isinstance(Fields.default_value, IntegerField)
-    assert Fields.default_value.null is True
-    assert isinstance(Fields.type_id, ForeignKeyField)
-    assert isinstance(Fields.owner, ForeignKeyField)
+    assert issubclass(Fields, Model)
     assert issubclass(Fields, Base)
+
+
+def test_fields_columns(patch):
+    patch.object(Fields, 'permissions', return_value={'col': 'value'})
+    result = Fields.columns()
+    assert result['name'] == 'str'
+    assert result['length'] == 'int'
+    assert result['default_value'] == 'int'
+    assert isinstance(result['field_type'], Column)
+    assert isinstance(result['unique'], Column)
+    assert isinstance(result['nullable'], Column)
+    assert isinstance(result['type_id'], Foreign)
+    assert isinstance(result['owner'], Foreign)
+    assert result['col'] == 'value'
