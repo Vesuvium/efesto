@@ -15,7 +15,8 @@
 # -*- coding: utf-8 -*-
 import click
 
-from peewee import OperationalError, ProgrammingError
+from psyker.exceptions import ConnectionError
+
 
 from .App import App
 from .Config import Config
@@ -40,7 +41,7 @@ class Cli:
         click.echo('Setting up efesto...')
         try:
             App.install()
-        except (OperationalError, ProgrammingError):
+        except ConnectionError:
             click.echo(Cli.installation_error)
             exit(1)
         click.echo('Installation successful!')

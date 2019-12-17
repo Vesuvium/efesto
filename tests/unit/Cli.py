@@ -21,9 +21,9 @@ from efesto.Cli import Cli
 from efesto.Tokens import Tokens
 from efesto.Version import version
 
-from peewee import OperationalError, ProgrammingError
+from psyker.exceptions import ConnectionError
 
-from pytest import fixture, mark
+from pytest import fixture
 
 
 @fixture
@@ -50,10 +50,9 @@ def test_cli_install(patch, runner):
     assert result.exit_code == 0
 
 
-@mark.parametrize('error', [OperationalError, ProgrammingError])
-def test_cli_install_error(patch, runner, error):
+def test_cli_install_error(patch, runner):
     patch.object(click, 'echo')
-    patch.object(App, 'install', side_effect=ProgrammingError)
+    patch.object(App, 'install', side_effect=ConnectionError('url'))
     result = runner.invoke(Cli.install)
     click.echo.assert_called_with(Cli.installation_error)
     assert result.exit_code == 1
