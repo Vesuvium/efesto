@@ -13,74 +13,54 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
-from peewee import (BigIntegerField, BooleanField, CharField, DateField,
-                    DateTimeField, DecimalField, DoubleField, FloatField,
-                    ForeignKeyField, IntegerField, SQL, TextField, UUIDField)
+from psyker import Column, Foreign
 
-from .models import Base, Fields, Users
+from .models import Fields
 
 
 class Generator:
     """
     A model generator that is used to generated dynamically defined models.
     """
-    __slots__ = ('models',)
+    __slots__ = ('db', 'models')
 
     mappings = {
-        'string': CharField,
-        'text': TextField,
-        'int': IntegerField,
-        'bigint': BigIntegerField,
-        'float': FloatField,
-        'double': DoubleField,
-        'decimal': DecimalField,
-        'boolean': BooleanField,
-        'date': DateField,
-        'datetime': DateTimeField,
-        'uuid': UUIDField
+        'string': 'str',
+        'text': 'text',
+        'int': 'int',
+        'bigint': 'bigint',
+        'float': 'float',
+        'double': 'double',
+        'decimal': 'decimal',
+        'boolean': 'bool',
+        'date': 'date',
+        'datetime': 'datetime',
+        'uuid': 'uuid'
     }
 
-    def __init__(self):
+    def __init__(self, db):
+        self.db = db
         self.models = {}
 
-    def field(self, field_type):
-        """
-        Finds the field to use, given a field type
-        """
-        if field_type in self.mappings:
-            return self.mappings[field_type]
-        elif field_type in self.models:
-            return ForeignKeyField
-        return CharField
-
-    def make_field(self, field, classname):
-        """
-        Generates a field from a field row
-        """
-        custom_field = self.field(field.field_type)
-        arguments = {'null': field.nullable, 'unique': field.unique}
+    def make_field(self, field):
+        arguments = {'nullable': field.nullable, 'unique': field.unique}
         if field.length:
-            arguments['max_length'] = field.length
-        if custom_field == ForeignKeyField:
-            arguments['backref'] = classname
-            return custom_field(self.models[field.field_type], **arguments)
+            arguments['options'] = {'length': field.length}
         if field.default_value:
-            constraints = [SQL('DEFAULT {}'.format(field.default_value))]
             arguments['default'] = field.default_value
-            arguments['constraints'] = constraints
-        return custom_field(**arguments)
+        if field.field_type in self.models:
+            return Foreign(field.name, field.field_type, **arguments)
+        return Column(field.name, self.mappings[field.field_type], **arguments)
 
-    def attributes(self, fields, classname):
-        attributes = {}
-        for field in fields:
-            attributes[field.name] = self.make_field(field, classname)
-        return attributes
+    def make_fields(self, fields):
+        fields = {field.name: self.make_field(field) for field in fields}
+        fields['owner'] = Foreign('owner', 'users')
+        return fields
 
     def new_model(self, type_instance):
-        fields = Fields.select().where(Fields.type_id == type_instance.id)
-        attributes = self.attributes(fields, type_instance.name)
-        attributes['owner'] = ForeignKeyField(Users)
-        model = type(type_instance.name, (Base, ), attributes)
+        fields = Fields.select(type_id=type_instance.id).get()
+        columns = self.make_fields(fields)
+        model = self.db.make_model(type_instance.name, columns)
         self.models[type_instance.name] = model
 
     def generate(self, type_instance):

@@ -14,115 +14,109 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
 from efesto.Generator import Generator
-from efesto.models import Base, Fields
+from efesto.models import Fields
 
-from peewee import (BigIntegerField, BooleanField, CharField, DateField,
-                    DateTimeField, DecimalField, DoubleField, FloatField,
-                    ForeignKeyField, IntegerField, SQL, TextField, UUIDField)
+from psyker import Column, Foreign
 
 from pytest import fixture
 
 
 @fixture
-def generator(magic):
-    generator = Generator()
-    generator.models = magic()
+def db(magic):
+    return magic()
+
+
+@fixture
+def generator(db):
+    generator = Generator(db)
+    generator.models = {'custom': 'custom'}
     return generator
 
 
 def test_mappings():
-    assert Generator.mappings['string'] == CharField
-    assert Generator.mappings['text'] == TextField
-    assert Generator.mappings['int'] == IntegerField
-    assert Generator.mappings['bigint'] == BigIntegerField
-    assert Generator.mappings['float'] == FloatField
-    assert Generator.mappings['double'] == DoubleField
-    assert Generator.mappings['decimal'] == DecimalField
-    assert Generator.mappings['boolean'] == BooleanField
-    assert Generator.mappings['date'] == DateField
-    assert Generator.mappings['datetime'] == DateTimeField
-    assert Generator.mappings['uuid'] == UUIDField
+    assert Generator.mappings['string'] == 'str'
+    assert Generator.mappings['text'] == 'text'
+    assert Generator.mappings['int'] == 'int'
+    assert Generator.mappings['bigint'] == 'bigint'
+    assert Generator.mappings['float'] == 'float'
+    assert Generator.mappings['double'] == 'double'
+    assert Generator.mappings['decimal'] == 'decimal'
+    assert Generator.mappings['boolean'] == 'bool'
+    assert Generator.mappings['date'] == 'date'
+    assert Generator.mappings['datetime'] == 'datetime'
+    assert Generator.mappings['uuid'] == 'uuid'
 
 
-def test_generator_init():
-    model = Generator()
-    assert model.models == {}
-
-
-def test_generator_field(generator):
-    assert generator.field('unknown') == CharField
-
-
-def test_generator_field_from_mappings(generator):
-    assert generator.field('string') == CharField
-
-
-def test_generator_field_from_models(generator):
-    generator.models = {'type': 'model'}
-    assert generator.field('type') == ForeignKeyField
+def test_generator_init(db):
+    result = Generator(db)
+    assert result.db == db
+    assert result.models == {}
 
 
 def test_generator_make_field(patch, magic, generator):
-    patch.object(Generator, 'field')
-    field = magic(default_value=None, length=None)
-    result = generator.make_field(field, 'classname')
-    Generator.field.assert_called_with(field.field_type)
-    Generator.field().assert_called_with(null=field.nullable,
-                                         unique=field.unique)
-    assert result == Generator.field()()
+    patch.init(Column)
+    field = magic(field_type='string', default_value=None, length=None)
+    field.name = 'name'
+    result = generator.make_field(field)
+    Column.__init__.assert_called_with('name', 'str', nullable=field.nullable,
+                                       unique=field.unique)
+    assert isinstance(result, Column)
 
 
 def test_generator_make_field__foreign(patch, magic, generator):
-    patch.init(ForeignKeyField)
-    patch.object(Generator, 'field', return_value=ForeignKeyField)
-    field = magic(default_value=None, length=None)
-    result = generator.make_field(field, 'classname')
-    model = generator.models[field.field_type]
-    ForeignKeyField.__init__.assert_called_with(model, null=field.nullable,
-                                                unique=field.unique,
-                                                backref='classname')
-    assert isinstance(result, ForeignKeyField)
+    patch.init(Foreign)
+    field = magic(field_type='custom', default_value=None, length=None)
+    field.name = 'name'
+    result = generator.make_field(field)
+    Foreign.__init__.assert_called_with('name', field.field_type,
+                                        nullable=field.nullable,
+                                        unique=field.unique)
+    assert isinstance(result, Foreign)
 
 
 def test_generator_make_field__default_value(patch, magic, generator):
-    patch.init(SQL)
-    patch.object(Generator, 'field')
-    field = magic(default_value='value', length=None)
-    generator.make_field(field, 'classname')
-    SQL.__init__.assert_called_with('DEFAULT value')
-    kwargs = {'null': field.nullable, 'unique': field.unique,
-              'default': field.default_value, 'constraints': [SQL()]}
-    Generator.field().assert_called_with(**kwargs)
+    patch.init(Column)
+    field = magic(field_type='string', length=None)
+    field.name = 'name'
+    result = generator.make_field(field)
+    Column.__init__.assert_called_with('name', 'str', nullable=field.nullable,
+                                       unique=field.unique,
+                                       default=field.default_value)
+    assert isinstance(result, Column)
 
 
 def test_generator_make_field__length(patch, magic, generator):
-    patch.object(Generator, 'field')
-    field = magic(default_value=None, length=1)
-    generator.make_field(field, 'classname')
-    Generator.field().assert_called_with(null=field.nullable,
-                                         unique=field.unique, max_length=1)
+    patch.init(Column)
+    field = magic(field_type='string', default_value=None)
+    field.name = 'name'
+    result = generator.make_field(field)
+    Column.__init__.assert_called_with('name', 'str', nullable=field.nullable,
+                                       unique=field.unique,
+                                       options={'length': field.length})
+    assert isinstance(result, Column)
 
 
-def test_generator_attributes(patch, magic, generator):
+def test_generator_make_fields(patch, magic, generator):
+    patch.init(Foreign)
     patch.object(Generator, 'make_field')
     field = magic()
-    field.name = 'one'
-    result = generator.attributes([field], 'classname')
-    Generator.make_field.assert_called_with(field, 'classname')
-    assert result['one'] == generator.make_field()
+    field.name = 'name'
+    result = generator.make_fields([field])
+    Generator.make_field.assert_called_with(field)
+    Foreign.__init__.assert_called_with('owner', 'users')
+    assert result['name'] == Generator.make_field()
+    assert isinstance(result['owner'], Foreign)
 
 
-def test_generator_new_model(patch, type_instance):
-    patch.object(Generator, 'attributes', return_value={})
+def test_generator_new_model(patch, type_instance, generator, db):
+    patch.object(Generator, 'make_fields')
     patch.object(Fields, 'select')
-    model = Generator()
-    model.generate(type_instance)
-    Fields.select().where.assert_called_with(False)
-    Generator.attributes.assert_called_with(Fields.select().where(), 'custom')
-    model = model.models['custom']
-    assert isinstance(model.owner, ForeignKeyField)
-    assert issubclass(model, Base)
-    assert model.__name__ == 'custom'
+    generator.generate(type_instance)
+    Fields.select.assert_called_with(type_id=type_instance.id)
+    Generator.make_fields.assert_called_with(Fields.select().get())
+    db.make_model.assert_called_with(type_instance.name,
+                                     Generator.make_fields())
+    assert generator.models[type_instance.name] == db.make_model()
 
 
 def test_generator_generate(patch, generator, type_instance):
