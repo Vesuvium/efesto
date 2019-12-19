@@ -24,7 +24,7 @@ from pytest import fixture, raises
 
 @fixture
 def pack():
-    return Msgpack('config')
+    return Msgpack('config', 'db')
 
 
 def test_msgpack_process_request(patch, http_request, pack):

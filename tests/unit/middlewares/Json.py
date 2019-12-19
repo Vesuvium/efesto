@@ -23,7 +23,7 @@ import rapidjson
 
 @fixture
 def json():
-    return Json('config')
+    return Json('config', 'db')
 
 
 def test_json_process_request(patch, http_request, json):

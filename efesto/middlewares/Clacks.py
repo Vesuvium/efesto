@@ -19,7 +19,7 @@ class Clacks:
 
     __slots__ = ()
 
-    def __init__(self, config):
+    def __init__(self, config, db):
         pass
 
     def process_response(self, request, response, resource, success):

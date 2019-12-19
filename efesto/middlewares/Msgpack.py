@@ -23,7 +23,7 @@ class Msgpack:
 
     __slots__ = ()
 
-    def __init__(self, config):
+    def __init__(self, config, db):
         pass
 
     def process_request(self, request, response):

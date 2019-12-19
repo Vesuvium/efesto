@@ -27,7 +27,7 @@ from pytest import fixture, mark, raises
 
 @fixture
 def auth(config):
-    return Authentication(config)
+    return Authentication(config, 'db')
 
 
 def test_middleware_authentication_init(auth, config):

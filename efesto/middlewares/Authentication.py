@@ -26,7 +26,7 @@ class Authentication:
 
     __slots__ = ('secret', 'audience', 'public_endpoints')
 
-    def __init__(self, config):
+    def __init__(self, config, db):
         self.secret = config.JWT_SECRET
         self.audience = config.JWT_AUDIENCE
         self.public_endpoints = config.PUBLIC_ENDPOINTS.split(',')

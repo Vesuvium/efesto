@@ -17,7 +17,7 @@ from efesto.middlewares import Clacks
 
 
 def test_clacks_init():
-    assert Clacks('config')
+    assert Clacks('config', 'db')
 
 
 def test_clacks_process_response(response):

@@ -25,7 +25,7 @@ from pytest import fixture
 @fixture
 def log(patch, config):
     patch.many(logger, ['remove', 'add'])
-    return Log(config)
+    return Log(config, 'db')
 
 
 def test_log_init(log, config):

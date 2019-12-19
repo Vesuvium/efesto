@@ -22,7 +22,7 @@ class Log:
 
     __slots__ = ('level', 'format')
 
-    def __init__(self, config):
+    def __init__(self, config, db):
         self.level = config.LOG_LEVEL.upper()
         self.format = config.LOG_FORMAT
         logger.remove()
