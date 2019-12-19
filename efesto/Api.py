@@ -24,7 +24,7 @@ from .models import Types
 
 class Api:
 
-    __slots__ = ('config', 'generator', 'api')
+    __slots__ = ('config', 'db', 'generator', 'api')
 
     available_middlewares = {
         'authentication': Authentication,
@@ -35,9 +35,10 @@ class Api:
         'msgpack': Msgpack
     }
 
-    def __init__(self, config):
+    def __init__(self, config, db):
         self.config = config
-        self.generator = Generator()
+        self.db = db
+        self.generator = Generator(db)
         self.api = None
 
     def route(self, endpoint, handler, model=None):
@@ -66,7 +67,7 @@ class Api:
         for name in self.config.MIDDLEWARES.lower().split(':'):
             if name in self.available_middlewares:
                 middleware = self.available_middlewares[name]
-                middlewares.append(middleware(self.config))
+                middlewares.append(middleware(self.config, self.db))
         return middlewares
 
     def falcon(self):

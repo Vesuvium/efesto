@@ -28,7 +28,7 @@ from pytest import fixture
 @fixture
 def api(patch, config):
     patch.init(Generator)
-    return Api(config)
+    return Api(config, 'db')
 
 
 def test_api():
@@ -41,7 +41,9 @@ def test_api():
 
 
 def test_api_init(api, config):
+    Generator.__init__.assert_called_with('db')
     assert api.config == config
+    assert api.db == 'db'
     assert api.api is None
     assert isinstance(api.generator, Generator)
 
@@ -88,8 +90,8 @@ def test_api_middlewares(patch, api, config):
     patch.init(Log)
     config.MIDDLEWARES = 'json:log'
     result = api.middlewares()
-    Json.__init__.assert_called_with(config)
-    Log.__init__.assert_called_with(config)
+    Json.__init__.assert_called_with(config, 'db')
+    Log.__init__.assert_called_with(config, 'db')
     assert isinstance(result[0], Json)
     assert isinstance(result[1], Log)
 
