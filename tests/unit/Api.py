@@ -111,6 +111,6 @@ def test_api_start(patch, api):
     patch.object(Types, 'select')
     patch.many(Api, ['falcon', 'custom_routes', 'routes', 'middlewares'])
     api.start()
-    Api.custom_routes.assert_called_with(Types.select().execute())
+    Api.custom_routes.assert_called_with(Types.select().get())
     Api.routes.assert_called_with(Routes.routes)
     assert api.api == Api.falcon()

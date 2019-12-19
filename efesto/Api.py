@@ -77,6 +77,6 @@ class Api:
         Mounts the routes and starts the API
         """
         self.api = self.falcon()
-        self.custom_routes(Types.select().execute())
+        self.custom_routes(Types.select().get())
         self.routes(Routes.routes)
         return self.api
