@@ -14,23 +14,22 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
 from efesto.middlewares import Db
-from efesto.models import db
 
 from pytest import fixture
 
 
 @fixture
-def db_middleware(magic):
-    return Db('config')
+def db(magic):
+    return Db('config', 'db')
 
 
-def test_db_process_request(magic, db_middleware):
-    db.connect = magic()
-    db_middleware.process_request('request', 'response')
-    db.connect.assert_called_with(reuse_if_open=True)
+def test_db_process_request(magic, db):
+    db.db = magic()
+    db.process_request('request', 'response')
+    assert db.db.connect.call_count == 1
 
 
-def test_db_process_response(magic, db_middleware):
-    db.close = magic()
-    db_middleware.process_response('request', 'response', 'resposnse', 'yes')
-    assert db.close.call_count == 1
+def test_db_process_response(magic, db):
+    db.db = magic()
+    db.process_response('request', 'response', 'resposnse', 'yes')
+    assert db.db.close.call_count == 1

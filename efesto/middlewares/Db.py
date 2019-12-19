@@ -13,18 +13,17 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
-from ..models import db
 
 
 class Db:
 
-    __slots__ = ()
+    __slots__ = ('db', )
 
-    def __init__(self, config):
-        pass
+    def __init__(self, config, db):
+        self.db = db
 
     def process_request(self, request, response):
-        db.connect(reuse_if_open=True)
+        self.db.connect()
 
     def process_response(self, request, response, resource, success):
-        db.close()
+        self.db.close()
