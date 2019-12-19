@@ -15,11 +15,10 @@
 # -*- coding: utf-8 -*-
 from efesto.models import Base, Fields
 
-from psyker import Column, Foreign, Model
+from psyker import Column, Foreign
 
 
 def test_fields():
-    assert issubclass(Fields, Model)
     assert issubclass(Fields, Base)
 
 

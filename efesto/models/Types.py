@@ -13,12 +13,12 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
-from psyker import Foreign, Model
+from psyker import Foreign
 
 from .Base import Base
 
 
-class Types(Model, Base):
+class Types(Base):
 
     @classmethod
     def columns(cls):

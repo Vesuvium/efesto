@@ -15,11 +15,10 @@
 # -*- coding: utf-8 -*-
 from efesto.models import Base, Types
 
-from psyker import Foreign, Model
+from psyker import Foreign
 
 
 def test_types():
-    assert issubclass(Types, Model)
     assert issubclass(Types, Base)
 
 
