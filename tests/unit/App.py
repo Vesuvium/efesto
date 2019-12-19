@@ -51,9 +51,10 @@ def test_app_init(patch):
 def test_app_run(patch):
     patch.init(Api)
     patch.object(Api, 'start')
-    patch.object(App, 'config')
+    patch.many(App, ['config', 'db'])
     result = App.run()
-    Api.__init__.assert_called_with(App.config())
+    App.db.assert_called_with(App.config())
+    Api.__init__.assert_called_with(App.config(), App.db())
     assert result == Api.start()
 
 

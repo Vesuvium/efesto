@@ -46,7 +46,8 @@ class App:
         """
         Runs efesto
         """
-        return Api(cls.config()).start()
+        config = cls.config()
+        return Api(config, cls.db(config)).start()
 
     @classmethod
     def install(cls):
