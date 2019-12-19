@@ -24,7 +24,7 @@ class Config(Bassoon):
         'BATCH_ENDPOINTS': '1',
         'DB_CONNECTIONS': '32',
         'DB_TIMEOUT': '300',
-        'DB_URL': 'sqlite:///efesto.db',
+        'DB_URL': 'postgres://postgres:postgres@localhost:5432/efesto',
         'HATEOAS_ENCODER': 'siren',
         'JWT_SECRET': 'secret',
         'JWT_LEEWAY': '5',

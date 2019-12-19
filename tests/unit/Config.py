@@ -23,7 +23,7 @@ def test_config():
 
 
 def test_config_defaults():
-    db_url = 'sqlite:///efesto.db'
+    db_url = 'postgres://postgres:postgres@localhost:5432/efesto'
     assert Config.defaults['ADMIN_ENDPOINTS'] == '0'
     assert Config.defaults['APP_NAME'] == 'efesto'
     assert Config.defaults['BATCH_ENDPOINTS'] == '1'
