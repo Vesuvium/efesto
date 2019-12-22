@@ -13,38 +13,26 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
-from peewee import BooleanField, CharField
+from psyker import Column
 
 from .Base import Base
 
 
 class Users(Base):
-    identifier = CharField(unique=True)
-    superuser = BooleanField(default=False)
 
     @staticmethod
     def login(identifier):
         """
         Logs in an user, when provided with a valid identifer
         """
-        try:
-            return Users.get(Users.identifier == identifier)
-        except Users.DoesNotExist:
-            return None
+        return Users.select(identifier=identifier).one()
 
-    def _apply_permissions(self, query, model, level):
-        """
-        Applies the requested permission level to a query
-        """
-        lhs = (model.others_permission >= level)
-        rhs_left_right = (model.owner_permission >= level)
-        if model == Users:
-            rhs_left = ((model.id == self.id) & rhs_left_right)
-        else:
-            rhs_left = ((model.owner == self.id) & rhs_left_right)
-        rhs_right_right = (model.group_permission >= level)
-        rhs_right = ((model.group == self.group) & rhs_right_right)
-        return query.where(lhs | (rhs_left | rhs_right))
+    @classmethod
+    def columns(cls):
+        return  {
+            'identifier': Column('identifier', 'str', unique=True), 'superuser': 'bool',
+            **cls.permissions()
+        }
 
     def do(self, action, query, model):
         """
@@ -52,5 +40,3 @@ class Users(Base):
         """
         if self.superuser:
             return query
-        actions = {'read': 1, 'edit': 2, 'eliminate': 3}
-        return self._apply_permissions(query, model, actions[action])
