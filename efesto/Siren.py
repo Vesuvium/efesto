@@ -13,19 +13,11 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
-from peewee import ModelSelect
 
 
 class Siren:
 
-    __slots__ = ('model', 'data', 'path', 'total', 'page')
-
-    def __init__(self, model=None, data=[], path='', total=0, page=1):
-        self.model = model
-        self.data = data
-        self.path = path
-        self.total = total
-        self.page = page
+    __slots__ = ()
 
     @staticmethod
     def paginate(path, items, current_page, total_items):
@@ -43,62 +35,57 @@ class Siren:
         return links
 
     @classmethod
-    def nested_entities(cls, include, item):
-        """
-        Parses nested entities. Used when a join is performed and thus
-        there are nested item to encode.
-        """
-        nested = getattr(item, include)
-        if isinstance(nested, ModelSelect):
-            nested = list(nested)
-            items = []
-            if len(nested) > 0:
-                path = '/{}'.format(nested[0].__class__.__name__)
-            for item in nested:
-                items.append(cls.entity(path, item))
-            return items
-        path = '/{}'.format(nested.__class__.__name__)
-        return cls.entity(path, nested)
-
-    @classmethod
-    def entity(cls, path, item, includes=[]):
+    def entity(cls, item, item_type, path, includes=[]):
         """
         Creates an entity from a model instance
         """
-        href = '{}/{}'.format(path, item.id)
-        if path.endswith('/{}'.format(item.id)):
+        href = f'{path}/{item["id"]}'
+        if path.endswith(f'/{item["id"]}'):
             href = path
 
         for include in includes:
-            item.__data__[include] = cls.nested_entities(include, item)
+            item[include] = [
+                cls.entity(n, include, f'/{include}') for n in item[include]
+            ]
 
         return {
-            'properties': item.__data__,
-            'class': [item.__class__.__name__],
+            'properties': item,
+            'class': [item_type.lower()],
             'links': [
                 {'href': href, 'rel': 'self'}
             ]
         }
 
-    def entities(self, includes=[]):
-        entities = []
-        for item in self.data:
-            entities.append(self.entity(self.path, item, includes=includes))
+    @classmethod
+    def field_type(cls, value):
+        try:
+            int(value)
+            return 'number'
+        except ValueError:
+            return 'text'
 
-        fields = []
-        name = 'add-item'
-        if self.model:
-            fields = self.model.get_columns()
-            name = 'add-' + self.model._meta.name
+    @classmethod
+    def fields(cls, data):
+        return [{key: cls.field_type(value)} for key, value in data[0].items()]
+
+    @classmethod
+    def entities(cls, data, item_type, path, includes, page, total):
+        entities = [
+            cls.entity(item, item_type, path, includes) for item in data
+        ]
+
+        fields = cls.fields(data)
+        name = f'add-{item_type}'
 
         actions = [
             {'name': name, 'method': 'POST', 'type': 'application/json',
              'fields': fields}
         ]
-        links = self.paginate(self.path, self.data, self.page, self.total)
+        links = cls.paginate(path, data, page, total)
         return {'entities': entities, 'actions': actions, 'links': links}
 
-    def encode(self, *args, includes=[]):
-        if isinstance(self.data, list):
-            return self.entities(includes=includes)
-        return self.entity(self.path, self.data, includes=includes)
+    @classmethod
+    def encode(cls, data, includes, item_type, path, page, total):
+        if type(data) == list:
+            return cls.entities(data, item_type, path, includes, page, total)
+        return cls.entity(data, item_type, path, includes)
