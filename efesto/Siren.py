@@ -85,7 +85,7 @@ class Siren:
         return {'entities': entities, 'actions': actions, 'links': links}
 
     @classmethod
-    def encode(cls, data, includes, item_type, path, page, total):
+    def encode(cls, data, includes, item_type, path, page=1, total=0):
         if type(data) == list:
             return cls.entities(data, item_type, path, includes, page, total)
         return cls.entity(data, item_type, path, includes)

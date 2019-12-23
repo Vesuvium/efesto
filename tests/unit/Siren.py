@@ -88,13 +88,25 @@ def test_siren_entities(patch):
 
 def test_siren_encode(patch):
     patch.object(Siren, 'entity')
-    result = Siren.encode('data', [], 'item_type', 'path', 1, 1)
+    result = Siren.encode('data', [], 'item_type', 'path')
     Siren.entity.assert_called_with('data', 'item_type', 'path', [])
     assert result == Siren.entity()
 
 
 def test_siren_encode__entities(patch):
     patch.object(Siren, 'entities')
-    result = Siren.encode(['data'], [], 'item_type', 'path', 1, 1)
-    Siren.entities.assert_called_with(['data'], 'item_type', 'path', [], 1, 1)
+    result = Siren.encode(['data'], [], 'item_type', 'path')
+    Siren.entities.assert_called_with(['data'], 'item_type', 'path', [], 1, 0)
     assert result == Siren.entities()
+
+
+def test_siren_encode__page(patch):
+    patch.object(Siren, 'entities')
+    Siren.encode(['data'], [], 'item_type', 'path', page=2)
+    Siren.entities.assert_called_with(['data'], 'item_type', 'path', [], 2, 0)
+
+
+def test_siren_encode__total(patch):
+    patch.object(Siren, 'entities')
+    Siren.encode(['data'], [], 'item_type', 'path', total=10)
+    Siren.entities.assert_called_with(['data'], 'item_type', 'path', [], 1, 10)
