@@ -19,22 +19,6 @@ from efesto.models import Base
 from psyker import Column, Psyker
 
 
-def test_base_conversion():
-    assert Base.conversions['int'] == 'number'
-    assert Base.conversions['bigint'] == 'number'
-    assert Base.conversions['double'] == 'number'
-    assert Base.conversions['decimal'] == 'number'
-    assert Base.conversions['float'] == 'number'
-    assert Base.conversions['bool'] == 'number'
-    assert Base.conversions['serial'] == 'number'
-    assert Base.conversions['str'] == 'text'
-    assert Base.conversions['text'] == 'text'
-    assert Base.conversions['date'] == 'date'
-    assert Base.conversions['datetime'] == 'datetime'
-    assert Base.conversions['uuid'] == 'text'
-    assert Base.conversions['foreign'] == 'text'
-
-
 def test_base_permissions(patch):
     patch.init(Column)
     result = Base.permissions()
@@ -42,13 +26,6 @@ def test_base_permissions(patch):
     assert isinstance(result['owner_permission'], Column)
     assert isinstance(result['group_permission'], Column)
     assert isinstance(result['others_permission'], Column)
-
-
-def test_base_get_columns(magic):
-    column = magic(field_type='int')
-    Base.__table__ = magic(columns={'col': column})
-    result = Base.get_columns()
-    assert result == [{column.name: 'number'}]
 
 
 def test_base_init_db(patch):

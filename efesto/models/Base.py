@@ -18,22 +18,6 @@ from psyker import Column, Model, Psyker
 
 class Base(Model):
 
-    conversions = {
-        'int': 'number',
-        'bigint': 'number',
-        'double': 'number',
-        'decimal': 'number',
-        'float': 'number',
-        'bool': 'number',
-        'serial': 'number',
-        'str': 'text',
-        'text': 'text',
-        'date': 'date',
-        'datetime': 'datetime',
-        'uuid': 'text',
-        'foreign': 'text'
-    }
-
     @classmethod
     def permissions(cls):
         return {
@@ -42,13 +26,6 @@ class Base(Model):
             'group_permission': Column('group_permission', 'int', default=0),
             'others_permission': Column('others_permission', 'int', default=0)
         }
-
-    @classmethod
-    def get_columns(cls):
-        columns = cls.__table__.columns.values()
-        return [
-            {col.name: cls.conversions[col.field_type]} for col in columns
-        ]
 
     @classmethod
     def init_db(cls, url, models, connections, timeout, **kwargs):
