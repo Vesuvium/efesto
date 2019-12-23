@@ -21,7 +21,7 @@ def test_clacks_init():
 
 
 def test_clacks_process_response(response):
-    clacks = Clacks('config')
+    clacks = Clacks('config', 'db')
     clacks.process_response('request', response, 'resource', 'success')
     value = 'GNU Terry Pratchett'
     response.set_header.assert_called_with('X-Clacks-Overhead', value)
