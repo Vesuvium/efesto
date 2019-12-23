@@ -13,10 +13,9 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
-from efesto.exceptions import BadRequest
 from efesto.handlers import BaseHandler
 
-from pytest import fixture, raises
+from pytest import fixture
 
 
 @fixture
@@ -30,7 +29,7 @@ def test_basehandler_init(magic):
     model = magic()
     handler = BaseHandler(model)
     assert handler.model == model
-    assert handler._order == model.id
+    assert handler._order == 'id'
 
 
 def test_basehandler_parse_embeds():
@@ -55,21 +54,6 @@ def test_basehandler_embeds(patch, handler, magic):
     handler.model = model
     result = handler.embeds('params')
     BaseHandler.parse_embeds.assert_called_with('params')
-    handler.model.q.join.assert_called_with(model.one.rel_model, on=False)
+    model.foreign_column_for.assert_called_with('one')
+    handler.model.q.join.assert_called_with('one', model.foreign_column_for())
     assert result == BaseHandler.parse_embeds()
-
-
-def test_basehandler_embeds_reverse(patch, handler):
-    """
-    Verifies that embeds work with backrefs.
-    """
-    patch.object(BaseHandler, 'parse_embeds', return_value=['one'])
-    handler.embeds('params')
-    handler.model.q.join.assert_called_with(handler.model, on=False)
-
-
-def test_basehandler_embeds__error(patch, handler, magic):
-    patch.object(BaseHandler, 'parse_embeds', return_value=['one'])
-    handler.model = 'model'
-    with raises(BadRequest):
-        handler.embeds('params')
