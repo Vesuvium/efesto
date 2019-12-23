@@ -13,6 +13,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # -*- coding: utf-8 -*-
+from efesto.Siren import Siren
 from efesto.exceptions import BadRequest
 from efesto.handlers import BaseHandler, Collections
 
@@ -34,12 +35,12 @@ def test_collection():
 
 def test_collection_query(collection):
     collection.query({})
-    assert collection.model.q == collection.model.select()
+    assert collection.model.q == collection.model.select().where()
 
 
 def test_collection_query_params(collection):
     collection.query({'key': 'value'})
-    collection.model.query.assert_called_with('key', 'value')
+    collection.model.select().where.assert_called_with(key='value')
 
 
 def test_collection_page(collection):
@@ -66,25 +67,26 @@ def test_collection_order(collection):
     """
     Ensures Collections.order can extract the _order parameter
     """
-    collection.order({'_order': 'rank'})
-    assert collection._order == collection.model.rank.asc()
+    collection.model.get_columns.return_value = ['col']
+    collection.order({'_order': 'col'})
+    assert collection._order == {'col': 'asc'}
 
 
-def test_collection_order_desc(collection):
+def test_collection_order__desc(collection):
     """
     Ensures Collections.order allows descending queries
     """
-    collection.order({'_order': '-rank'})
-    assert collection._order == collection.model.rank.desc()
+    collection.model.get_columns.return_value = ['col']
+    collection.order({'_order': '-col'})
+    assert collection._order == {'col': 'desc'}
 
 
 def test_collection_order_no_column(collection):
     """
     Ensures Collections.order works when the ordered column does not exist
     """
-    collection.model.rank = None
-    collection.order({'_order': 'rank'})
-    assert collection._order == collection.model.id
+    collection.order({'_order': 'col'})
+    assert collection._order == {'id': 'desc'}
 
 
 def test_collection_order_none(collection):
@@ -92,7 +94,7 @@ def test_collection_order_none(collection):
     Ensures Collections.order return None when there is no _order
     """
     collection.order({})
-    assert collection._order is collection.model.id
+    assert collection._order == {'id': 'desc'}
 
 
 def test_collection_apply_owner(magic):
@@ -139,17 +141,17 @@ def test_collection_paginate_data(collection, magic):
     collection._items = 20
     data = magic()
     result = collection.paginate_data(data)
-    data.order_by.assert_called_with(collection._order)
+    data.order_by.assert_called_with(**collection._order)
     data.order_by().paginate.assert_called_with(1, 20)
-    assert data.order_by().paginate().execute.call_count == 1
-    assert result == list(data.order_by().paginate().execute())
+    assert result == data.order_by().paginate().dictionaries()
 
 
-def test_collection_on_get(patch, magic, collection, siren):
+def test_collection_on_get(patch, magic, collection):
+    patch.object(Siren, 'encode')
     patch.many(Collections, ['process_params', 'embeds', 'get_data',
                              'paginate_data'])
     collection._page = 'page'
-    collection._items = 'items'
+    collection.model.__name__ = 'model'
     request = magic()
     response = magic()
     user = magic()
@@ -158,32 +160,33 @@ def test_collection_on_get(patch, magic, collection, siren):
     Collections.embeds.assert_called_with(request.params)
     Collections.get_data.assert_called_with(user)
     Collections.paginate_data.assert_called_with(Collections.get_data())
-    args = (collection.model, Collections.paginate_data(), request.path)
-    count = Collections.get_data().count()
-    siren.__init__.assert_called_with(*args, page='page', total=count)
-    siren.encode.assert_called_with(includes=Collections.embeds())
-    assert response.body == siren().encode()
+    Siren.encode.assert_called_with(Collections.paginate_data(),
+                                    Collections.embeds(), 'model',
+                                    request.path, collection._page,
+                                    collection.model.count().get())
+    assert response.body == Siren.encode()
 
 
-def test_collection_on_post(patch, magic, collection, siren):
+def test_collection_on_post(patch, magic, collection):
+    patch.object(Siren, 'encode')
+    patch.object(Collections, 'apply_owner')
     request = magic()
     response = magic()
     user = magic()
-    patch.object(Collections, 'apply_owner')
+    collection.model.__name__ = 'model'
     collection.on_post(request, response, user=user)
     collection.apply_owner.assert_called_with(user, request.payload)
     collection.model.write.assert_called_with(**request.payload)
-    siren.__init__.assert_called_with(collection.model,
-                                      collection.model.write(),
-                                      request.path)
-    assert response.body == siren.encode()
+    Siren.encode.assert_called_with(collection.model.write().as_dictionary(),
+                                    [], 'model', request.path)
+    assert response.body == Siren.encode()
 
 
-def test_collection_on_post__write_error(patch, magic, collection, siren):
+def test_collection_on_post__write_error(patch, magic, collection):
+    patch.object(Collections, 'apply_owner')
     request = magic()
     response = magic()
     user = magic()
-    patch.object(Collections, 'apply_owner')
     collection.model.write.return_value = None
     with raises(BadRequest):
         collection.on_post(request, response, user=user)

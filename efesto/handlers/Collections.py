@@ -23,9 +23,7 @@ from ..exceptions import BadRequest
 class Collections(BaseHandler):
 
     def query(self, params):
-        self.model.q = self.model.select()
-        for key, value in params.items():
-            self.model.query(key, value)
+        self.model.q = self.model.select().where(**params)
 
     def page(self, params):
         self._page = int(params.pop('page', 1))
@@ -45,10 +43,9 @@ class Collections(BaseHandler):
         if order[0] == '-':
             order = order[1:]
             direction = 'desc'
-        column = getattr(self.model, order)
-        if column is None:
+        if order not in self.model.get_columns():
             return None
-        self._order = getattr(column, direction)()
+        self._order = {order: direction}
 
     @staticmethod
     def apply_owner(user, payload):
@@ -75,8 +72,8 @@ class Collections(BaseHandler):
         """
         Paginate data
         """
-        query = data.order_by(self._order).paginate(self._page, self._items)
-        return list(query.execute())
+        query = data.order_by(**self._order).paginate(self._page, self._items)
+        return query.dictionaries()
 
     def on_get(self, request, response, **params):
         """
@@ -86,17 +83,18 @@ class Collections(BaseHandler):
         self.process_params(request.params)
         embeds = self.embeds(request.params)
         data = self.get_data(user)
-        body = Siren(self.model, self.paginate_data(data), request.path,
-                     page=self._page, total=data.count())
-        response.body = body.encode(includes=embeds)
+        paginated_data = self.paginate_data(data)
+        response.body = Siren.encode(paginated_data, embeds,
+                                     self.model.__name__, request.path,
+                                     self._page, self.model.count().get())
 
     def on_post(self, request, response, **params):
         self.apply_owner(params['user'], request.payload)
         item = self.model.write(**request.payload)
         if item is None:
             raise BadRequest('write_error', request.payload)
-        body = Siren(self.model, item, request.path)
-        response.body = body.encode()
+        response.body = Siren.encode(item.as_dictionary(), [],
+                                     self.model.__name__, request.path)
 
     def on_patch(self, request, response, **params):
         response.status = HTTP_501
